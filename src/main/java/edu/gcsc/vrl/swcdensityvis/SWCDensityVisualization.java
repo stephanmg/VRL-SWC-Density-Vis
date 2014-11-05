@@ -9,9 +9,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.vecmath.Vector3d;
 
 /**
@@ -23,7 +25,7 @@ import javax.vecmath.Vector3d;
 public class SWCDensityVisualization implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private File m_file;
-	private ArrayList<CompartmentInfo> m_compartments;
+	private HashMap<String, ArrayList<CompartmentInfo>> m_compartments;
 
 	/**
 	 * @brief set filename
@@ -36,14 +38,39 @@ public class SWCDensityVisualization implements Serializable {
 	}
 
 	/**
+	 * @brief parse a folder of SWC files
+	 * @param folder 
+	 */
+	public void parse_stack(
+		@ParamInfo(name = "Folder") File folder
+	) {
+		File[] swcFiles = folder.listFiles(new FilenameFilter()
+		{
+    		@Override
+ 		 public boolean accept(File dir, String name) {
+        	 return name.endsWith(".xml");
+		}});
+		
+		for (File f : swcFiles) {
+			try {
+				parse(f);
+			} catch(IOException e) {
+				eu.mihosoft.vrl.system.VMessage.exception("Error while reading a SWC file: ", e.toString());
+			}
+		}
+	}
+
+	/**
 	 * @brief parses the swc file
+	 * @param file 
 	 * @throws IOException
 	 */
 	@SuppressWarnings("NestedAssignment")
-	public void parse() throws IOException {
+	private void parse(File file) throws IOException {
+		ArrayList<CompartmentInfo> temp = new ArrayList<CompartmentInfo>();
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(m_file));
+			br = new BufferedReader(new FileReader(file));
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (!line.startsWith("#")) {
@@ -60,7 +87,7 @@ public class SWCDensityVisualization implements Serializable {
 					info.setThicknesses(Double.parseDouble(columns[5]));
 					info.setConnectivity(new Pair<Integer, Integer>(Integer.parseInt(columns[6]),
 						Integer.parseInt(columns[7])));
-					m_compartments.add(info);
+					temp.add(info);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -70,6 +97,7 @@ public class SWCDensityVisualization implements Serializable {
 		} finally {
 			br.close();
 		}
+		m_compartments.put(file.getName(), temp);
 		eu.mihosoft.vrl.system.VMessage.info("Successfully parsed the SWC file.", "");
 	}
 }
