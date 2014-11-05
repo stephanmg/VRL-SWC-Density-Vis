@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
+/// imports
 import eu.mihosoft.vrl.reflection.Pair;
-import java.util.ArrayList;
 import javax.vecmath.Vector3d;
 
 /**
  *
- * @author stephan
+ * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
+ * @brief information (struct-like) for SWC compartments
  */
 public class CompartmentInfo {
 	public final static int COLUMNS_SIZE = 7;
@@ -22,43 +18,43 @@ public class CompartmentInfo {
 	private Pair<Integer, Integer> connectivity;
 	private Double thickness;
 
-  public int getIndex() {
-			 return index;
+	public int getIndex() {
+		return index;
 	}
 
-		  public void setIndex(int index) {
-					 this.index = index;
-		  }
+	public void setIndex(int index) {
+		this.index = index;
+	}
 
-		  public int getType() {
-					 return type;
-		  }
+	public int getType() {
+		return type;
+	}
 
-		  public void setType(int type) {
-					 this.type = type;
-		  }
+	public void setType(int type) {
+		this.type = type;
+	}
 
-		  public Vector3d getCoordinates() {
-					 return coordinates;
-		  }
+	public Vector3d getCoordinates() {
+		return coordinates;
+	}
 
-		  public void setCoordinates(Vector3d coordinates) {
-					 this.coordinates = coordinates;
-		  }
+	public void setCoordinates(Vector3d coordinates) {
+		this.coordinates = coordinates;
+	}
 
-		  public Pair<Integer, Integer> getConnectivity() {
-					 return connectivity;
-		  }
+	public Pair<Integer, Integer> getConnectivity() {
+		return connectivity;
+	}
 
-		  public void setConnectivity(Pair<Integer, Integer> connectivity) {
-					 this.connectivity = connectivity;
-		  }
+	public void setConnectivity(Pair<Integer, Integer> connectivity) {
+		this.connectivity = connectivity;
+	}
 
-		  public double getThicknesses() {
-					 return thickness;
-		  }
+	public double getThicknesses() {
+		return thickness;
+	}
 
-		  public void setThicknesses(double thicknesses) {
-					 this.thickness = thickness;
-		  }
+	public void setThicknesses(double thickness) {
+		this.thickness = thickness;
+	}
 }
