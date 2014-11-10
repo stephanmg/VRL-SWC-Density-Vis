@@ -36,7 +36,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 		// register plugin with canvas
 		if (api instanceof VPluginAPI) {
 			VPluginAPI vapi = (VPluginAPI) api;
-			vapi.addComponent(SWCDensityVisualization.class);
+			vapi.addComponent(SWCLoadStackComponent.class);
 			// vapi.addTypeRepresentation(MyType.class);
 		}
 	}

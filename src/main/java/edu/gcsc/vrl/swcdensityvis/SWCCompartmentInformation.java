@@ -10,7 +10,7 @@ import javax.vecmath.Vector3d;
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
  * @brief information (struct-like) for SWC compartments
  */
-public class CompartmentInfo {
+public class SWCCompartmentInformation {
 	public final static int COLUMNS_SIZE = 7;
 	private int index;
 	private int type;
