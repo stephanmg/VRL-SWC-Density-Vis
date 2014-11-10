@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
 /**
@@ -141,6 +142,152 @@ public final class SWCUtility {
 			bounding.getFirst().y - bounding.getSecond().y,
 			bounding.getFirst().z - bounding.getSecond().z	
 		);
+	}
+	
+	/**
+	 * @brief determines amount of an edge within an sampling cube
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param width
+	 * @param height
+	 * @param depth
+	 * @param p1
+	 * @param p2
+	 * @return 
+	 * 
+	 * TODO: note better implement a function like RayBoxIntersection, or we use all faces of the cube and call RayPlaneIntersection...
+	 */
+	public static double EdgeSegmentWithinCube(double x, double y, double z, double width, double height, double depth, Vector3d p1, Vector3d p2) {
+		/// Case 1: Both vertices inside cube
+		if ( ((p1.x <= x+width || p1.x >= x) &&
+		      (p1.y <= y+height || p1.y >= y) && 
+		      (p1.z <= z+depth || p1.z >= z)) &&
+		     ((p2.x <= x+width || p2.x >= x) &&
+		      (p2.y <= y+height || p2.y >= y) && 
+		      (p2.z <= z+depth || p2.z >= z)) ) {
+			Vector3d temp = new Vector3d(p1);
+			temp.sub(p2);
+			return temp.length();
+		/// Case 2: One vertex inside cube 
+		} else if ( ((p1.x <= x+width || p1.x >= x) &&
+		      (p1.y <= y+height || p1.y >= y) && 
+		      (p1.z <= z+depth || p1.z >= z)) || 
+		     ((p2.x <= x+width || p2.x >= x) &&
+		      (p2.y <= y+height || p2.y >= y) && 
+		      (p2.z <= z+depth || p2.z >= z)) ) {
+			if (((p1.x <= x+width || p1.x >= x) &&
+		      		(p1.y <= y+height || p1.y >= y) && 
+		      		(p1.z <= z+depth || p1.z >= z))) {
+				/// if p1 inside, construct line starting from p1
+				/// todo RayLineIntersection(p1, ray)
+				Vector3d vOut = new Vector3d();
+				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+				if (intersects) {
+					Vector3d temp = new Vector3d(vOut);
+					temp.sub(p1);
+					return temp.length();
+				} else {
+					return -1;
+				}
+				
+			} else {
+				Vector3d vOut = new Vector3d();
+					boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+				if (intersects) {
+					Vector3d temp = new Vector3d(vOut);
+					temp.sub(p1);
+					return temp.length();
+				} else {
+					return -1;
+				}
+			}
+		/// Case 3: Both vertices outside the cube
+		} else {
+			Vector3d vOut1 = new Vector3d();
+			Vector3d vOut2 = new Vector3d();
+			boolean intersects = RayPlaneIntersection(vOut1, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+			if (intersects && intersects2) {
+				Vector3d temp = new Vector3d(vOut1);
+				temp.sub(vOut2);
+				return temp.length();
+			} else {
+				return -1;
+			}
+		}
+	}
+
+	
+	/**
+	 * @brief determines the first intersection point of a ray with a plane
+	 * @param vOut
+	 * @param tOut
+	 * @param rayFrom
+	 * @param rayDir
+	 * @param p
+	 * @param normal
+	 * @param tol
+	 * @return 
+	 */
+	public static boolean RayPlaneIntersection(Vector3d vOut, double tOut, Vector3d rayFrom, Vector3d rayDir, Vector3d p, Vector3d normal, double tol) {
+		double denom = rayDir.dot(normal);
+		if (Math.abs(denom) < tol) {
+			return false;
+		} else {
+			Vector3d v = new Vector3d(p);
+			v.sub(rayFrom);
+			tOut = v.dot(normal) / denom;
+			v.scale(tOut, rayDir);
+			vOut.add(rayFrom, v);
+			return true;
+		}
+	}
+	
+	/**
+	 * @brief determines line square intersection
+	 * @param S1
+	 * @param S2
+	 * @param S3
+	 * @param R1
+	 * @param R2
+	 * @param tol
+	 * @return 
+	 */
+	public static boolean LineSquareIntersection(Vector3d S1, Vector3d S2, Vector3d S3, Vector3d R1, Vector3d R2, double tol) {
+	Vector3d dS21 = new Vector3d(S2);
+	Vector3d dS31 = new Vector3d(S3);
+	Vector3d n = new Vector3d(); 
+	Vector3d dR = new Vector3d(R1);
+
+	dS21.sub(S1);
+	dS31.sub(S1);
+	n.cross(dS21, dS31);
+	dR.sub(R2);
+	
+	double ndotdR = n.dot(dR);
+
+        if (Math.abs(ndotdR) < tol) { 
+            return false; /// indicate no intersection
+        }
+	
+	Vector3d R1subS1 = new Vector3d(R1);
+	R1subS1.sub(S1);
+	
+        double t = -n.dot(R1subS1) / ndotdR;
+        Vector3d M = new Vector3d(R1);
+	Vector3d dRscaled = new Vector3d(dR);
+	dRscaled.scale(t);
+	R1.add(dRscaled);
+
+        Vector3d dMS1 = new Vector3d(M);
+	dMS1.sub(S1);
+	
+        double u = dMS1.dot(dS21);
+        double v = dMS1.dot(dS31);
+
+        return (u >= 0.0f && u <= dS21.dot(dS21)
+             && v >= 0.0f && v <= dS31.dot(dS31));
 	}
 }
 	
