@@ -7,6 +7,7 @@ package edu.gcsc.vrl.swcdensityvis;
 /*
  * @brief
  * @author 
+ * note: instead of using VoxelImpl we could also make an own VoxelImpl of VoxelSet
  */
 class VoxelImpl implements WritableVoxel {
 

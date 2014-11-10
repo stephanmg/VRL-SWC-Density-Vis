@@ -55,7 +55,7 @@ public class SWCLoadStackComponent implements Serializable {
 		private void parse(
 		@ParamInfo(name = "File") File file
 	) {
-		ArrayList<SWCCompartmentInformation> temp = new ArrayList<SWCCompartmentInformation>();
+		ArrayList<SWCCompartmentInformation> temp;
 		try {
 		   temp = SWCUtility.parse(file);
 		} catch (FileNotFoundException e) {

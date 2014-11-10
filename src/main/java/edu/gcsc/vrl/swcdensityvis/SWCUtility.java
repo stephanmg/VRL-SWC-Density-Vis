@@ -91,6 +91,18 @@ public final class SWCUtility {
 	return compartments;
 	}
 	
+	
+	/**
+	 * @brief get bounding box for an anonymous cell
+	 * @param cell
+	 * @return pair min max coordinates 3d
+	 */
+	public static Pair<Vector3d, Vector3d> getBoundingBox(final ArrayList<SWCCompartmentInformation> cell) {
+		return getBoundingBox(	new HashMap<String, ArrayList<SWCCompartmentInformation>>()
+						{{ put("Anonymous cell", cell); }}
+					);
+	}
+	
 	/**
 	 * @brief get bounding box for a bunch of cells
 	 * @param cells input cells 
@@ -115,6 +127,20 @@ public final class SWCUtility {
 			new Vector3d(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z))
 			);
 
+	}
+	
+	/**
+	 * @brief get dimensions (width, height and depth) for the cells 
+	 * @param cells
+	 * @return the dimensions as a vector
+	 */
+	public static Vector3d getDimensions(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+		Pair<Vector3d, Vector3d> bounding = getBoundingBox(cells);
+		return new Vector3d(
+			bounding.getFirst().x - bounding.getSecond().x,
+			bounding.getFirst().y - bounding.getSecond().y,
+			bounding.getFirst().z - bounding.getSecond().z	
+		);
 	}
 }
 	

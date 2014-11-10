@@ -8,7 +8,9 @@ import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.ImageVoxels;
 import edu.gcsc.vrl.densityvis.VoxelSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import javax.vecmath.Vector3d;
 
 /**
  * Internal density implementation. This class must not be exported through
@@ -19,7 +21,8 @@ import java.util.List;
  */
 class DensityImpl implements Density {
 
-    private ImageVoxels cube;
+    private ImageVoxels cube; // ImageJ input
+    private HashMap<String, ArrayList<SWCCompartmentInformation>> input; // input from swc import ... do this in ImageVoxels
     private int voxelWidth;
     private int voxelHeight;
     private int voxelDepth;
@@ -48,19 +51,21 @@ class DensityImpl implements Density {
      * Computes the average density for each voxel subset.
      */
     private void compute() {
-
-        if (voxelWidth > cube.getWidth()) {
-            voxelWidth = cube.getWidth();
+	   /// TODO move this into ImageVoxels
+	Vector3d dimensions = SWCUtility.getDimensions(input);
+        if (voxelWidth > dimensions.x) {
+            voxelWidth = (int) dimensions.x;
+        }
+			
+		if (voxelHeight > dimensions.y) {
+            voxelHeight = (int) dimensions.y;
+        }
+		
+		if (voxelHeight > dimensions.z) {
+            voxelDepth = (int) dimensions.z;
         }
 
-        if (voxelHeight > cube.getHeight()) {
-            voxelHeight = cube.getHeight();
-        }
-
-        if (voxelDepth > cube.getDepth()) {
-            voxelDepth = cube.getDepth();
-        }
-
+		/// implement from here TODO
         for (int z = 0; z < cube.getDepth(); z += voxelDepth) {
 
             int depth = voxelDepth;
