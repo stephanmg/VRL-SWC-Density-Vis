@@ -20,6 +20,10 @@ repositories {
     }
 }
 
+/// for now we add dependency as jars, but we could also
+/// make use of https://github.com/bat-cha/gradle-plugin-git-dependencies
+/// which provides a way to add github projects as dependencies 
+
 def loadProperties(String sourceFileName) {
     def config = new Properties()
     def propFile = new File(projectDir,sourceFileName)
