@@ -57,7 +57,7 @@ public final class SWCUtility {
 						Double.parseDouble(columns[3]),
 						Double.parseDouble(columns[4])));
 
-					info.setThicknesses(Double.parseDouble(columns[5]));
+					info.setThickness(Double.parseDouble(columns[5]));
 					info.setConnectivity(new Pair<Integer, Integer>(Integer.parseInt(columns[0])-1 ,
 						Integer.parseInt(columns[6])));
 					temp.add(info);
