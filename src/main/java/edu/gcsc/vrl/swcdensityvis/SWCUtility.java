@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
 /**
@@ -47,6 +46,7 @@ public final class SWCUtility {
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (!line.startsWith("#")) {
+					line = line.trim();
 					String[] columns = line.split(" ");
 					assert columns.length != SWCCompartmentInformation.COLUMNS_SIZE : "SWC not in standardized format, "
 						+ "i. e. columns do not match the format specification.";
@@ -58,8 +58,8 @@ public final class SWCUtility {
 						Double.parseDouble(columns[4])));
 
 					info.setThicknesses(Double.parseDouble(columns[5]));
-					info.setConnectivity(new Pair<Integer, Integer>(Integer.parseInt(columns[6]),
-						Integer.parseInt(columns[7])));
+					info.setConnectivity(new Pair<Integer, Integer>(Integer.parseInt(columns[0])-1 ,
+						Integer.parseInt(columns[6])));
 					temp.add(info);
 				}
 			}
@@ -143,6 +143,16 @@ public final class SWCUtility {
 			bounding.getFirst().z - bounding.getSecond().z	
 		);
 	}
+
+	public static void computeDensity() {
+		
+	   // 1.: take n = #cpus = #threads SWC geometries off the HashMap
+	     /// Note however, we could also build for each SWC geometry an kd tree or octree, then we can make a range search query for each sampling box, and consider only those compartments then (vertices)! (this could be unhandy, since we store vertices here not the actual edges! -> so we need to fetch then all edges between the vertices ...) we can use a kdtree with meta data, i. e. store in leaf notes, the connections of the leaf vertex to the other vertices...
+		// 2.: run over sampling area with sampling cube width, height and depth
+			// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
+				// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
+					// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
+	}
 	
 	/**
 	 * @brief determines amount of an edge within an sampling cube
@@ -180,7 +190,7 @@ public final class SWCUtility {
 		      		(p1.y <= y+height || p1.y >= y) && 
 		      		(p1.z <= z+depth || p1.z >= z))) {
 				/// if p1 inside, construct line starting from p1
-				/// todo RayLineIntersection(p1, ray)
+				/// @todo RayLineIntersection(p1, ray)
 				Vector3d vOut = new Vector3d();
 				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
 				if (intersects) {
@@ -217,7 +227,8 @@ public final class SWCUtility {
 			}
 		}
 	}
-
+	
+	
 	
 	/**
 	 * @brief determines the first intersection point of a ray with a plane
@@ -289,6 +300,31 @@ public final class SWCUtility {
         return (u >= 0.0f && u <= dS21.dot(dS21)
              && v >= 0.0f && v <= dS31.dot(dS31));
 	}
-}
+	/**
+	 * @brief get all incident vertices
+	 * @param cell
+	 */
+	public static void getIndicents(ArrayList<SWCCompartmentInformation> cell) {
+		HashMap<Vector3d, ArrayList<Vector3d>> incidents = new HashMap<Vector3d, ArrayList<Vector3d>>(cell.size());
+		for (SWCCompartmentInformation info : cell) {
+			ArrayList<Vector3d> temp = new ArrayList<Vector3d>();
+			Vector3d v0 = info.getCoordinates();
+			for (SWCCompartmentInformation info2 : cell) {
+				if (info.getIndex() == info2.getConnectivity().getSecond()) {
+					temp.add(info2.getCoordinates());
+				}
+			}
+			incidents.put(v0, temp);
+		}
+	}
 	
+	public static void main(String... args) {
+		try {
+			ArrayList<SWCCompartmentInformation> info = parse(new File("/Users/stephan/Code/git/VRL-SWC-Density-Vis/data/02a_pyramidal2aFI.swc"));
+			getIndicents(info);
+		} catch (IOException ioe) {
+			System.err.println("Error reading from file: " + ioe);
+		}
+	}
+}
 	

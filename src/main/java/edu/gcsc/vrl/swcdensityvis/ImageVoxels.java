@@ -10,7 +10,7 @@ import java.io.File;
 
 /**
  * Image voxels contains the complete voxel data of stack of SWC files
- * todo implement
+ * @todo implement
  * @author stephan
  */
 public class ImageVoxels {

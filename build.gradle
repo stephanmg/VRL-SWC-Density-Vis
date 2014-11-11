@@ -1,6 +1,8 @@
 apply plugin: 'java'
 
 sourceCompatibility = '1.6'
+// warning: [options] bootstrap class path not set in conjunction with -source 1.6 can be ignored
+// meaning: we use not the 1.6 JDK but the 1.7 JDK, thus in effect we are cross compiling to Java 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 	
 task wrapper(type: Wrapper) {
@@ -38,6 +40,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.10'
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
     compile fileTree(dir: vrldir+"/plugins/", includes:['*.jar'])
+    compile fileTree(dir: "jars/", includes:['*jar']);
 }
 
 // compiles and installs the vrl plugin to the specified folder
