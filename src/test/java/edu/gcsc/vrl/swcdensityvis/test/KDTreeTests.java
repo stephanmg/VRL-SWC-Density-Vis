@@ -52,7 +52,7 @@ public class KDTreeTests {
 	 public void testBuildKDTree() {
 		ArrayList<SWCCompartmentInformation> info = new ArrayList<SWCCompartmentInformation>();
 		 try {
-		 	info = SWCUtility.parse(new File("/Users/stephan/Code/git/VRL-SWC-Density-Vis/data/02a_pyramidal2aFI.swc"));
+		 	info = SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc"));
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
