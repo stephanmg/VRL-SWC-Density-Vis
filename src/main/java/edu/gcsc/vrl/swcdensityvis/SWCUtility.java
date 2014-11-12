@@ -6,6 +6,7 @@
 
 package edu.gcsc.vrl.swcdensityvis;
 
+import edu.wlu.cs.levy.CG.KDTree;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,7 +49,7 @@ public final class SWCUtility {
 				if (!line.startsWith("#")) {
 					line = line.trim();
 					String[] columns = line.split(" ");
-					assert columns.length != SWCCompartmentInformation.COLUMNS_SIZE : "SWC not in standardized format, "
+					assert columns.length == SWCCompartmentInformation.COLUMNS_SIZE : "SWC not in standardized format, "
 						+ "i. e. columns do not match the format specification.";
 					SWCCompartmentInformation info = new SWCCompartmentInformation();
 					info.setIndex(Integer.parseInt(columns[0]) - 1);
@@ -145,13 +146,12 @@ public final class SWCUtility {
 	}
 
 	public static void computeDensity() {
-		
-	   // 1.: take n = #cpus = #threads SWC geometries off the HashMap
-	     /// Note however, we could also build for each SWC geometry an kd tree or octree, then we can make a range search query for each sampling box, and consider only those compartments then (vertices)! (this could be unhandy, since we store vertices here not the actual edges! -> so we need to fetch then all edges between the vertices ...) we can use a kdtree with meta data, i. e. store in leaf notes, the connections of the leaf vertex to the other vertices...
-		// 2.: run over sampling area with sampling cube width, height and depth
-			// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
-				// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
-					// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
+	   // 0.: take n = #cpus = #threads SWC geometries off the HashMap
+		// 1.: create n kd trees for the n geometries, attach to leaf (compartment nodes) all incidents (i. e. start or end of edge starting in compartment node/leaf).
+			// 2.: run over sampling area with sampling cube width, height and depth
+				// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
+					// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
+						// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
 	}
 	
 	/**
@@ -304,7 +304,7 @@ public final class SWCUtility {
 	 * @brief get all incident vertices
 	 * @param cell
 	 */
-	public static void getIndicents(ArrayList<SWCCompartmentInformation> cell) {
+	public static HashMap<Vector3d, ArrayList<Vector3d>> getIndicents(ArrayList<SWCCompartmentInformation> cell) {
 		HashMap<Vector3d, ArrayList<Vector3d>> incidents = new HashMap<Vector3d, ArrayList<Vector3d>>(cell.size());
 		for (SWCCompartmentInformation info : cell) {
 			ArrayList<Vector3d> temp = new ArrayList<Vector3d>();
@@ -316,12 +316,33 @@ public final class SWCUtility {
 			}
 			incidents.put(v0, temp);
 		}
+		return incidents;
+	}
+
+	/**
+	 * @brief builds a kd tree for the cell
+	 * @param cell
+	 * @return the newly created kd tree
+	 */
+	public static KDTree<ArrayList<Vector3d>> buildKDTree(HashMap<Vector3d, ArrayList<Vector3d>> cell) {
+		KDTree<ArrayList<Vector3d>> kd = new KDTree<ArrayList<Vector3d>>(3);
+		try {
+			for (Map.Entry<Vector3d, ArrayList<Vector3d>> entry : cell.entrySet()) {
+		  	Vector3d vec = entry.getKey();
+		  	double[] key = { vec.x, vec.y, vec.z };
+		  	kd.insert(key, entry.getValue());
+			}		
+		} catch (Exception e) {
+	    	System.err.println(e);
+		}
+		return kd;
 	}
 	
 	public static void main(String... args) {
 		try {
 			ArrayList<SWCCompartmentInformation> info = parse(new File("/Users/stephan/Code/git/VRL-SWC-Density-Vis/data/02a_pyramidal2aFI.swc"));
 			getIndicents(info);
+			System.out.println("Incidents size: " + info.size());
 		} catch (IOException ioe) {
 			System.err.println("Error reading from file: " + ioe);
 		}
