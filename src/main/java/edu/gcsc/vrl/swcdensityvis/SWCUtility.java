@@ -16,7 +16,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.vecmath.Vector3d;
 
 /**
@@ -146,17 +152,78 @@ public final class SWCUtility {
 	}
 
 	/**
+	 * @brief compute density
 	 * @todo  implement 
+	 * @param cells
 	 */
-	public static void computeDensity() {
-	   // 0.: take n = #cpus = #threads SWC geometries off the HashMap
-		// 1.: create n kd trees for the n geometries, attach to leaf (compartment nodes) all incidents (i. e. start or end of edge starting in compartment node/leaf).
-			// 2.: run over sampling area with sampling cube width, height and depth
-				// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
-					// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
-						// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
+	public static void computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	  final Vector3d dims = SWCUtility.getDimensions(cells);
+	  HashMap<String, ArrayList<Double>> sum_length_in_cubes;
+	  
+	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
+		/// lengthes in sampling cubes and actual cell
+		private volatile ArrayList<Double> length;
+		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
+	
+		/**
+		 * @brieft def ctor
+		 */
+		public PartialDensityComputer(Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
+		  this.cell = cell;
+		}
+
+ 		 @Override 
+		 public ArrayList<Double> call() {
+		   KDTree<ArrayList<Vector3d>> tree = buildKDTree(getIndicents(cell.getValue()));
+		   /// ...
+		   /// ...
+		   /// ...
+		   /** @todo implement
+			* 
+			*/
+ 			 // 0.: take n = #cpus = #threads SWC geometries off the HashMap
+				// 1.: create n kd trees for the n geometries, attach to leaf (compartment nodes) all incidents (i. e. start or end of edge starting in compartment node/leaf).
+					// 2.: run over sampling area with sampling cube width, height and depth
+						// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
+							// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
+								// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
+		   return length;
+		 }
+	 }
+	  
+	 int processors = Runtime.getRuntime().availableProcessors();
+	 ExecutorService executor = Executors.newFixedThreadPool(processors);
+	
+	ArrayList<Callable<ArrayList<Double>>> callables = new ArrayList<Callable<ArrayList<Double>>>();
+	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell :  cells.entrySet()) {
+		Callable<ArrayList<Double>> c = new PartialDensityComputer(cell);
+		callables.add(c);
 	}
 	
+	try {
+		List<Future<ArrayList<Double>>> results = executor.invokeAll(callables);
+		ArrayList<ArrayList<Double>> subresults = new ArrayList<ArrayList<Double>>();
+		ArrayList<Double> endresults = new ArrayList<Double>(); // sample cubes
+		for (Future<ArrayList<Double>> res : results) {
+		  subresults.add(res.get());
+		}
+		
+		/** @todo below could also be done in parallel */
+		int index;
+		for (ArrayList<Double> subres : subresults) { // subres = one cell with n sampling cubes
+		  index = 0; // first cube
+		  for (Double d : subres) {
+			endresults.add(index, endresults.get(index) + d); // accumulate in each cube
+			index++; // next cube
+		  }
+		}
+	} catch (ExecutionException e) {
+	  e.printStackTrace();
+	} catch (InterruptedException e) {
+	  e.printStackTrace();
+	}
+}
+	  
 	/**
 	 * @brief determines amount of an edge within an sampling cube
 	 * @param x
