@@ -24,9 +24,9 @@ import org.junit.Test;
  *
  * @author stephan
  */
-public class BasicTest {
+public class KDTreeTests {
 	
-	public BasicTest() {
+	public KDTreeTests() {
 	}
 	
 	@BeforeClass
@@ -46,6 +46,9 @@ public class BasicTest {
 	}
 
 	 @Test
+	 /**
+	  * @todo define members for the tree etc., other test methods need to access them
+	  */
 	 public void testBuildKDTree() {
 		ArrayList<SWCCompartmentInformation> info = new ArrayList<SWCCompartmentInformation>();
 		 try {
@@ -63,6 +66,28 @@ public class BasicTest {
 		}catch (KeySizeException e) {
 			fail("No key could be found for search query: " + e);
 		}
+		double[] lo = {0, 0,0 };
+		double[] hi = {5, 20, 5};
+		try {
+			tree.range(lo, hi);
+		}catch (KeySizeException e) {
+			fail("No key could be found for search query: " + e);
+		}
 	 }
+	 
+	@Test
+	/**
+	 * @todo implement
+	 */
+	public void testKDTreeSearch() {
+		 
+	}
+	@Test
+	/**
+	 * @todo implement
+	 */
+	public void testKDTreeRange() {
+		
+	}
 		 
 }

@@ -6,13 +6,14 @@ import eu.mihosoft.vrl.reflection.Pair;
 import javax.vecmath.Vector3d;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
  * @brief information (struct-like) for SWC compartments
  */
-@Getter @Setter
+@Getter @Setter @ToString
 public class SWCCompartmentInformation {
 	public final static int COLUMNS_SIZE = 7;
 	private int index;
