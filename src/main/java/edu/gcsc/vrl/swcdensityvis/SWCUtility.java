@@ -145,6 +145,9 @@ public final class SWCUtility {
 		);
 	}
 
+	/**
+	 * @todo  implement 
+	 */
 	public static void computeDensity() {
 	   // 0.: take n = #cpus = #threads SWC geometries off the HashMap
 		// 1.: create n kd trees for the n geometries, attach to leaf (compartment nodes) all incidents (i. e. start or end of edge starting in compartment node/leaf).
@@ -303,8 +306,22 @@ public final class SWCUtility {
 	/**
 	 * @brief get all incident vertices
 	 * @param cell
+	 * @return 
 	 */
 	public static HashMap<Vector3d, ArrayList<Vector3d>> getIndicents(ArrayList<SWCCompartmentInformation> cell) {
+		/// split into initializing phase (init keys of ArrayList<ArrayList<Vector3d>> to v0)
+		/// and a populating phase (i. e. add to ArrayList the incident to V0) to get rid of O(n^2) for loop
+		/// if necessary in the future (then we need to make the convention, that the arraylist is ordered
+		/// in the same way as the compartments are appearing in the single swc file...
+		/*
+		// init phase
+		ArrayList<ArrayList<Vector3d>> incidents2 = new ArrayList<ArrayList<Vector3d>>(cell.size());
+		// populate phase
+		for (SWCCompartmentInformation info : cell) {
+		  incidents2.get(info.getConnectivity().getSecond()).add(info.getCoordinates());
+		}
+		*/
+	  
 		HashMap<Vector3d, ArrayList<Vector3d>> incidents = new HashMap<Vector3d, ArrayList<Vector3d>>(cell.size());
 		for (SWCCompartmentInformation info : cell) {
 			ArrayList<Vector3d> temp = new ArrayList<Vector3d>();
