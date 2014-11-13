@@ -25,6 +25,71 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.vecmath.Vector3d;
 
+ /**
+   * @brief calculate sampling cuboid normals (note: as they dont change 
+   * 		we can also call this once for our (invariant) sampling cuboid)
+   */
+  class SamplingCuboid {
+	private static final SamplingCuboid instance = new SamplingCuboid();
+	
+	private SamplingCuboid() {
+	}
+
+  	public static SamplingCuboid getInstance() {
+   		return SamplingCuboid.instance;
+	}
+
+	  /**      
+	   * @brief calculates all normals of a cuboid
+	   *              
+	   *            p5 .... p6    
+	   *         .  .      .
+	   *     .      .   .  .
+	   *  .         .      .
+	   * p1 .... p2 .      .
+	   * .       .  p7    .p8
+	   * .  .    .     .
+	   * p3 .... p4 . 
+	   * 
+	   * @param p1
+	   * @param p2
+	   * @param p3
+	   * @param p4
+	   * @param p5
+	   * @param p6
+	   * @return 
+	   */
+	  public static ArrayList<Vector3d> getSamplingCuboidNormals(Vector3d p1, Vector3d p2, Vector3d p3, Vector3d p4, Vector3d p5, Vector3d p6, Vector3d p7, Vector3d p8) {
+		ArrayList<Vector3d> temp = new ArrayList<Vector3d>();
+		temp.add(calculateNormal(p1, p2, p3, p4)); // front
+		temp.add(calculateNormal(p5, p6, p7, p8)); // rear
+		temp.add(calculateNormal(p3, p4, p7, p8)); // bottom
+		temp.add(calculateNormal(p1, p2, p5, p6)); // top
+		temp.add(calculateNormal(p1, p3, p5, p7)); // left
+		temp.add(calculateNormal(p4, p8, p2, p6)); // right
+		return temp;
+	  }
+		
+	  /**
+	   * @brief calculates the normal of a (rectangular) plane
+	   * @param p1
+	   * @param p2
+	   * @param p3
+	   * @param p4
+	   * @return 
+	   */
+	  private static Vector3d calculateNormal(Vector3d p1, Vector3d p2, Vector3d p3, Vector3d p4) {
+		Vector3d a = new Vector3d(p3);
+		a.sub(p2);
+		Vector3d b = new Vector3d(p1);
+		b.sub(p2);
+		Vector3d c = new Vector3d();
+		c.cross(a, b);
+		return c;
+	  }
+  }
+	
+
 /**
  *
  * @author stephan

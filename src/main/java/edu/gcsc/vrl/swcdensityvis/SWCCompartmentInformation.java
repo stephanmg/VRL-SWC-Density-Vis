@@ -17,7 +17,12 @@ import lombok.ToString;
 public class SWCCompartmentInformation {
 	public final static int COLUMNS_SIZE = 7;
 	private int index;
-	private int type;
+	/* 
+	 * the type is required for a filter option in the visualization, 
+	 * i. e. display only the compartments which match a filter in e. g.
+	 * a checkout or dropdown selection in the GUI frontend
+         */
+	private int type; 
 	private Vector3d coordinates;
 	private Pair<Integer, Integer> connectivity;
 	private double thickness;
