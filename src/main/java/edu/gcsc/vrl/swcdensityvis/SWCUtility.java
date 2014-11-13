@@ -184,9 +184,9 @@ public final class SWCUtility {
 	 * @return pair min max coordinates 3d
 	 */
 	public static Pair<Vector3d, Vector3d> getBoundingBox(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
-		ArrayList<Double> temp_x = null;
-		ArrayList<Double> temp_y = null;
-		ArrayList<Double> temp_z = null;
+		ArrayList<Double> temp_x = new ArrayList<Double>();
+		ArrayList<Double> temp_y = new ArrayList<Double>();
+		ArrayList<Double> temp_z = new ArrayList<Double>();
 		
 		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
 			for (SWCCompartmentInformation info : entry.getValue()) {
@@ -223,7 +223,7 @@ public final class SWCUtility {
 	 * @todo  implement 
 	 * @param cells
 	 */
-	public static void computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	public static ArrayList<Double> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 	  final Vector3d dims = SWCUtility.getDimensions(cells);
 	  HashMap<String, ArrayList<Double>> sum_length_in_cubes;
 	  Pair<Vector3d, Vector3d> boundingBox = SWCUtility.getBoundingBox(cells);
@@ -234,7 +234,7 @@ public final class SWCUtility {
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
-		private volatile ArrayList<Double> lengths;
+		private volatile ArrayList<Double> lengths = new ArrayList<Double>();
 		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
 	
 		/**
@@ -247,6 +247,7 @@ public final class SWCUtility {
  		 @Override 
 		 public ArrayList<Double> call() {
 		   KDTree<ArrayList<Vector3d>> tree = buildKDTree(getIndicents(cell.getValue()));
+		   /// test: should finish in one step
 		   for (double x = 0; x < width; x+=width) {
 			 for (double y = 0; y < height; y+=height) {
 			   for (double z = 0; z < depth; z+=depth) {
@@ -283,6 +284,7 @@ public final class SWCUtility {
 				 	System.err.println("Keysize exception!");  
 				 }
 				 	
+				 System.err.println("only one sampling cube");
 				 double length = 0.;
 				 for (ArrayList<Vector3d> elem : temps) { // a list of nodes which are in the range lower to upper
 				   Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
@@ -317,6 +319,7 @@ public final class SWCUtility {
 						// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
 							// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
 								// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
+	
 		   return lengths;
 		 }
 	 }
@@ -330,14 +333,22 @@ public final class SWCUtility {
 		callables.add(c);
 	}
 	
+	System.out.println(callables.size());
+	
+	ArrayList<Double> endresults = new ArrayList<Double>();
 	try {
 		List<Future<ArrayList<Double>>> results = executor.invokeAll(callables);
 		ArrayList<ArrayList<Double>> subresults = new ArrayList<ArrayList<Double>>();
-		ArrayList<Double> endresults = new ArrayList<Double>(); // sample cubes
 		for (Future<ArrayList<Double>> res : results) {
 		  subresults.add(res.get());
 		}
 		
+		// prefill
+		for (Double d : subresults.get(0)) {
+		  endresults.add(0.0);
+		}
+		
+		executor.shutdown();
 		/** @todo below could also be done in parallel */
 		int index;
 		for (ArrayList<Double> subres : subresults) { // subres = one cell with n sampling cubes
@@ -352,6 +363,7 @@ public final class SWCUtility {
 	} catch (InterruptedException e) {
 	  e.printStackTrace();
 	}
+	return endresults;
 }
 	  
 	/**
@@ -565,14 +577,25 @@ public final class SWCUtility {
 	  } catch (IOException e) {
 		
 	  }*/
-	  
+	  	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
+			for (int i = 0; i < 5; i ++) {
+			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+			}
+			ArrayList<Double> res = SWCUtility.computeDensity(cells);
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+		}
+	 	
+	  
+	/*	try {
 			ArrayList<SWCCompartmentInformation> info = parse(new File("/Users/stephan/Code/git/VRL-SWC-Density-Vis/data/02a_pyramidal2aFI.swc"));
 			getIndicents(info);
 			System.out.println("Incidents size: " + info.size());
 		} catch (IOException ioe) {
 			System.err.println("Error reading from file: " + ioe);
-		}
+		}*/
 	}
 }
 	
