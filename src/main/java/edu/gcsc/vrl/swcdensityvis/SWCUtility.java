@@ -229,9 +229,9 @@ public final class SWCUtility {
 	  final int number_of_cells = cells.size();
 	  System.out.println("dims: " + dims);
 	  // in µm!
-	  final double width = 10;
-	  final double height = 10;
-	  final double depth = 10;
+	  final double width = 100;
+	  final double height = 100;
+	  final double depth = 100;
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
@@ -295,7 +295,7 @@ public final class SWCUtility {
 				 	System.err.println("Keysize exception!");  
 				 }
 				 	
-				 System.err.println("only one sampling cube");
+				 //System.err.println("only one sampling cube");
 				 double length = 0.;
 				 for (ArrayList<Vector3d> elem : temps) { // a list of nodes which are in the range lower to upper
 				  Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
@@ -336,6 +336,7 @@ public final class SWCUtility {
 	// threads to calculate the partial density (Callable PartialDensityComputer)
 	int processors = Runtime.getRuntime().availableProcessors();
 	ExecutorService executor = Executors.newFixedThreadPool(processors);
+	System.out.println("Number of processors: " + processors);
 	
 	ArrayList<Callable<ArrayList<Double>>> callables = new ArrayList<Callable<ArrayList<Double>>>();
 	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell :  cells.entrySet()) {
@@ -346,7 +347,11 @@ public final class SWCUtility {
 	System.out.println(callables.size());
 	ArrayList<Double> endresults = new ArrayList<Double>();
 	
+	
+	
+		long millisecondsStart = 0;
 	try {
+		long millisecondsStart2 = System.currentTimeMillis();
 		List<Future<ArrayList<Double>>> results = executor.invokeAll(callables);
 		ArrayList<ArrayList<Double>> subresults = new ArrayList<ArrayList<Double>>();
 		for (Future<ArrayList<Double>> res : results) {
@@ -360,16 +365,21 @@ public final class SWCUtility {
 		
 		executor.shutdown();
 		
+		millisecondsStart= System.currentTimeMillis();
+		
+			long timeSpentInMilliseconds2 = System.currentTimeMillis() - millisecondsStart2;
+			System.out.println("Parallel work: " +timeSpentInMilliseconds2/1000.0);
 		/** @todo below could also be done in parallel and average dendritic length*/
 		/// here we collect from all geometries the length in each cube
 		/// then we add it to endresults, note however we should average
 		/// the total dendritic length in each sampling cube...
+	        /** @todo note that this is also very slow because not parallel! -> should be done also in the above threads or below in new threads callables ...*/
 		int index;
 		for (ArrayList<Double> subres : subresults) { // subres = one cell with n sampling cubes
 		  index = 0; // first cube
 		  for (Double d : subres) {
 			endresults.add(index, endresults.get(index) + d); // accumulate in each cube
-			index++; // next cube
+			index++; // next cube -> this is wrong still, next cube must be incremented out of this for loop
 		  }
 		}
 		/**
@@ -378,12 +388,32 @@ public final class SWCUtility {
 		 * 	 depending on the visualization then, we need to create voxels with a
 		 *       dependent-color
 		 */
+
+	  class PartialSumComputer implements Callable<Double> { 
+		  private final ArrayList<Double> subres_of_cube;
+		  @Override
+		  public Double call() {
+			  double sum = 0.;
+			  for (double d : subres_of_cube) {
+				  sum+=d;
+			  }
+			  return sum;
+		  }
+
+		  public PartialSumComputer(ArrayList<Double> subres_of_cube) {
+			  this.subres_of_cube = subres_of_cube;
+		  }
+		  
+	  }
 		
 	} catch (ExecutionException e) {
 	  e.printStackTrace();
 	} catch (InterruptedException e) {
 	  e.printStackTrace();
 	}
+
+			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
+			System.out.println("Time for postprocess: " +timeSpentInMilliseconds/1000.0);
 	return endresults;
 }
 	  
@@ -600,13 +630,17 @@ public final class SWCUtility {
 	  }*/
 	  	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
-			for (int i = 0; i < 20; i ++) {
+			long millisecondsStart = System.currentTimeMillis();
+			for (int i = 0; i < 256; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
+			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
+			System.out.println("Time for setup: " +timeSpentInMilliseconds/1000.0);
+			
 			ArrayList<Double> res = SWCUtility.computeDensity(cells);
-			for (double d : res) {
+			/*for (double d : res) {
 				System.out.println("d: " + d);
-			}
+			}*/
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
