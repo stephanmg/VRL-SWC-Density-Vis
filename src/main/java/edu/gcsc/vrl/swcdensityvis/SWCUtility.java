@@ -290,7 +290,7 @@ public final class SWCUtility {
 					 * @todo implement below
 					 */
 					
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0)); // v1, v2 are vertices inside the plane (to be provided)
 					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
 					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
 					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
@@ -397,7 +397,7 @@ public final class SWCUtility {
 				/// if p1 inside, construct line starting from p1
 				/// @todo RayLineIntersection(p1, ray)
 				Vector3d vOut = new Vector3d();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 0.0);
+				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 1e-6);
 				if (intersects) {
 					Vector3d temp = new Vector3d(vOut);
 					temp.sub(p1);
@@ -408,7 +408,7 @@ public final class SWCUtility {
 				
 			} else {
 				Vector3d vOut = new Vector3d();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 0.0);
+				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 1e-6);
 				if (intersects) {
 					Vector3d temp = new Vector3d(vOut);
 					temp.sub(p1);
@@ -421,8 +421,8 @@ public final class SWCUtility {
 		} else {
 			Vector3d vOut1 = new Vector3d();
 			Vector3d vOut2 = new Vector3d();
-			boolean intersects = RayPlaneIntersection(vOut1, 0.0, p1, v1, v2, normal, 0.0);
-			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0, p2, v1, v2, normal, 0.0);
+			boolean intersects = RayPlaneIntersection(vOut1, 0.0, p1, v1, v2, normal, 1e-6);
+			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0, p2, v1, v2, normal, 1e-6);
 			if (intersects && intersects2) {
 				Vector3d temp = new Vector3d(vOut1);
 				temp.sub(vOut2);
