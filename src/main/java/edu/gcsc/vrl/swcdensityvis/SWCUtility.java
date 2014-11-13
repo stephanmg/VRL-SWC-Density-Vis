@@ -283,23 +283,20 @@ public final class SWCUtility {
 				 }
 				 	
 				 double length = 0.;
-				 for (ArrayList<Vector3d> elem : temps) {
-				   for (Vector3d elem2 : elem) {
+				 for (ArrayList<Vector3d> elem : temps) { // a list of nodes which are in the range lower to upper
+				   Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
+				   elem.remove(0); // starting vertex
+				   
+				   for (Vector3d elem2 : elem) { // each node in range has attached the incident edges we calculated previously (we need however the starting vertex somehow)
 					ArrayList<Vector3d> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
-					/**
-					 * @todo implement below
-					 */
-					
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0)); // v1, v2 are vertices inside the plane (to be provided)
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
-					double value = 0.; // EdgeSegmentWithinCuboid ...
-					length+=value;
+					double val = 0.;
+					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
+					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
+					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
+					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(3)); // p1, p2 vertices in plane and normal: top
+					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p3, p7, normals.get(4)); // p1, p2 vertices in plane and normal: left 
+					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p4, p8, normals.get(5)); // p1, p2 vertices in plane and normal: left 
+					length+=val;
 				   }
 				 }
 		 		lengths.add(length); // add sampling cube length
@@ -533,6 +530,7 @@ public final class SWCUtility {
 					temp.add(info2.getCoordinates());
 				}
 			}
+			temp.add(v0); // starting edge
 			incidents.put(v0, temp);
 		}
 		return incidents;
@@ -546,11 +544,11 @@ public final class SWCUtility {
 	public static KDTree<ArrayList<Vector3d>> buildKDTree(HashMap<Vector3d, ArrayList<Vector3d>> cell) {
 		KDTree<ArrayList<Vector3d>> kd = new KDTree<ArrayList<Vector3d>>(3);
 		try {
-			for (Map.Entry<Vector3d, ArrayList<Vector3d>> entry : cell.entrySet()) {
+		   for (Map.Entry<Vector3d, ArrayList<Vector3d>> entry : cell.entrySet()) {
 		  	Vector3d vec = entry.getKey();
 		  	double[] key = { vec.x, vec.y, vec.z };
 		  	kd.insert(key, entry.getValue());
-			}		
+		   }
 		} catch (Exception e) {
 	    	System.err.println(e);
 		}

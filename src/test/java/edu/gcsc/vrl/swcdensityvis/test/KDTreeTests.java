@@ -12,6 +12,8 @@ import edu.wlu.cs.levy.CG.KeySizeException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.vecmath.Vector3d;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,15 +52,17 @@ public class KDTreeTests {
 	  * @todo define members for the tree etc., other test methods need to access them
 	  */
 	 public void testBuildKDTree() {
-		ArrayList<SWCCompartmentInformation> info = new ArrayList<SWCCompartmentInformation>();
-		 try {
-		 	info = SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc"));
+		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+		try {
+		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 	 	}
 		 
-		KDTree<ArrayList<Vector3d>> tree = SWCUtility.buildKDTree(SWCUtility.getIndicents(info));
+		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
+		HashMap<Vector3d, ArrayList<Vector3d>> incidents = SWCUtility.getIndicents(cell.getValue());
+		KDTree<ArrayList<Vector3d>> tree = SWCUtility.buildKDTree(incidents);
 		assertEquals("Tree size is required to be: 1514, but was: " + tree.size(), tree.size(), 1514);
 		double[] elem = {2.14, 14.34, -0.15};
 		try {
@@ -72,6 +76,7 @@ public class KDTreeTests {
 			tree.range(lo, hi);
 		}catch (KeySizeException e) {
 			fail("No key could be found for search query: " + e);
+		}
 		}
 	 }
 	 
