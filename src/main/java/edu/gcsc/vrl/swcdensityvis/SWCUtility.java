@@ -7,6 +7,7 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeySizeException;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.io.BufferedReader;
 import java.io.File;
@@ -215,7 +216,7 @@ public final class SWCUtility {
 			bounding.getFirst().z - bounding.getSecond().z	
 		);
 	}
-
+	
 	/**
 	 * @brief compute density
 	 * @todo  implement 
@@ -224,10 +225,15 @@ public final class SWCUtility {
 	public static void computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 	  final Vector3d dims = SWCUtility.getDimensions(cells);
 	  HashMap<String, ArrayList<Double>> sum_length_in_cubes;
+	  Pair<Vector3d, Vector3d> boundingBox = SWCUtility.getBoundingBox(cells);
+	  // in µm!
+	  final double width = 5;
+	  final double height = 5;
+	  final double depth = 5;
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
-		private volatile ArrayList<Double> length;
+		private volatile ArrayList<Double> lengths;
 		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
 	
 		/**
@@ -240,6 +246,67 @@ public final class SWCUtility {
  		 @Override 
 		 public ArrayList<Double> call() {
 		   KDTree<ArrayList<Vector3d>> tree = buildKDTree(getIndicents(cell.getValue()));
+		   for (double x = 0; x < width; x+=width) {
+			 for (double y = 0; y < height; y+=height) {
+			   for (double z = 0; z < depth; z+=depth) {
+				  /*
+				   *              
+				   *            p5 .... p6    
+				   *         .  .      .
+				   *     .      .   .  .
+				   *  .         .      .
+				   * p1 .... p2 .      .
+				   * .       .  p7    .p8
+				   * .  .    .     .
+				   * p3 .... p4 . 
+				   *
+				   *
+				   */
+				 Vector3d p1 = new Vector3d(x, y+height, z);
+				 Vector3d p2 = new Vector3d(x+width, y+height, z);
+				 Vector3d p3 = new Vector3d(x, y, z);
+				 Vector3d p4 = new Vector3d(x+width, y, z);
+				 
+				 Vector3d p5 = new Vector3d(x, y+height, z+depth);
+				 Vector3d p6 = new Vector3d(x+width, y+height, z+depth);
+				 Vector3d p7 = new Vector3d(x, y, z+depth);
+				 Vector3d p8 = new Vector3d(x+width, y, z+depth);
+				 
+				 double[] upper = {x+width, y+height, z+depth};
+				 double[] lower = {x, y, z};
+				 
+				 List<ArrayList<Vector3d>> temps = new ArrayList<ArrayList<Vector3d>>();
+				 try {
+				 	temps = tree.range(lower, upper);
+				 } catch (KeySizeException e) {
+				 	System.err.println("Keysize exception!");  
+				 }
+				 	
+				 double length = 0.;
+				 for (ArrayList<Vector3d> elem : temps) {
+				   for (Vector3d elem2 : elem) {
+					ArrayList<Vector3d> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
+					/**
+					 * @todo implement below
+					 */
+					
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					//	EdgeSegmentWithinCube(x, y, z, width, height, depth, p1, p2, v1, v2, normals.get(0));
+					double value = 0.; // EdgeSegmentWithinCuboid ...
+					length+=value;
+				   }
+				 }
+		 		lengths.add(length); // add sampling cube length
+			   }
+			 }
+		   }
+		   
 		   /// ...
 		   /// ...
 		   /// ...
@@ -252,7 +319,7 @@ public final class SWCUtility {
 						// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
 							// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
 								// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
-		   return length;
+		   return lengths;
 		 }
 	 }
 	  
@@ -299,11 +366,14 @@ public final class SWCUtility {
 	 * @param depth
 	 * @param p1
 	 * @param p2
+	 * @param v1
+	 * @param v2
+	 * @param normal
 	 * @return 
 	 * 
 	 * TODO: note better implement a function like RayBoxIntersection, or we use all faces of the cube and call RayPlaneIntersection...
 	 */
-	public static double EdgeSegmentWithinCube(double x, double y, double z, double width, double height, double depth, Vector3d p1, Vector3d p2) {
+	public static double EdgeSegmentWithinCube(double x, double y, double z, double width, double height, double depth, Vector3d p1, Vector3d p2, Vector3d v1, Vector3d v2, Vector3d normal) {
 		/// Case 1: Both vertices inside cube
 		if ( ((p1.x <= x+width || p1.x >= x) &&
 		      (p1.y <= y+height || p1.y >= y) && 
@@ -327,7 +397,7 @@ public final class SWCUtility {
 				/// if p1 inside, construct line starting from p1
 				/// @todo RayLineIntersection(p1, ray)
 				Vector3d vOut = new Vector3d();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 0.0);
 				if (intersects) {
 					Vector3d temp = new Vector3d(vOut);
 					temp.sub(p1);
@@ -338,7 +408,7 @@ public final class SWCUtility {
 				
 			} else {
 				Vector3d vOut = new Vector3d();
-					boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 0.0);
 				if (intersects) {
 					Vector3d temp = new Vector3d(vOut);
 					temp.sub(p1);
@@ -351,8 +421,8 @@ public final class SWCUtility {
 		} else {
 			Vector3d vOut1 = new Vector3d();
 			Vector3d vOut2 = new Vector3d();
-			boolean intersects = RayPlaneIntersection(vOut1, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
-			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0, p1, new Vector3d(), new Vector3d(), new Vector3d(), 0.0);
+			boolean intersects = RayPlaneIntersection(vOut1, 0.0, p1, v1, v2, normal, 0.0);
+			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0, p2, v1, v2, normal, 0.0);
 			if (intersects && intersects2) {
 				Vector3d temp = new Vector3d(vOut1);
 				temp.sub(vOut2);
