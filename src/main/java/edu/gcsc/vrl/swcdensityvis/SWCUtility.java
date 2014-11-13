@@ -198,8 +198,8 @@ public final class SWCUtility {
 		
 		return new Pair<Vector3d, Vector3d>
 			(
-			new Vector3d(Collections.min(temp_x), Collections.min(temp_y), Collections.min(temp_z)), 
-			new Vector3d(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z))
+			new Vector3d(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z)),
+			new Vector3d(Collections.min(temp_x), Collections.min(temp_y), Collections.min(temp_z)) 
 			);
 
 	}
@@ -212,9 +212,9 @@ public final class SWCUtility {
 	public static Vector3d getDimensions(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 		Pair<Vector3d, Vector3d> bounding = getBoundingBox(cells);
 		return new Vector3d(
-			bounding.getFirst().x - bounding.getSecond().x,
-			bounding.getFirst().y - bounding.getSecond().y,
-			bounding.getFirst().z - bounding.getSecond().z	
+			Math.abs(bounding.getFirst().x - bounding.getSecond().x),
+			Math.abs(bounding.getFirst().y - bounding.getSecond().y),
+			Math.abs(bounding.getFirst().z - bounding.getSecond().z)	
 		);
 	}
 	
@@ -225,12 +225,12 @@ public final class SWCUtility {
 	 */
 	public static ArrayList<Double> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 	  final Vector3d dims = SWCUtility.getDimensions(cells);
-	  HashMap<String, ArrayList<Double>> sum_length_in_cubes;
-	  Pair<Vector3d, Vector3d> boundingBox = SWCUtility.getBoundingBox(cells);
+	  final Pair<Vector3d, Vector3d> bounding = SWCUtility.getBoundingBox(cells);
+	  System.out.println("dims: " + dims);
 	  // in µm!
-	  final double width = 5;
-	  final double height = 5;
-	  final double depth = 5;
+	  final double width = 50;
+	  final double height = 50;
+	  final double depth = 50;
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
@@ -246,8 +246,18 @@ public final class SWCUtility {
 
  		 @Override 
 		 public ArrayList<Double> call() {
+		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
+	           /// each lead node gets attached the vertices which are connected to the
+	           /// leaf node with and edge (getIncidents)
 		   KDTree<ArrayList<Vector3d>> tree = buildKDTree(getIndicents(cell.getValue()));
-		   /// test: should finish in one step
+		   
+		   /** @todo test: should finish in one step -> and it does. */
+		   /// we iterate over the bounding box and generate sampling cubes
+		   /// the cubes must not necessarily be created, but are for simplicity 
+		   /// reasons for now handy 
+		   /** @todo use bounding box min values for x y z and iterate 
+		    * to bounding box max values with width height and depth 
+		    */
 		   for (double x = 0; x < width; x+=width) {
 			 for (double y = 0; y < height; y+=height) {
 			   for (double z = 0; z < depth; z+=depth) {
@@ -287,12 +297,18 @@ public final class SWCUtility {
 				 System.err.println("only one sampling cube");
 				 double length = 0.;
 				 for (ArrayList<Vector3d> elem : temps) { // a list of nodes which are in the range lower to upper
-				   Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
-				   elem.remove(0); // starting vertex
+				  Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
+			   	  elem.remove(0); // starting vertex, this can certainly be improved
 				   
-				   for (Vector3d elem2 : elem) { // each node in range has attached the incident edges we calculated previously (we need however the starting vertex somehow)
+				/// each node in range has attached the incident edges we calculated 
+				/// previously (we need however the starting vertex somehow, see above)
+				/// for now the starting vertex, aka the compartment, is the first 
+				/// vertex in the attached meta-data arraylist for each compartment 
+				/// we have inserted in the kd tree before
+				   for (Vector3d elem2 : elem) { 
 					ArrayList<Vector3d> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
 					double val = 0.;
+					/// determine the amount of edge in the sampling cube for each edge
 					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
 					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
 					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
@@ -302,30 +318,20 @@ public final class SWCUtility {
 					length+=val;
 				   }
 				 }
-		 		lengths.add(length); // add sampling cube length
+		 		lengths.add(length); // add summed length of each sampling cube for the geometry
 			   }
 			 }
 		   }
-		   
-		   /// ...
-		   /// ...
-		   /// ...
-		   /** @todo implement
-			* 
-			*/
- 			 // 0.: take n = #cpus = #threads SWC geometries off the HashMap
-				// 1.: create n kd trees for the n geometries, attach to leaf (compartment nodes) all incidents (i. e. start or end of edge starting in compartment node/leaf).
-					// 2.: run over sampling area with sampling cube width, height and depth
-						// 3.: sampling cubes are easy to describe, generate them statically, to save the total dendritic length
-							// 4.: determine with EdgeSegment below the amount of edge within the cube, sum up for the compartment in this sampling cube (so we would consider all edges here! (cf note above))
-								// 5.: after all compartments have been calculated, gather all and generate voxels by VoxelImpl()
-	
 		   return lengths;
 		 }
 	 }
-	  
-	 int processors = Runtime.getRuntime().availableProcessors();
-	 ExecutorService executor = Executors.newFixedThreadPool(processors);
+	 
+ 
+	// take number of available processors and create a fixed thread pool,
+	// the executor executes then at most the number of available processors
+	// threads to calculate the partial density (Callable PartialDensityComputer)
+	int processors = Runtime.getRuntime().availableProcessors();
+	ExecutorService executor = Executors.newFixedThreadPool(processors);
 	
 	ArrayList<Callable<ArrayList<Double>>> callables = new ArrayList<Callable<ArrayList<Double>>>();
 	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell :  cells.entrySet()) {
@@ -334,8 +340,8 @@ public final class SWCUtility {
 	}
 	
 	System.out.println(callables.size());
-	
 	ArrayList<Double> endresults = new ArrayList<Double>();
+	
 	try {
 		List<Future<ArrayList<Double>>> results = executor.invokeAll(callables);
 		ArrayList<ArrayList<Double>> subresults = new ArrayList<ArrayList<Double>>();
@@ -343,13 +349,17 @@ public final class SWCUtility {
 		  subresults.add(res.get());
 		}
 		
-		// prefill
+		// prefill (since exact cube number is not known until here)
 		for (Double d : subresults.get(0)) {
 		  endresults.add(0.0);
 		}
 		
 		executor.shutdown();
-		/** @todo below could also be done in parallel */
+		
+		/** @todo below could also be done in parallel and average dendritic length*/
+		/// here we collect from all geometries the length in each cube
+		/// then we add it to endresults, note however we should average
+		/// the total dendritic length in each sampling cube...
 		int index;
 		for (ArrayList<Double> subres : subresults) { // subres = one cell with n sampling cubes
 		  index = 0; // first cube
@@ -583,6 +593,9 @@ public final class SWCUtility {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
 			ArrayList<Double> res = SWCUtility.computeDensity(cells);
+			for (double d : res) {
+				System.out.println("d: " + d);
+			}
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
