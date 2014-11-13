@@ -7,6 +7,7 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeySizeException;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.io.BufferedReader;
@@ -530,7 +531,7 @@ public final class SWCUtility {
 					temp.add(info2.getCoordinates());
 				}
 			}
-			temp.add(v0); // starting edge
+			temp.add(v0); // starting vertex: this could be improved certainly
 			incidents.put(v0, temp);
 		}
 		return incidents;
@@ -549,13 +550,22 @@ public final class SWCUtility {
 		  	double[] key = { vec.x, vec.y, vec.z };
 		  	kd.insert(key, entry.getValue());
 		   }
-		} catch (Exception e) {
+		} catch (KeyDuplicateException e) {
+	    	System.err.println(e);
+		} catch (KeySizeException e) {
 	    	System.err.println(e);
 		}
 		return kd;
 	}
 	
 	public static void main(String... args) {
+	  /*
+	  try {
+	  computeDensity(parseStack(new File("/path/to/folder")));
+	  } catch (IOException e) {
+		
+	  }*/
+	  
 		try {
 			ArrayList<SWCCompartmentInformation> info = parse(new File("/Users/stephan/Code/git/VRL-SWC-Density-Vis/data/02a_pyramidal2aFI.swc"));
 			getIndicents(info);
