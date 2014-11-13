@@ -226,11 +226,12 @@ public final class SWCUtility {
 	public static ArrayList<Double> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 	  final Vector3d dims = SWCUtility.getDimensions(cells);
 	  final Pair<Vector3d, Vector3d> bounding = SWCUtility.getBoundingBox(cells);
+	  final int number_of_cells = cells.size();
 	  System.out.println("dims: " + dims);
 	  // in µm!
-	  final double width = 50;
-	  final double height = 50;
-	  final double depth = 50;
+	  final double width = 10;
+	  final double height = 10;
+	  final double depth = 10;
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
@@ -258,9 +259,9 @@ public final class SWCUtility {
 		   /** @todo use bounding box min values for x y z and iterate 
 		    * to bounding box max values with width height and depth 
 		    */
-		   for (double x = 0; x < width; x+=width) {
-			 for (double y = 0; y < height; y+=height) {
-			   for (double z = 0; z < depth; z+=depth) {
+		   for (double x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
+			 for (double y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
+			   for (double z = bounding.getSecond().z; z < bounding.getFirst().z; z+=depth) {
 				  /*
 				   *              
 				   *            p5 .... p6    
@@ -298,7 +299,10 @@ public final class SWCUtility {
 				 double length = 0.;
 				 for (ArrayList<Vector3d> elem : temps) { // a list of nodes which are in the range lower to upper
 				  Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
-			   	  elem.remove(0); // starting vertex, this can certainly be improved
+			   	  //elem.remove(0); // starting vertex, this can certainly be improved -> this is wrong
+				  /** @todo this is wrong, since the first 
+				   * vertex is needed in the next iteration again!
+				   */
 				   
 				/// each node in range has attached the incident edges we calculated 
 				/// previously (we need however the starting vertex somehow, see above)
@@ -368,6 +372,13 @@ public final class SWCUtility {
 			index++; // next cube
 		  }
 		}
+		/**
+		 * @todo densities should be computed, get total dendritic length in each cube
+		 *       then average by number of cells, then we have an average for each cube
+		 * 	 depending on the visualization then, we need to create voxels with a
+		 *       dependent-color
+		 */
+		
 	} catch (ExecutionException e) {
 	  e.printStackTrace();
 	} catch (InterruptedException e) {
@@ -589,7 +600,7 @@ public final class SWCUtility {
 	  }*/
 	  	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
-			for (int i = 0; i < 5; i ++) {
+			for (int i = 0; i < 20; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
 			ArrayList<Double> res = SWCUtility.computeDensity(cells);
