@@ -219,46 +219,55 @@ public final class SWCUtility {
 	}
 	
 	/**
-	 * @brief compute density
-	 * @todo  implement 
+	 * @brief compute dendritic length in cuboid
+	 * @return a hashmap representing dendritic length in each sampling cuboid
 	 * @param cells
 	 */
-	public static ArrayList<Double> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	  /// get dimensions and bounding box and report
 	  final Vector3f dims = SWCUtility.getDimensions(cells);
 	  final Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(cells);
-	  final int number_of_cells = cells.size();
-	  System.out.println("dims: " + dims);
-	  // in µm!
-	  final float width = 1;
-	  final float height = 1;
-	  final float depth = 1;
+	  System.out.println("Dimensions of all cells: " + dims);
+	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
-	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
-		/// lengthes in sampling cubes and actual cell
-		private volatile ArrayList<Double> lengths = new ArrayList<Double>();
+	  /// sampling cube in geometry dimensions (i. e. µm!)
+	  final float width = 5.f;
+	  final float height = 5.f; 
+	  final float depth = 5.f; 
+	
+	  /**
+	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
+	   *
+	   * @todo RayPlaneIntersection is errorneous, this needs to be fixed immediately before resolving
+	   *       potential speed bottlenecks (see the next two todos).
+	   * @todo probably the cuboids dont need to be created explicit, thus performance should increase
+	   * @todo revise the intersection algorithms in general for speed bottlenecks
+	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
+	   * 
+	   * @see la4j package @ http://la4j.org/
+	   */
+	  class PartialDensityComputer implements Callable<HashMap<Integer, Float>> {
+		/// store lengthes in the cuboids and the cell itself
+		private volatile HashMap<Integer, Float> lengths = new HashMap<Integer, Float>();
 		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
 	
 		/**
-		 * @brieft def ctor
+		 * @brief def ctor
 		 */
 		public PartialDensityComputer(Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
 		  this.cell = cell;
 		}
 
  		 @Override 
-		 public ArrayList<Double> call() {
+		 public HashMap<Integer, Float> call() {
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
 	           /// leaf node with and edge (getIncidents)
 		   KDTree<ArrayList<Vector3f>> tree = buildKDTree(getIndicents(cell.getValue()));
 		   
-		   /** @todo test: should finish in one step -> and it does. */
-		   /// we iterate over the bounding box and generate sampling cubes
-		   /// the cubes must not necessarily be created, but are for simplicity 
-		   /// reasons for now handy 
-		   /** @todo use bounding box min values for x y z and iterate 
-		    * to bounding box max values with width height and depth 
-		    */
+		   /// iterate with the width, height, depth over the bounding box of the cells
+		   /// note, that the cuboids get created explicit, which may not be necessary
+		   int cube_index = 0;
 		   for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
 			 for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
 			   for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=depth) {
@@ -292,17 +301,14 @@ public final class SWCUtility {
 				 try {
 				 	temps = tree.range(lower, upper);
 				 } catch (KeySizeException e) {
-				 	System.err.println("Keysize exception!");  
+				 	System.err.println("Keysize exception: " + e);  
 				 }
 				 	
-				 //System.err.println("only one sampling cube");
+				// a list of nodes which are in the range lower to upper
 				 float length = 0.f;
-				 for (ArrayList<Vector3f> elem : temps) { // a list of nodes which are in the range lower to upper
-				  Vector3f starting_vertex = new Vector3f(elem.get(0)); // starting vertex
-			   	  //elem.remove(0); // starting vertex, this can certainly be improved -> this is wrong
-				  /** @todo this is wrong, since the first 
-				   * vertex is needed in the next iteration again!
-				   */
+				 for (ArrayList<Vector3f> elem : temps) { 
+				// starting vertex
+				  Vector3f starting_vertex = new Vector3f(elem.get(0)); 
 				   
 				/// each node in range has attached the incident edges we calculated 
 				/// previously (we need however the starting vertex somehow, see above)
@@ -313,24 +319,27 @@ public final class SWCUtility {
 					ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
 					float val = 0.f;
 					/// determine the amount of edge in the sampling cube for each edge
-					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
-					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
-					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
-					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(3)); // p1, p2 vertices in plane and normal: top
-					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p3, p7, normals.get(4)); // p1, p2 vertices in plane and normal: left 
-					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p4, p8, normals.get(5)); // p1, p2 vertices in plane and normal: left 
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(3)); // p1, p2 vertices in plane and normal: top
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p7, normals.get(4)); // p1, p2 vertices in plane and normal: left 
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p4, p8, normals.get(5)); // p1, p2 vertices in plane and normal: right 
 					length+=val;
 				   }
 				 }
-		 		//lengths.add(length); // add summed length of each sampling cube for the geometry
+				 // add summed length to cuboids, if length is not null, to hashmap.
+				 // this is sparse then
+				 if (length != 0) {
+			 		lengths.put(cube_index, length);
+				 }
+				 cube_index++;
 			   }
 			 }
 		   }
-		   lengths.add(0.0);
 		   return lengths;
 		 }
 	 }
-	 
  
 	// take number of available processors and create a fixed thread pool,
 	// the executor executes then at most the number of available processors
@@ -339,85 +348,46 @@ public final class SWCUtility {
 	ExecutorService executor = Executors.newFixedThreadPool(processors);
 	System.out.println("Number of processors: " + processors);
 	
-	ArrayList<Callable<ArrayList<Double>>> callables = new ArrayList<Callable<ArrayList<Double>>>();
+	ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
 	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell :  cells.entrySet()) {
-		Callable<ArrayList<Double>> c = new PartialDensityComputer(cell);
+		Callable<HashMap<Integer, Float>> c = new PartialDensityComputer(cell);
 		callables.add(c);
 	}
 	
-	System.out.println(callables.size());
-	ArrayList<Double> endresults = new ArrayList<Double>();
-	
-	
-	
-		long millisecondsStart = 0;
+	HashMap<Integer, Float> vals = new HashMap<Integer, Float>();
 	try {
-		long millisecondsStart2 = System.currentTimeMillis();
-		List<Future<ArrayList<Double>>> results = executor.invokeAll(callables);
-		ArrayList<ArrayList<Double>> subresults = new ArrayList<ArrayList<Double>>();
-		for (Future<ArrayList<Double>> res : results) {
+		/// perform parallel work
+		long millisecondsStartParallel = System.currentTimeMillis();
+		List<Future<HashMap<Integer, Float>>> results = executor.invokeAll(callables);
+		ArrayList<HashMap<Integer, Float>> subresults = new ArrayList<HashMap<Integer, Float>>();
+		for (Future<HashMap<Integer, Float>> res : results) {
 		  subresults.add(res.get());
 		}
-		
-				executor.shutdown();
-		
-		
-			long timeSpentInMilliseconds2 = System.currentTimeMillis() - millisecondsStart2;
-			System.out.println("Parallel work: " +timeSpentInMilliseconds2/1000.0);
+		executor.shutdown();
+		long timeSpentInMillisecondsParallel = System.currentTimeMillis() - millisecondsStartParallel;
+		System.out.println("Parallel work [s]: " +timeSpentInMillisecondsParallel/1000.0);
 			
-		millisecondsStart= System.currentTimeMillis();
-// prefill (since exact cube number is not known until here)
-		/*for (Double d : subresults.get(0)) {
-		  endresults.add(0.0);
-		}*/
-		
-
-		/** @todo below could also be done in parallel and average dendritic length*/
-		/// here we collect from all geometries the length in each cube
-		/// then we add it to endresults, note however we should average
-		/// the total dendritic length in each sampling cube...
-	        /** @todo note that this is also very slow because not parallel! -> should be done also in the above threads or below in new threads callables ...*/
-		/*int index;
-		for (ArrayList<Double> subres : subresults) { // subres = one cell with n sampling cubes
-		  index = 0; // first cube
-		  for (Double d : subres) {
-			endresults.add(index, endresults.get(index) + d); // accumulate in each cube
-			index++; // next cube -> this is wrong still, next cube must be incremented out of this for loop
-		  }
-		}*/
-		/**
-		 * @todo densities should be computed, get total dendritic length in each cube
-		 *       then average by number of cells, then we have an average for each cube
-		 * 	 depending on the visualization then, we need to create voxels with a
-		 *       dependent-color
-		 */
-
-	  class PartialSumComputer implements Callable<Float> { 
-		  private final ArrayList<Float> subres_of_cube;
-		  @Override
-		  public Float call() {
-			  float sum = 0.f;
-			  for (float d : subres_of_cube) {
-				  sum+=d;
-			  }
-			  return sum;
-		  }
-
-		  public PartialSumComputer(ArrayList<Float> subres_of_cube) {
-			  this.subres_of_cube = subres_of_cube;
-		  }
-		  
-	  }
-		
+		long millisecondsStartSerial = System.currentTimeMillis();
+		/// serial summation. note, the below could also be done in parallel somehow
+		for (HashMap<Integer, Float> result : subresults) {
+			for (Map.Entry<Integer, Float> map_entry : result.entrySet()) {
+				if (vals.containsKey(map_entry.getKey())) {
+					vals.put(map_entry.getKey(), map_entry.getValue() + vals.get(map_entry.getKey()));
+				} else {
+					vals.put(map_entry.getKey(), map_entry.getValue()); 
+				}
+			}
+		}
+		long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;
+		System.out.println("Serial work [s]: " +timeSpentInMillisecondsSerial/1000.0);
+	
 	} catch (ExecutionException e) {
 	  e.printStackTrace();
 	} catch (InterruptedException e) {
 	  e.printStackTrace();
 	}
-
-			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
-			System.out.println("Time for postprocess: " +timeSpentInMilliseconds/1000.0);
-	return endresults;
+	/// return values 
+	return vals;
 }
 	  
 	/**
@@ -435,9 +405,9 @@ public final class SWCUtility {
 	 * @param normal
 	 * @return 
 	 * 
-	 * TODO: note better implement a function like RayBoxIntersection, or we use all faces of the cube and call RayPlaneIntersection...
+	 * @todo: note better implement a function like RayBoxIntersection, or we use all faces of the cube and call RayPlaneIntersection... revise for speedup of computation
 	 */
-	public static float EdgeSegmentWithinCube(float x, float y, float z, float width, float height, float depth, Vector3f p1, Vector3f p2, Vector3f v1, Vector3f v2, Vector3f normal) {
+	public static float EdgeSegmentWithinCuboid(float x, float y, float z, float width, float height, float depth, Vector3f p1, Vector3f p2, Vector3f v1, Vector3f v2, Vector3f normal) {
 		/// Case 1: Both vertices inside cube
 		if ( ((p1.x <= x+width || p1.x >= x) &&
 		      (p1.y <= y+height || p1.y >= y) && 
@@ -459,7 +429,6 @@ public final class SWCUtility {
 		      		(p1.y <= y+height || p1.y >= y) && 
 		      		(p1.z <= z+depth || p1.z >= z))) {
 				/// if p1 inside, construct line starting from p1
-				/// @todo RayLineIntersection(p1, ray)
 				Vector3f vOut = new Vector3f();
 				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p1, v1, v2, normal, 1.0e-6f);
 				if (intersects) {
@@ -498,7 +467,6 @@ public final class SWCUtility {
 	}
 	
 	
-	
 	/**
 	 * @brief determines the first intersection point of a ray with a plane
 	 * @param vOut
@@ -525,52 +493,8 @@ public final class SWCUtility {
 	}
 	
 	/**
-	 * @brief determines line square intersection
-	 * @param S1
-	 * @param S2
-	 * @param S3
-	 * @param R1
-	 * @param R2
-	 * @param tol
-	 * @return 
-	 */
-	public static boolean LineSquareIntersection(Vector3f S1, Vector3f S2, Vector3f S3, Vector3f R1, Vector3f R2, float tol) {
-	Vector3f dS21 = new Vector3f(S2);
-	Vector3f dS31 = new Vector3f(S3);
-	Vector3f n = new Vector3f(); 
-	Vector3f dR = new Vector3f(R1);
-
-	dS21.sub(S1);
-	dS31.sub(S1);
-	n.cross(dS21, dS31);
-	dR.sub(R2);
-	
-	float ndotdR = n.dot(dR);
-
-        if (Math.abs(ndotdR) < tol) { 
-            return false; /// indicate no intersection
-        }
-	
-	Vector3f R1subS1 = new Vector3f(R1);
-	R1subS1.sub(S1);
-	
-        float t = -n.dot(R1subS1) / ndotdR;
-        Vector3f M = new Vector3f(R1);
-	Vector3f dRscaled = new Vector3f(dR);
-	dRscaled.scale(t);
-	R1.add(dRscaled);
-
-        Vector3f dMS1 = new Vector3f(M);
-	dMS1.sub(S1);
-	
-        float u = dMS1.dot(dS21);
-        float v = dMS1.dot(dS31);
-
-        return (u >= 0.0f && u <= dS21.dot(dS21)
-             && v >= 0.0f && v <= dS31.dot(dS31));
-	}
-	/**
 	 * @brief get all incident vertices
+	 * @todo see implementation notes concerning speedup of computation
 	 * @param cell
 	 * @return 
 	 */
@@ -624,41 +548,28 @@ public final class SWCUtility {
 		return kd;
 	}
 	
+	/**
+	 * @brief main method
+	 * @param args 
+	 */
 	public static void main(String... args) {
-	  /*
-	  try {
-	  computeDensity(parseStack(new File("/path/to/folder")));
-	  } catch (IOException e) {
-		
-	  }*/
-	  	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+	   	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 		try {
 			long millisecondsStart = System.currentTimeMillis();
-			/// 256 test files (@10x10x10 resolution of sampling cube) used and cube dimensions of 5x5x5 tested (@8 files), is efficient, but the serial collect is slow (see above) -> the call() function in the parallel code
-			/// should also be revisited for efficiency reasons!
 			for (int i = 0; i < 8; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
 			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
-			System.out.println("Time for setup: " +timeSpentInMilliseconds/1000.0);
+			System.out.println("Time for setup [s]: " +timeSpentInMilliseconds/1000.0);
 			
-			ArrayList<Double> res = SWCUtility.computeDensity(cells);
-			/*for (float d : res) {
-				System.out.println("d: " + d);
-			}*/
+			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+			for (Map.Entry<Integer, Float> e : res.entrySet()) {
+				System.out.println("Cuboid cell #" + e.getKey() + " with dendritic length of " + e.getValue());
+			}
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 		}
-	 	
-	  
-	/*	try {
-			ArrayList<SWCCompartmentInformation> info = parse(new File("/Users/stephan/Code/git/VRL-SWC-Density-Vis/data/02a_pyramidal2aFI.swc"));
-			getIndicents(info);
-			System.out.println("Incidents size: " + info.size());
-		} catch (IOException ioe) {
-			System.err.println("Error reading from file: " + ioe);
-		}*/
 	}
 }
 	

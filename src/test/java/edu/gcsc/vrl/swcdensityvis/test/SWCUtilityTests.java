@@ -43,21 +43,21 @@ public class SWCUtilityTests {
 	@After
 	public void tearDown() {
 	}
-	/*
+	
 	@Test
 	public void testComputeDensity() {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
-			for (int i = 0; i < 5; i ++) {
+			for (int i = 0; i < 1; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
-			ArrayList<Double> res = SWCUtility.computeDensity(cells);
+			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 	 	}
 		 
-	}*/
+	}
 
 	
 	 @Test
