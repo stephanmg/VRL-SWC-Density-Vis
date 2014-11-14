@@ -3,7 +3,7 @@ package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
 import eu.mihosoft.vrl.reflection.Pair;
-import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,7 +23,7 @@ public class SWCCompartmentInformation {
 	 * a checkout or dropdown selection in the GUI frontend
          */
 	private int type; 
-	private Vector3d coordinates;
+	private Vector3f coordinates;
 	private Pair<Integer, Integer> connectivity;
 	private double thickness;
 }

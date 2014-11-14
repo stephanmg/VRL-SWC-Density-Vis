@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -61,8 +61,8 @@ public class KDTreeTests {
 	 	}
 		 
 		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
-		HashMap<Vector3d, ArrayList<Vector3d>> incidents = SWCUtility.getIndicents(cell.getValue());
-		KDTree<ArrayList<Vector3d>> tree = SWCUtility.buildKDTree(incidents);
+		HashMap<Vector3f, ArrayList<Vector3f>> incidents = SWCUtility.getIndicents(cell.getValue());
+		KDTree<ArrayList<Vector3f>> tree = SWCUtility.buildKDTree(incidents);
 		assertEquals("Tree size is required to be: 1514, but was: " + tree.size(), tree.size(), 1514);
 		double[] elem = {2.14, 14.34, -0.15};
 		try {

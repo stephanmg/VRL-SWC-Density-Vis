@@ -10,7 +10,7 @@ import edu.gcsc.vrl.densityvis.VoxelSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 
 /**
  * Internal density implementation. This class must not be exported through
@@ -52,7 +52,7 @@ class DensityImpl implements Density {
      */
     private void compute() {
 	   /// TODO move this into ImageVoxels
-	Vector3d dimensions = SWCUtility.getDimensions(input);
+	Vector3f dimensions = SWCUtility.getDimensions(input);
         if (voxelWidth > dimensions.x) {
             voxelWidth = (int) dimensions.x;
         }

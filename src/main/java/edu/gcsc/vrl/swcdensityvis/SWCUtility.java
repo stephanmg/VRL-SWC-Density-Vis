@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 
  /**
    * @brief calculate sampling cuboid normals (note: as they dont change 
@@ -61,8 +61,8 @@ import javax.vecmath.Vector3d;
 	   * @param p6
 	   * @return 
 	   */
-	  public static ArrayList<Vector3d> getSamplingCuboidNormals(Vector3d p1, Vector3d p2, Vector3d p3, Vector3d p4, Vector3d p5, Vector3d p6, Vector3d p7, Vector3d p8) {
-		ArrayList<Vector3d> temp = new ArrayList<Vector3d>();
+	  public static ArrayList<Vector3f> getSamplingCuboidNormals(Vector3f p1, Vector3f p2, Vector3f p3, Vector3f p4, Vector3f p5, Vector3f p6, Vector3f p7, Vector3f p8) {
+		ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
 		temp.add(calculateNormal(p1, p2, p3, p4)); // front
 		temp.add(calculateNormal(p5, p6, p7, p8)); // rear
 		temp.add(calculateNormal(p3, p4, p7, p8)); // bottom
@@ -80,12 +80,12 @@ import javax.vecmath.Vector3d;
 	   * @param p4
 	   * @return 
 	   */
-	  private static Vector3d calculateNormal(Vector3d p1, Vector3d p2, Vector3d p3, Vector3d p4) {
-		Vector3d a = new Vector3d(p3);
+	  private static Vector3f calculateNormal(Vector3f p1, Vector3f p2, Vector3f p3, Vector3f p4) {
+		Vector3f a = new Vector3f(p3);
 		a.sub(p2);
-		Vector3d b = new Vector3d(p1);
+		Vector3f b = new Vector3f(p1);
 		b.sub(p2);
-		Vector3d c = new Vector3d();
+		Vector3f c = new Vector3f();
 		c.cross(a, b);
 		return c;
 	  }
@@ -127,9 +127,9 @@ public final class SWCUtility {
 					SWCCompartmentInformation info = new SWCCompartmentInformation();
 					info.setIndex(Integer.parseInt(columns[0]) - 1);
 					info.setType(Integer.parseInt(columns[1]));
-					info.setCoordinates(new Vector3d(Double.parseDouble(columns[2]),
-						Double.parseDouble(columns[3]),
-						Double.parseDouble(columns[4])));
+					info.setCoordinates(new Vector3f(Float.parseFloat(columns[2]),
+						Float.parseFloat(columns[3]),
+						Float.parseFloat(columns[4])));
 
 					info.setThickness(Double.parseDouble(columns[5]));
 					info.setConnectivity(new Pair<Integer, Integer>(Integer.parseInt(columns[0])-1 ,
@@ -172,7 +172,7 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return pair min max coordinates 3d
 	 */
-	public static Pair<Vector3d, Vector3d> getBoundingBox(final ArrayList<SWCCompartmentInformation> cell) {
+	public static Pair<Vector3f, Vector3f> getBoundingBox(final ArrayList<SWCCompartmentInformation> cell) {
 		return getBoundingBox(	new HashMap<String, ArrayList<SWCCompartmentInformation>>()
 						{{ put("Anonymous cell", cell); }}
 					);
@@ -183,10 +183,10 @@ public final class SWCUtility {
 	 * @param cells input cells 
 	 * @return pair min max coordinates 3d
 	 */
-	public static Pair<Vector3d, Vector3d> getBoundingBox(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
-		ArrayList<Double> temp_x = new ArrayList<Double>();
-		ArrayList<Double> temp_y = new ArrayList<Double>();
-		ArrayList<Double> temp_z = new ArrayList<Double>();
+	public static Pair<Vector3f, Vector3f> getBoundingBox(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+		ArrayList<Float> temp_x = new ArrayList<Float>();
+		ArrayList<Float> temp_y = new ArrayList<Float>();
+		ArrayList<Float> temp_z = new ArrayList<Float>();
 		
 		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
 			for (SWCCompartmentInformation info : entry.getValue()) {
@@ -196,10 +196,10 @@ public final class SWCUtility {
 			}
 		}
 		
-		return new Pair<Vector3d, Vector3d>
+		return new Pair<Vector3f, Vector3f>
 			(
-			new Vector3d(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z)),
-			new Vector3d(Collections.min(temp_x), Collections.min(temp_y), Collections.min(temp_z)) 
+			new Vector3f(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z)),
+			new Vector3f(Collections.min(temp_x), Collections.min(temp_y), Collections.min(temp_z)) 
 			);
 
 	}
@@ -209,9 +209,9 @@ public final class SWCUtility {
 	 * @param cells
 	 * @return the dimensions as a vector
 	 */
-	public static Vector3d getDimensions(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
-		Pair<Vector3d, Vector3d> bounding = getBoundingBox(cells);
-		return new Vector3d(
+	public static Vector3f getDimensions(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+		Pair<Vector3f, Vector3f> bounding = getBoundingBox(cells);
+		return new Vector3f(
 			Math.abs(bounding.getFirst().x - bounding.getSecond().x),
 			Math.abs(bounding.getFirst().y - bounding.getSecond().y),
 			Math.abs(bounding.getFirst().z - bounding.getSecond().z)	
@@ -224,14 +224,14 @@ public final class SWCUtility {
 	 * @param cells
 	 */
 	public static ArrayList<Double> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
-	  final Vector3d dims = SWCUtility.getDimensions(cells);
-	  final Pair<Vector3d, Vector3d> bounding = SWCUtility.getBoundingBox(cells);
+	  final Vector3f dims = SWCUtility.getDimensions(cells);
+	  final Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(cells);
 	  final int number_of_cells = cells.size();
 	  System.out.println("dims: " + dims);
 	  // in µm!
-	  final double width = 1;
-	  final double height = 1;
-	  final double depth = 1;
+	  final float width = 1;
+	  final float height = 1;
+	  final float depth = 1;
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
@@ -250,7 +250,7 @@ public final class SWCUtility {
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
 	           /// leaf node with and edge (getIncidents)
-		   KDTree<ArrayList<Vector3d>> tree = buildKDTree(getIndicents(cell.getValue()));
+		   KDTree<ArrayList<Vector3f>> tree = buildKDTree(getIndicents(cell.getValue()));
 		   
 		   /** @todo test: should finish in one step -> and it does. */
 		   /// we iterate over the bounding box and generate sampling cubes
@@ -259,9 +259,9 @@ public final class SWCUtility {
 		   /** @todo use bounding box min values for x y z and iterate 
 		    * to bounding box max values with width height and depth 
 		    */
-		   for (double x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
-			 for (double y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
-			   for (double z = bounding.getSecond().z; z < bounding.getFirst().z; z+=depth) {
+		   for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
+			 for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
+			   for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=depth) {
 				  /*
 				   *              
 				   *            p5 .... p6    
@@ -275,20 +275,20 @@ public final class SWCUtility {
 				   *
 				   *
 				   */
-				 Vector3d p1 = new Vector3d(x, y+height, z);
-				 Vector3d p2 = new Vector3d(x+width, y+height, z);
-				 Vector3d p3 = new Vector3d(x, y, z);
-				 Vector3d p4 = new Vector3d(x+width, y, z);
+				 Vector3f p1 = new Vector3f(x, y+height, z);
+				 Vector3f p2 = new Vector3f(x+width, y+height, z);
+				 Vector3f p3 = new Vector3f(x, y, z);
+				 Vector3f p4 = new Vector3f(x+width, y, z);
 				 
-				 Vector3d p5 = new Vector3d(x, y+height, z+depth);
-				 Vector3d p6 = new Vector3d(x+width, y+height, z+depth);
-				 Vector3d p7 = new Vector3d(x, y, z+depth);
-				 Vector3d p8 = new Vector3d(x+width, y, z+depth);
+				 Vector3f p5 = new Vector3f(x, y+height, z+depth);
+				 Vector3f p6 = new Vector3f(x+width, y+height, z+depth);
+				 Vector3f p7 = new Vector3f(x, y, z+depth);
+				 Vector3f p8 = new Vector3f(x+width, y, z+depth);
 				 
 				 double[] upper = {x+width, y+height, z+depth};
 				 double[] lower = {x, y, z};
 				 
-				 List<ArrayList<Vector3d>> temps = new ArrayList<ArrayList<Vector3d>>();
+				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
 				 try {
 				 	temps = tree.range(lower, upper);
 				 } catch (KeySizeException e) {
@@ -296,9 +296,9 @@ public final class SWCUtility {
 				 }
 				 	
 				 //System.err.println("only one sampling cube");
-				 double length = 0.;
-				 for (ArrayList<Vector3d> elem : temps) { // a list of nodes which are in the range lower to upper
-				  Vector3d starting_vertex = new Vector3d(elem.get(0)); // starting vertex
+				 float length = 0.f;
+				 for (ArrayList<Vector3f> elem : temps) { // a list of nodes which are in the range lower to upper
+				  Vector3f starting_vertex = new Vector3f(elem.get(0)); // starting vertex
 			   	  //elem.remove(0); // starting vertex, this can certainly be improved -> this is wrong
 				  /** @todo this is wrong, since the first 
 				   * vertex is needed in the next iteration again!
@@ -309,9 +309,9 @@ public final class SWCUtility {
 				/// for now the starting vertex, aka the compartment, is the first 
 				/// vertex in the attached meta-data arraylist for each compartment 
 				/// we have inserted in the kd tree before
-				   for (Vector3d elem2 : elem) { 
-					ArrayList<Vector3d> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
-					double val = 0.;
+				   for (Vector3f elem2 : elem) { 
+					ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
+					float val = 0.f;
 					/// determine the amount of edge in the sampling cube for each edge
 					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
 					val += EdgeSegmentWithinCube(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
@@ -392,18 +392,18 @@ public final class SWCUtility {
 		 *       dependent-color
 		 */
 
-	  class PartialSumComputer implements Callable<Double> { 
-		  private final ArrayList<Double> subres_of_cube;
+	  class PartialSumComputer implements Callable<Float> { 
+		  private final ArrayList<Float> subres_of_cube;
 		  @Override
-		  public Double call() {
-			  double sum = 0.;
-			  for (double d : subres_of_cube) {
+		  public Float call() {
+			  float sum = 0.f;
+			  for (float d : subres_of_cube) {
 				  sum+=d;
 			  }
 			  return sum;
 		  }
 
-		  public PartialSumComputer(ArrayList<Double> subres_of_cube) {
+		  public PartialSumComputer(ArrayList<Float> subres_of_cube) {
 			  this.subres_of_cube = subres_of_cube;
 		  }
 		  
@@ -437,7 +437,7 @@ public final class SWCUtility {
 	 * 
 	 * TODO: note better implement a function like RayBoxIntersection, or we use all faces of the cube and call RayPlaneIntersection...
 	 */
-	public static double EdgeSegmentWithinCube(double x, double y, double z, double width, double height, double depth, Vector3d p1, Vector3d p2, Vector3d v1, Vector3d v2, Vector3d normal) {
+	public static float EdgeSegmentWithinCube(float x, float y, float z, float width, float height, float depth, Vector3f p1, Vector3f p2, Vector3f v1, Vector3f v2, Vector3f normal) {
 		/// Case 1: Both vertices inside cube
 		if ( ((p1.x <= x+width || p1.x >= x) &&
 		      (p1.y <= y+height || p1.y >= y) && 
@@ -445,7 +445,7 @@ public final class SWCUtility {
 		     ((p2.x <= x+width || p2.x >= x) &&
 		      (p2.y <= y+height || p2.y >= y) && 
 		      (p2.z <= z+depth || p2.z >= z)) ) {
-			Vector3d temp = new Vector3d(p1);
+			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
 			return temp.length();
 		/// Case 2: One vertex inside cube 
@@ -460,10 +460,10 @@ public final class SWCUtility {
 		      		(p1.z <= z+depth || p1.z >= z))) {
 				/// if p1 inside, construct line starting from p1
 				/// @todo RayLineIntersection(p1, ray)
-				Vector3d vOut = new Vector3d();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 1e-6);
+				Vector3f vOut = new Vector3f();
+				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p1, v1, v2, normal, 1.0e-6f);
 				if (intersects) {
-					Vector3d temp = new Vector3d(vOut);
+					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
 					return temp.length();
 				} else {
@@ -471,10 +471,10 @@ public final class SWCUtility {
 				}
 				
 			} else {
-				Vector3d vOut = new Vector3d();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0, p1, v1, v2, normal, 1e-6);
+				Vector3f vOut = new Vector3f();
+				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p1, v1, v2, normal, 1.0e-6f);
 				if (intersects) {
-					Vector3d temp = new Vector3d(vOut);
+					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
 					return temp.length();
 				} else {
@@ -483,12 +483,12 @@ public final class SWCUtility {
 			}
 		/// Case 3: Both vertices outside the cube
 		} else {
-			Vector3d vOut1 = new Vector3d();
-			Vector3d vOut2 = new Vector3d();
-			boolean intersects = RayPlaneIntersection(vOut1, 0.0, p1, v1, v2, normal, 1e-6);
-			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0, p2, v1, v2, normal, 1e-6);
+			Vector3f vOut1 = new Vector3f();
+			Vector3f vOut2 = new Vector3f();
+			boolean intersects = RayPlaneIntersection(vOut1, 0.0f, p1, v1, v2, normal, 1.0e-6f);
+			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0f, p2, v1, v2, normal, 1.0e-6f);
 			if (intersects && intersects2) {
-				Vector3d temp = new Vector3d(vOut1);
+				Vector3f temp = new Vector3f(vOut1);
 				temp.sub(vOut2);
 				return temp.length();
 			} else {
@@ -510,12 +510,12 @@ public final class SWCUtility {
 	 * @param tol
 	 * @return 
 	 */
-	public static boolean RayPlaneIntersection(Vector3d vOut, double tOut, Vector3d rayFrom, Vector3d rayDir, Vector3d p, Vector3d normal, double tol) {
-		double denom = rayDir.dot(normal);
+	public static boolean RayPlaneIntersection(Vector3f vOut, float tOut, Vector3f rayFrom, Vector3f rayDir, Vector3f p, Vector3f normal, float tol) {
+		float denom = rayDir.dot(normal);
 		if (Math.abs(denom) < tol) {
 			return false;
 		} else {
-			Vector3d v = new Vector3d(p);
+			Vector3f v = new Vector3f(p);
 			v.sub(rayFrom);
 			tOut = v.dot(normal) / denom;
 			v.scale(tOut, rayDir);
@@ -534,37 +534,37 @@ public final class SWCUtility {
 	 * @param tol
 	 * @return 
 	 */
-	public static boolean LineSquareIntersection(Vector3d S1, Vector3d S2, Vector3d S3, Vector3d R1, Vector3d R2, double tol) {
-	Vector3d dS21 = new Vector3d(S2);
-	Vector3d dS31 = new Vector3d(S3);
-	Vector3d n = new Vector3d(); 
-	Vector3d dR = new Vector3d(R1);
+	public static boolean LineSquareIntersection(Vector3f S1, Vector3f S2, Vector3f S3, Vector3f R1, Vector3f R2, float tol) {
+	Vector3f dS21 = new Vector3f(S2);
+	Vector3f dS31 = new Vector3f(S3);
+	Vector3f n = new Vector3f(); 
+	Vector3f dR = new Vector3f(R1);
 
 	dS21.sub(S1);
 	dS31.sub(S1);
 	n.cross(dS21, dS31);
 	dR.sub(R2);
 	
-	double ndotdR = n.dot(dR);
+	float ndotdR = n.dot(dR);
 
         if (Math.abs(ndotdR) < tol) { 
             return false; /// indicate no intersection
         }
 	
-	Vector3d R1subS1 = new Vector3d(R1);
+	Vector3f R1subS1 = new Vector3f(R1);
 	R1subS1.sub(S1);
 	
-        double t = -n.dot(R1subS1) / ndotdR;
-        Vector3d M = new Vector3d(R1);
-	Vector3d dRscaled = new Vector3d(dR);
+        float t = -n.dot(R1subS1) / ndotdR;
+        Vector3f M = new Vector3f(R1);
+	Vector3f dRscaled = new Vector3f(dR);
 	dRscaled.scale(t);
 	R1.add(dRscaled);
 
-        Vector3d dMS1 = new Vector3d(M);
+        Vector3f dMS1 = new Vector3f(M);
 	dMS1.sub(S1);
 	
-        double u = dMS1.dot(dS21);
-        double v = dMS1.dot(dS31);
+        float u = dMS1.dot(dS21);
+        float v = dMS1.dot(dS31);
 
         return (u >= 0.0f && u <= dS21.dot(dS21)
              && v >= 0.0f && v <= dS31.dot(dS31));
@@ -574,24 +574,24 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return 
 	 */
-	public static HashMap<Vector3d, ArrayList<Vector3d>> getIndicents(ArrayList<SWCCompartmentInformation> cell) {
-		/// split into initializing phase (init keys of ArrayList<ArrayList<Vector3d>> to v0)
+	public static HashMap<Vector3f, ArrayList<Vector3f>> getIndicents(ArrayList<SWCCompartmentInformation> cell) {
+		/// split into initializing phase (init keys of ArrayList<ArrayList<Vector3f>> to v0)
 		/// and a populating phase (i. e. add to ArrayList the incident to V0) to get rid of O(n^2) for loop
 		/// if necessary in the future (then we need to make the convention, that the arraylist is ordered
 		/// in the same way as the compartments are appearing in the single swc file...
 		/*
 		// init phase
-		ArrayList<ArrayList<Vector3d>> incidents2 = new ArrayList<ArrayList<Vector3d>>(cell.size());
+		ArrayList<ArrayList<Vector3f>> incidents2 = new ArrayList<ArrayList<Vector3f>>(cell.size());
 		// populate phase
 		for (SWCCompartmentInformation info : cell) {
 		  incidents2.get(info.getConnectivity().getSecond()).add(info.getCoordinates());
 		}
 		*/
 	  
-		HashMap<Vector3d, ArrayList<Vector3d>> incidents = new HashMap<Vector3d, ArrayList<Vector3d>>(cell.size());
+		HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());
 		for (SWCCompartmentInformation info : cell) {
-			ArrayList<Vector3d> temp = new ArrayList<Vector3d>();
-			Vector3d v0 = info.getCoordinates();
+			ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
+			Vector3f v0 = info.getCoordinates();
 			for (SWCCompartmentInformation info2 : cell) {
 				if (info.getIndex() == info2.getConnectivity().getSecond()) {
 					temp.add(info2.getCoordinates());
@@ -608,11 +608,11 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return the newly created kd tree
 	 */
-	public static KDTree<ArrayList<Vector3d>> buildKDTree(HashMap<Vector3d, ArrayList<Vector3d>> cell) {
-		KDTree<ArrayList<Vector3d>> kd = new KDTree<ArrayList<Vector3d>>(3);
+	public static KDTree<ArrayList<Vector3f>> buildKDTree(HashMap<Vector3f, ArrayList<Vector3f>> cell) {
+		KDTree<ArrayList<Vector3f>> kd = new KDTree<ArrayList<Vector3f>>(3);
 		try {
-		   for (Map.Entry<Vector3d, ArrayList<Vector3d>> entry : cell.entrySet()) {
-		  	Vector3d vec = entry.getKey();
+		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : cell.entrySet()) {
+		  	Vector3f vec = entry.getKey();
 		  	double[] key = { vec.x, vec.y, vec.z };
 		  	kd.insert(key, entry.getValue());
 		   }
@@ -643,7 +643,7 @@ public final class SWCUtility {
 			System.out.println("Time for setup: " +timeSpentInMilliseconds/1000.0);
 			
 			ArrayList<Double> res = SWCUtility.computeDensity(cells);
-			/*for (double d : res) {
+			/*for (float d : res) {
 				System.out.println("d: " + d);
 			}*/
 		
