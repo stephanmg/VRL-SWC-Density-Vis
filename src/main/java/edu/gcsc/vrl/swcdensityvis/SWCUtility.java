@@ -241,7 +241,8 @@ public final class SWCUtility {
 	   * @todo RayPlaneIntersection is errorneous, this needs to be fixed immediately before resolving
 	   *       potential speed bottlenecks (see the next todos) or the cube construction may be (!!) errorneous.
 	   * @todo probably the cuboids dont need to be created explicit, thus performance should increase
-	   * @todo revise the intersection algorithms in general for speed bottlenecks and correcteness
+	   * @todo revise the intersection algorithms in general for speed bottlenecks and correcteness:
+	   *        the edge length detection still seems to be at a point errorneous...
 	   * @todo revise the buildKDtree (* most sever speed trap)
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
@@ -384,6 +385,13 @@ public final class SWCUtility {
 				}
 			}
 		}
+		
+		double total_length = 0;
+		for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
+			total_length += entry.getValue() / cells.size();
+		}
+		System.out.println("Total dendritic length [\\mu m]: " + total_length);
+		
 		System.out.println("Non-zero cuboids: " + vals.size());
 		long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;
 		System.out.println("Serial work [s]: " +timeSpentInMillisecondsSerial/1000.0);
@@ -575,6 +583,7 @@ public final class SWCUtility {
 			for (Map.Entry<Integer, Float> e : res.entrySet()) {
 				System.out.println("Cuboid cell #" + e.getKey() + " with dendritic length of " + e.getValue());
 			}
+			
 			
 			timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
 			System.out.println("Time for output [s]: " +timeSpentInMilliseconds/1000.0);
