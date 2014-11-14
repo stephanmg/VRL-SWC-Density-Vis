@@ -231,9 +231,9 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 5.f;
-	  final float height = 5.f; 
-	  final float depth = 5.f; 
+	  final float width = 1f;
+	  final float height = 1f; 
+	  final float depth = 1f; 
 	
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
@@ -242,6 +242,7 @@ public final class SWCUtility {
 	   *       potential speed bottlenecks (see the next two todos).
 	   * @todo probably the cuboids dont need to be created explicit, thus performance should increase
 	   * @todo revise the intersection algorithms in general for speed bottlenecks
+	   * @todo revise the buildKDtree and getIncidents methods also for speed bottlenecks
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
 	   * @see la4j package @ http://la4j.org/
@@ -298,6 +299,11 @@ public final class SWCUtility {
 				 double[] lower = {x, y, z};
 				 
 				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
+				 /// speed bottlneck is here the kdtree obvious
+				 /// note: that up to 1,000,000,000 iterations it's quite fine
+				 /// and done within 13 seconds (when using #procs geometries)
+				 /// but if we go to 1,000,000,000,000 i. e. sampling cube
+				 /// sizes of 0.001 in geometry units it gets slow...
 				 try {
 				 	temps = tree.range(lower, upper);
 				 } catch (KeySizeException e) {
@@ -316,7 +322,7 @@ public final class SWCUtility {
 				/// vertex in the attached meta-data arraylist for each compartment 
 				/// we have inserted in the kd tree before
 				   for (Vector3f elem2 : elem) { 
-					ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8);
+					ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8); 
 					float val = 0.f;
 					/// determine the amount of edge in the sampling cube for each edge
 					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
