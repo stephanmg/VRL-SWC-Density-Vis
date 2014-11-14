@@ -7,13 +7,55 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeySizeException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.vecmath.Vector3f;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 /**
  *
  * @author stephan
  */
 public class KDTreeDemo {
 	public static void main(String... args) {
-			double [] A = {2, 5};
+
+		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+		try {
+		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+	 	}
+		 
+		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
+		HashMap<Vector3f, ArrayList<Vector3f>> incidents = SWCUtility.getIndicents(cell.getValue());
+		for (Map.Entry<Vector3f, ArrayList<Vector3f>> inci : incidents.entrySet()) {
+			System.out.println("Compartment: " + inci.getKey());
+			for (Vector3f vertex : inci.getValue()) {
+				System.out.println("Vertex:" + vertex);
+			}
+		}
+		
+		KDTree<ArrayList<Vector3f>> tree = SWCUtility.buildKDTree(incidents);
+		assertEquals("Tree size is required to be: 1514, but was: " + tree.size(), tree.size(), 1514);
+		double[] elem = {2.14, 14.34, -0.15};
+		try {
+			tree.search(elem);
+		double[] lo = {-100, -100,-100 };
+		double[] hi = {200, 200, 200};
+			List<ArrayList<Vector3f>> temps = tree.range(lo, hi);
+			/*System.out.println("temps size:" + temps.size());
+			for (ArrayList<Vector3f> temp : temps) {
+				System.out.println("temp size: " + temp.size());
+			}*/
+		}catch (KeySizeException e) {
+		}
+		/*	double [] A = {2, 5};
 	double [] B = {1, 1};
 	double [] C = {3, 9};
 	double [] T = {1, 10};
@@ -55,6 +97,7 @@ public class KDTreeDemo {
 	}
 	catch (Exception e) {
 	    System.err.println(e);
-	}
+	}*/
+		}
     }
 }

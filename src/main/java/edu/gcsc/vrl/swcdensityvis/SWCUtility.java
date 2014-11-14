@@ -231,17 +231,17 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 1f;
-	  final float height = 1f; 
-	  final float depth = 1f; 
+	  final float width = 1.f;
+	  final float height = 1.f; 
+	  final float depth = 1.f; 
 	
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
 	   *
 	   * @todo RayPlaneIntersection is errorneous, this needs to be fixed immediately before resolving
-	   *       potential speed bottlenecks (see the next two todos).
+	   *       potential speed bottlenecks (see the next todos) or the cube construction may be (!!) errorneous.
 	   * @todo probably the cuboids dont need to be created explicit, thus performance should increase
-	   * @todo revise the intersection algorithms in general for speed bottlenecks
+	   * @todo revise the intersection algorithms in general for speed bottlenecks and correcteness
 	   * @todo revise the buildKDtree (* most sever speed trap)
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
@@ -313,8 +313,8 @@ public final class SWCUtility {
 				// a list of nodes which are in the range lower to upper
 				 float length = 0.f;
 				 for (ArrayList<Vector3f> elem : temps) { 
-				// starting vertex
-				  Vector3f starting_vertex = new Vector3f(elem.get(0)); 
+				// starting vertex (last vertex in list ...)
+				  Vector3f starting_vertex = new Vector3f(elem.get(elem.size()-1));
 				   
 				/// each node in range has attached the incident edges we calculated 
 				/// previously (we need however the starting vertex somehow, see above)
@@ -384,6 +384,7 @@ public final class SWCUtility {
 				}
 			}
 		}
+		System.out.println("Non-zero cuboids: " + vals.size());
 		long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;
 		System.out.println("Serial work [s]: " +timeSpentInMillisecondsSerial/1000.0);
 	
@@ -415,25 +416,25 @@ public final class SWCUtility {
 	 */
 	public static float EdgeSegmentWithinCuboid(float x, float y, float z, float width, float height, float depth, Vector3f p1, Vector3f p2, Vector3f v1, Vector3f v2, Vector3f normal) {
 		/// Case 1: Both vertices inside cube
-		if ( ((p1.x <= x+width || p1.x >= x) &&
-		      (p1.y <= y+height || p1.y >= y) && 
-		      (p1.z <= z+depth || p1.z >= z)) &&
-		     ((p2.x <= x+width || p2.x >= x) &&
-		      (p2.y <= y+height || p2.y >= y) && 
-		      (p2.z <= z+depth || p2.z >= z)) ) {
+		if ( ((p1.x <= x+width && p1.x >= x) &&
+		      (p1.y <= y+height && p1.y >= y) && 
+		      (p1.z <= z+depth && p1.z >= z)) &&
+		     ((p2.x <= x+width && p2.x >= x) &&
+		      (p2.y <= y+height && p2.y >= y) && 
+		      (p2.z <= z+depth && p2.z >= z)) ) {
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
 			return temp.length();
 		/// Case 2: One vertex inside cube 
-		} else if ( ((p1.x <= x+width || p1.x >= x) &&
-		      (p1.y <= y+height || p1.y >= y) && 
-		      (p1.z <= z+depth || p1.z >= z)) || 
-		     ((p2.x <= x+width || p2.x >= x) &&
-		      (p2.y <= y+height || p2.y >= y) && 
-		      (p2.z <= z+depth || p2.z >= z)) ) {
-			if (((p1.x <= x+width || p1.x >= x) &&
-		      		(p1.y <= y+height || p1.y >= y) && 
-		      		(p1.z <= z+depth || p1.z >= z))) {
+		} else if ( ((p1.x <= x+width && p1.x >= x) &&
+		      (p1.y <= y+height && p1.y >= y) && 
+		      (p1.z <= z+depth && p1.z >= z)) || 
+		     ((p2.x <= x+width && p2.x >= x) &&
+		      (p2.y <= y+height && p2.y >= y) && 
+		      (p2.z <= z+depth && p2.z >= z)) ) {
+			if (((p1.x <= x+width && p1.x >= x) &&
+		      		(p1.y <= y+height && p1.y >= y) && 
+		      		(p1.z <= z+depth && p1.z >= z))) {
 				/// if p1 inside, construct line starting from p1
 				Vector3f vOut = new Vector3f();
 				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p1, v1, v2, normal, 1.0e-6f);
@@ -442,18 +443,18 @@ public final class SWCUtility {
 					temp.sub(p1);
 					return temp.length();
 				} else {
-					return -1;
+					return 0;
 				}
 				
 			} else {
 				Vector3f vOut = new Vector3f();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p1, v1, v2, normal, 1.0e-6f);
+				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p2, v1, v2, normal, 1.0e-6f);
 				if (intersects) {
 					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
 					return temp.length();
 				} else {
-					return -1;
+					return 0;
 				}
 			}
 		/// Case 3: Both vertices outside the cube
@@ -467,7 +468,7 @@ public final class SWCUtility {
 				temp.sub(vOut2);
 				return temp.length();
 			} else {
-				return -1;
+				return 0;
 			}
 		}
 	}
@@ -523,7 +524,7 @@ public final class SWCUtility {
 			ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
 			Vector3f v0 = info.getCoordinates();
 			for (SWCCompartmentInformation info2 : cell) {
-				if (info.getIndex() == info2.getConnectivity().getSecond()) {
+				if (info.getIndex() == info2.getConnectivity().getSecond()-1) {
 					temp.add(info2.getCoordinates());
 				}
 			}
@@ -569,9 +570,14 @@ public final class SWCUtility {
 			System.out.println("Time for setup [s]: " +timeSpentInMilliseconds/1000.0);
 			
 			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+			
+			millisecondsStart = System.currentTimeMillis();
 			for (Map.Entry<Integer, Float> e : res.entrySet()) {
 				System.out.println("Cuboid cell #" + e.getKey() + " with dendritic length of " + e.getValue());
 			}
+			
+			timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
+			System.out.println("Time for output [s]: " +timeSpentInMilliseconds/1000.0);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);

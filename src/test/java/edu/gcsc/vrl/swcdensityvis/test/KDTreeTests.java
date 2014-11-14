@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.vecmath.Vector3f;
 import org.junit.After;
@@ -73,7 +74,7 @@ public class KDTreeTests {
 		double[] lo = {0, 0,0 };
 		double[] hi = {5, 20, 5};
 		try {
-			tree.range(lo, hi);
+			List<ArrayList<Vector3f>> temps = tree.range(lo, hi);
 		}catch (KeySizeException e) {
 			fail("No key could be found for search query: " + e);
 		}
