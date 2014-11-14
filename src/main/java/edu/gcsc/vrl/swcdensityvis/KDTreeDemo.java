@@ -26,7 +26,7 @@ public class KDTreeDemo {
 
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
-		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI_original.swc")));
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
@@ -35,10 +35,13 @@ public class KDTreeDemo {
 		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
 		HashMap<Vector3f, ArrayList<Vector3f>> incidents = SWCUtility.getIndicents(cell.getValue());
 		for (Map.Entry<Vector3f, ArrayList<Vector3f>> inci : incidents.entrySet()) {
-			System.out.println("Compartment: " + inci.getKey());
+			if (inci.getValue().size() >= 3) {
+				System.err.println("Size of edges:" + inci.getValue().size());
+			}
+			/*System.out.println("Compartment: " + inci.getKey());
 			for (Vector3f vertex : inci.getValue()) {
 				System.out.println("Vertex:" + vertex);
-			}
+			}*/
 		}
 		
 		KDTree<ArrayList<Vector3f>> tree = SWCUtility.buildKDTree(incidents);

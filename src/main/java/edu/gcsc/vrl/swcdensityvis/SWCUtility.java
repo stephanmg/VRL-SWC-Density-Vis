@@ -244,6 +244,9 @@ public final class SWCUtility {
 	   * @todo revise the intersection algorithms in general for speed bottlenecks and correcteness:
 	   *        the edge length detection still seems to be at a point errorneous...
 	   * @todo revise the buildKDtree (* most sever speed trap)
+	   * 
+	   * @todo KD TREE is not necessary, we could just go over the EDGES directly...
+	   *       but how do we get edges which do not have one vertex at least in the cuboid then?!
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
 	   * @see la4j package @ http://la4j.org/
@@ -432,7 +435,8 @@ public final class SWCUtility {
 		      (p2.z <= z+depth && p2.z >= z)) ) {
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
-			return temp.length();
+			//return temp.length();
+			return 0;
 		/// Case 2: One vertex inside cube 
 		} else if ( ((p1.x <= x+width && p1.x >= x) &&
 		      (p1.y <= y+height && p1.y >= y) && 
@@ -440,6 +444,7 @@ public final class SWCUtility {
 		     ((p2.x <= x+width && p2.x >= x) &&
 		      (p2.y <= y+height && p2.y >= y) && 
 		      (p2.z <= z+depth && p2.z >= z)) ) {
+			//System.err.println("elseif branch!");
 			if (((p1.x <= x+width && p1.x >= x) &&
 		      		(p1.y <= y+height && p1.y >= y) && 
 		      		(p1.z <= z+depth && p1.z >= z))) {
@@ -465,8 +470,9 @@ public final class SWCUtility {
 					return 0;
 				}
 			}
-		/// Case 3: Both vertices outside the cube
+		/// Case 3: Both vertices outside the cube (can not happen, but must be handled!)
 		} else {
+			//System.err.println("else branch!");
 			Vector3f vOut1 = new Vector3f();
 			Vector3f vOut2 = new Vector3f();
 			boolean intersects = RayPlaneIntersection(vOut1, 0.0f, p1, v1, v2, normal, 1.0e-6f);
@@ -571,9 +577,24 @@ public final class SWCUtility {
 	   	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 		try {
 			long millisecondsStart = System.currentTimeMillis();
-			for (int i = 0; i < 8; i ++) {
-			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+			for (int i = 0; i < 8; i++) {
+			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI_original.swc")));
 			}
+
+		/*	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
+		HashMap<Vector3f, ArrayList<Vector3f>> incidents = SWCUtility.getIndicents(cell.getValue());
+		for (Map.Entry<Vector3f, ArrayList<Vector3f>> inci : incidents.entrySet()) {
+			if (inci.getValue().size() >= 3) {
+				System.err.println("Size of edges:" + inci.getValue().size());
+			}
+		}
+			}*/
+			/*System.out.println("Compartment: " + inci.getKey());
+			for (Vector3f vertex : inci.getValue()) {
+				System.out.println("Vertex:" + vertex);
+			}*/
+
+			
 			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
 			System.out.println("Time for setup [s]: " +timeSpentInMilliseconds/1000.0);
 			

@@ -55,7 +55,7 @@ public class KDTreeTests {
 	 public void testBuildKDTree() {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
-		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI_original.swc")));
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);

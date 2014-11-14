@@ -1,0 +1,33 @@
+# SWC to SWC conversion from L-Measure. Sridevi Polavaram: spolavar@gmu.edu
+# Original fileName:Z:\Soumya\Test_Folders\Lm3.7.2Test\allman\CNG version\02a_pyramidal2aFI.CNG.swc
+#
+# Original file 02a_pyramidal2aFI.swc edited by Maryam Halavi using StdSwc version 1.3 on 3/2/07.
+# Irregularities and fixes documented in 02a_pyramidal2aFI.swc.std.  See StdSwc1.3.doc for more information.
+#
+# Neurolucida to SWC conversion from L-Measure. R. Scorcioni: rscorcio@gmu.edu
+# Original fileName:C:\Documents and Settings\Admin\Desktop\ProcessingVON\pyramids\pyramids\02a_pyramidal2aFI.ASC
+#
+# ORIGINAL_SOURCE 
+# CREATURE 
+# REGION 
+# FIELD/LAYER 
+# TYPE 
+# CONTRIBUTOR 
+# REFERENCE 
+# RAW 
+# EXTRAS 
+# SOMA_AREA 
+# SHRINKAGE_CORRECTION 
+# VERSION_NUMBER 
+# VERSION_DATE 
+# ********************************************* 
+# SCALE 1.0 1.0 1.0 
+1 1 2.14 1.73 -0.15 12.61 -1
+2 1 2.14 14.34 -0.15 12.61 1
+3 1 2.14 -10.87 -0.15 12.61 1
+4 4 -13.83 -11.57 18.79 2.94 1
+5 4 -14.67 -12.08 18.79 2.94 4
+6 4 -17.63 -9.48 19.47 0.59 5
+7 4 -19.82 -8.47 19.47 0.59 6
+8 4 -21.84 -7.29 19.47 0.59 7
+9 4 -22.17 -7.29 19.47 0.59 1
