@@ -242,7 +242,7 @@ public final class SWCUtility {
 	   *       potential speed bottlenecks (see the next two todos).
 	   * @todo probably the cuboids dont need to be created explicit, thus performance should increase
 	   * @todo revise the intersection algorithms in general for speed bottlenecks
-	   * @todo revise the buildKDtree and getIncidents methods also for speed bottlenecks
+	   * @todo revise the buildKDtree (* most sever speed trap)
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
 	   * @see la4j package @ http://la4j.org/
@@ -299,7 +299,7 @@ public final class SWCUtility {
 				 double[] lower = {x, y, z};
 				 
 				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
-				 /// speed bottlneck is here the kdtree obvious
+				 /// speed bottleneck is here the kdtree obvious
 				 /// note: that up to 1,000,000,000 iterations it's quite fine
 				 /// and done within 13 seconds (when using #procs geometries)
 				 /// but if we go to 1,000,000,000,000 i. e. sampling cube
