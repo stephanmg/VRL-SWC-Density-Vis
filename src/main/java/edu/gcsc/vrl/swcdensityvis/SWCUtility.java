@@ -229,9 +229,9 @@ public final class SWCUtility {
 	  final int number_of_cells = cells.size();
 	  System.out.println("dims: " + dims);
 	  // in µm!
-	  final double width = 100;
-	  final double height = 100;
-	  final double depth = 100;
+	  final double width = 1;
+	  final double height = 1;
+	  final double depth = 1;
 	  
 	  class PartialDensityComputer implements Callable<ArrayList<Double>> {
 		/// lengthes in sampling cubes and actual cell
@@ -322,10 +322,11 @@ public final class SWCUtility {
 					length+=val;
 				   }
 				 }
-		 		lengths.add(length); // add summed length of each sampling cube for the geometry
+		 		//lengths.add(length); // add summed length of each sampling cube for the geometry
 			   }
 			 }
 		   }
+		   lengths.add(0.0);
 		   return lengths;
 		 }
 	 }
@@ -358,30 +359,32 @@ public final class SWCUtility {
 		  subresults.add(res.get());
 		}
 		
-		// prefill (since exact cube number is not known until here)
-		for (Double d : subresults.get(0)) {
-		  endresults.add(0.0);
-		}
+				executor.shutdown();
 		
-		executor.shutdown();
-		
-		millisecondsStart= System.currentTimeMillis();
 		
 			long timeSpentInMilliseconds2 = System.currentTimeMillis() - millisecondsStart2;
 			System.out.println("Parallel work: " +timeSpentInMilliseconds2/1000.0);
+			
+		millisecondsStart= System.currentTimeMillis();
+// prefill (since exact cube number is not known until here)
+		/*for (Double d : subresults.get(0)) {
+		  endresults.add(0.0);
+		}*/
+		
+
 		/** @todo below could also be done in parallel and average dendritic length*/
 		/// here we collect from all geometries the length in each cube
 		/// then we add it to endresults, note however we should average
 		/// the total dendritic length in each sampling cube...
 	        /** @todo note that this is also very slow because not parallel! -> should be done also in the above threads or below in new threads callables ...*/
-		int index;
+		/*int index;
 		for (ArrayList<Double> subres : subresults) { // subres = one cell with n sampling cubes
 		  index = 0; // first cube
 		  for (Double d : subres) {
 			endresults.add(index, endresults.get(index) + d); // accumulate in each cube
 			index++; // next cube -> this is wrong still, next cube must be incremented out of this for loop
 		  }
-		}
+		}*/
 		/**
 		 * @todo densities should be computed, get total dendritic length in each cube
 		 *       then average by number of cells, then we have an average for each cube
@@ -631,7 +634,9 @@ public final class SWCUtility {
 	  	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
 			long millisecondsStart = System.currentTimeMillis();
-			for (int i = 0; i < 256; i ++) {
+			/// 256 test files (@10x10x10 resolution of sampling cube) used and cube dimensions of 5x5x5 tested (@8 files), is efficient, but the serial collect is slow (see above) -> the call() function in the parallel code
+			/// should also be revisited for efficiency reasons!
+			for (int i = 0; i < 8; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
 			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
