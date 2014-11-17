@@ -271,6 +271,7 @@ public final class SWCUtility {
 		   /// preprocess, determine characteristic edge length
 		   int size = 0;
 		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
+		   ArrayList<Float> e_lengths = new ArrayList<Float>(incidents.size());
 		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : incidents.entrySet()) {
 			   ArrayList<Vector3f> vecs = entry.getValue();
 			   size += vecs.size();
@@ -278,10 +279,13 @@ public final class SWCUtility {
 				Vector3f temp = new Vector3f(entry.getKey());
 				temp.sub(vec);
 			   	lambda += temp.length();
+				e_lengths.add(temp.length());
 			   }
 		   }
 		   lambda /= (size - incidents.size());
+		   System.out.println("Maximum edge length [\\mu m]: " + Collections.max(e_lengths));
 		   System.out.println("Charachteristic edge length [\\mu m]: " + lambda);
+		   lambda = 22;
 		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
@@ -291,9 +295,9 @@ public final class SWCUtility {
 		   /// iterate with the width, height, depth over the bounding box of the cells
 		   /// note, that the cuboids get created explicit, which may not be necessary
 		   int cube_index = 0;
-		   for (float x = bounding.getSecond().x-lambda; x < bounding.getFirst().x+lambda; x+=width) {
-			 for (float y = bounding.getSecond().y-lambda; y < bounding.getFirst().y+lambda; y+=height) {
-			   for (float z = bounding.getSecond().z-lambda; z < bounding.getFirst().z+lambda; z+=depth) {
+		   for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
+			 for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
+			   for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=depth) {
 				  /*
 				   *              
 				   *            p5 .... p6    
@@ -317,8 +321,11 @@ public final class SWCUtility {
 				 Vector3f p7 = new Vector3f(x, y, z+depth);
 				 Vector3f p8 = new Vector3f(x+width, y, z+depth);
 				 
-				 double[] upper = {x+width, y+height, z+depth};
-				 double[] lower = {x, y, z};
+				 /// we search within the charachteristic length boundaries, then we consider
+				 /// later only width and height and length boxes for intersections or we
+				 /// may use Gillians approach 
+				 double[] upper = {x+width+lambda, y+height+lambda, z+depth+lambda};
+				 double[] lower = {x-lambda, y-lambda, z-lambda};
 				 
 				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
 				 /// speed bottleneck is here the kdtree obvious
@@ -459,9 +466,11 @@ public final class SWCUtility {
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
 			length += temp.length();
-		/// Case 2: One vertex inside cube or one vertex outside the cube
+		/// Case 2: One vertex inside cube or one vertex outside the cube or all vertices outside cube
+			/// this method is seriously wrong
 		} else {
-			for (int i = 0; i < 6; i++) {
+			return 0;
+			/*for (int i = 0; i < 6; i++) {
 				Vector3f vOut = new Vector3f();
 				Vector3f dir = new Vector3f(p2);
 				dir.sub(p1);
@@ -470,7 +479,7 @@ public final class SWCUtility {
 					temp.sub(p1);
 					length += temp.length();
 				}
-			}
+			}*/
 		}
 		/// note however: 
 		/// using characteristic length := max { length(Edge) } \forall Edge in Edges
