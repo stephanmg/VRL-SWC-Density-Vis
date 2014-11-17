@@ -478,7 +478,8 @@ public final class SWCUtility {
 			temp.sub(p2);
 			length += temp.length();
 		/// Case 2: One vertex inside cube or one vertex outside the cube or all vertices outside cube
-			/// this method is seriously wrong
+			/// this method is seriously wrong (therefore we immensely overestimate this in addition
+			/// to the existing errorneous calculations)
 		} else {
 			return 0;
 			/*for (int i = 0; i < 6; i++) {
@@ -496,6 +497,8 @@ public final class SWCUtility {
 		/// using characteristic length := max { length(Edge) } \forall Edge in Edges
 		/// Case 3: does not happen -> we can also use Gillian's approach, as the
 		/// boxes here get slightly larger then the user supplies in the end ...
+		/// Case 3 needs to be handled separately, since we need the "middle segment" between 
+		/// the intersecting points of the planes (cf above)
 	}	
 	return length;
 }
