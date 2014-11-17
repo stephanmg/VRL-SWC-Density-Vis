@@ -246,8 +246,9 @@ public final class SWCUtility {
 	   *        the edge length detection still seems to be at a point errorneous...
 	   * @todo revise the buildKDtree (* most sever speed trap)
 	   * 
-	   * @todo KD TREE is not necessary, we could just go over the EDGES directly...
-	   *       but how do we get edges which do not have one vertex at least in the cuboid then?!
+	   * @todo KD TREE is not necessary, we could just go over the EDGES directly... if we have very few edges
+	   *       but how do we get edges which do not have one vertex at least in the cuboid then?! 
+	   *       (e. g. Case 3 ideas added already below)
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
 	   * @see la4j package @ http://la4j.org/
