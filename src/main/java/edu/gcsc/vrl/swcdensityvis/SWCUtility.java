@@ -287,6 +287,16 @@ public final class SWCUtility {
 		   //System.out.println("Maximum edge length [\\mu m]: " + Collections.max(e_lengths));
 		   System.out.println("Characteristic edge length [\\mu m]: " + lambda);
 		   
+		   /**
+		    * note: performance optimization
+		    * if width and height and depth >= 2 * lambda then lambda = 0;
+		    * 
+		    * note: the same holds for the depth and height ...
+		    * if (width > lambda) {
+		    *     lambda -=width
+		    * }
+		    */
+		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
 	           /// leaf node with and edge (getIncidents)
