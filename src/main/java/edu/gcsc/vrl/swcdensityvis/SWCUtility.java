@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
  /**
@@ -257,8 +258,11 @@ public final class SWCUtility {
 		/// store lengthes in the cuboids and the cell itself
 		private volatile HashMap<Integer, Float> lengths = new HashMap<Integer, Float>();
 		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
+		
 		/// note: characteristic edge length (arithmetic mean for now, could use min, max instead too)
-		private volatile float lambda = 0.f;
+		private volatile float lambda_x = 0.f;
+		private volatile float lambda_y = 0.f;
+		private volatile float lambda_z = 0.f;
 	
 		/**
 		 * @brief def ctor
@@ -279,20 +283,24 @@ public final class SWCUtility {
 			   for (Vector3f vec : vecs) {
 				Vector3f temp = new Vector3f(entry.getKey());
 				temp.sub(vec);
-			   	lambda += temp.length();
-				//e_lengths.add(temp.length());
+				lambda_x += Math.abs(temp.x);
+				lambda_y += Math.abs(temp.y);
+				lambda_z += Math.abs(temp.z);
 			   }
 		   }
-		   lambda /= (size - incidents.size());
-		   //System.out.println("Maximum edge length [\\mu m]: " + Collections.max(e_lengths));
-		   System.out.println("Characteristic edge length [\\mu m]: " + lambda);
+		   lambda_x /= (size - incidents.size());
+		   lambda_y /= (size - incidents.size());
+		   lambda_z /= (size - incidents.size());
+		   
+		   System.out.println("Characteristic edge length for x-coordinate [\\mu m]: " + lambda_x);
+		   System.out.println("Characteristic edge length for y-coordinate [\\mu m]: " + lambda_y);
+		   System.out.println("Characteristic edge length for z-coordinate [\\mu m]: " + lambda_z);
 		   
 		   /// increate performance. if bounding box already larger as characteristic edge length
 		   /// then it is safe to set the lambda offset to zero
-		   float lambda_y = lambda, lambda_x = lambda, lambda_z = lambda;
-		   if (width  > 2*lambda) lambda_x = 0;
-		   if (height > 2*lambda) lambda_y = 0;
-		   if (depth  > 2*lambda) lambda_z = 0;
+		   if (width  > 2*lambda_x) { lambda_x = 0; }
+		   if (height > 2*lambda_y) { lambda_y = 0; }
+		   if (depth  > 2*lambda_z) { lambda_z = 0; }
 		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
@@ -495,21 +503,37 @@ public final class SWCUtility {
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
 			length += temp.length();
+			/**
+			 * @todo implement here
+			 */
 		/// Case 2: One vertex inside cube or one vertex outside the cube or all vertices outside cube
 			/// this method is seriously wrong (therefore we immensely overestimate this in addition
 			/// to the existing errorneous calculations)
-		} else {
-			return 0;
-			/*for (int i = 0; i < 6; i++) {
-				Vector3f vOut = new Vector3f();
-				Vector3f dir = new Vector3f(p2);
-				dir.sub(p1);
-				if(RayPlaneIntersection(vOut, 0.0f, p1, dir, cube_points.get(i), cube_normals.get(0), 1.0e-6f)) {
-					Vector3f temp = new Vector3f(vOut);
+		 
+		/// Case 2: End vertex outside of current sampling cube
+		} else if ( ((p2.x >= x+width || p2.x <= x) &&
+		      (p2.y >= y+height || p2.y <= y) && 
+		      (p2.z >= z+depth || p2.z <= z)) &&
+			 (! ((p1.x <= x+width && p1.x >= x) &&
+		      (p1.y <= y+height && p1.y >= y) && 
+		      (p1.z <= z+depth && p1.z >= z))) ) {
+			Vector3f dir = new Vector3f(p2);
+			dir.sub(p1);
+			for (int i = 0; i < 6; i++) {
+				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, dir, cube_points.get(i), cube_normals.get(i), 1.0e-12f);
+				if (intersects.getFirst()) {
+					Vector3f temp = new Vector3f(intersects.getSecond());
 					temp.sub(p1);
 					length += temp.length();
+					/**
+					 * @todo we need LinePlaneIntersection here ...
+					 */
+					//return 0;
 				}
-			}*/
+			}
+		/// Case 3: End vertex and start vertex outside of the sampling cube
+		} else {
+			return 0;
 		}
 		/// note however: 
 		/// using characteristic length := max { length(Edge) } \forall Edge in Edges
@@ -517,6 +541,9 @@ public final class SWCUtility {
 		/// boxes here get slightly larger then the user supplies in the end ...
 		/// Case 3 needs to be handled separately, since we need the "middle segment" between 
 		/// the intersecting points of the planes (cf above)
+		/**
+		 * @todo implement here
+		 */
 	}	
 	return length;
 }
@@ -562,8 +589,8 @@ public final class SWCUtility {
 		      		(p1.z <= z+depth && p1.z >= z))) {
 				/// if p1 inside, construct line starting from p1
 				Vector3f vOut = new Vector3f();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p1, v1, v2, normal, 1.0e-6f);
-				if (intersects) {
+				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, v1, v2, normal, 1.0e-6f);
+				if (intersects.getFirst()) {
 					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
 					//return temp.length();
@@ -575,8 +602,8 @@ public final class SWCUtility {
 			} else {
 				//System.err.println("else");
 				Vector3f vOut = new Vector3f();
-				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p2, v1, v2, normal, 1.0e-6f);
-				if (intersects) {
+				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p2, v1, v2, normal, 1.0e-6f);
+				if (intersects.getFirst()) {
 					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
 					//return temp.length();
@@ -590,9 +617,9 @@ public final class SWCUtility {
 			System.err.println("else branch (in the implementation this cannot happen)!");
 			Vector3f vOut1 = new Vector3f();
 			Vector3f vOut2 = new Vector3f();
-			boolean intersects = RayPlaneIntersection(vOut1, 0.0f, p1, v1, v2, normal, 1.0e-6f);
-			boolean intersects2 = RayPlaneIntersection(vOut2, 0.0f, p2, v1, v2, normal, 1.0e-6f);
-			if (intersects && intersects2) {
+			Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, v1, v2, normal, 1.0e-6f);
+			Pair<Boolean, Vector3f> intersects2 = RayPlaneIntersection(p2, v1, v2, normal, 1.0e-6f);
+			if (intersects.getFirst() && intersects2.getFirst()) {
 				Vector3f temp = new Vector3f(vOut1);
 				temp.sub(vOut2);
 				return temp.length();
@@ -614,17 +641,23 @@ public final class SWCUtility {
 	 * @param tol
 	 * @return 
 	 */
-	public static boolean RayPlaneIntersection(Vector3f vOut, float tOut, Vector3f rayFrom, Vector3f rayDir, Vector3f p, Vector3f normal, float tol) {
+	public static Pair<Boolean, Vector3f> RayPlaneIntersection(Vector3f rayFrom, Vector3f rayDir, Vector3f p, Vector3f normal, float tol) {
 		float denom = rayDir.dot(normal);
 		if (Math.abs(denom) < tol) {
-			return false;
+			return new Pair<Boolean, Vector3f>(false, new Vector3f());
 		} else {
 			Vector3f v = new Vector3f(p);
 			v.sub(rayFrom);
-			tOut = v.dot(normal) / denom;
+			Float tOut = v.dot(normal) / denom;
 			v.scale(tOut, rayDir);
+			Vector3f vOut = new Vector3f();
 			vOut.add(rayFrom, v);
-			return true;
+			/// this actually is line plane intersection?! here is something wrong ...
+			if (tOut <= 1. + tol && tOut >= -tol) {
+				return new Pair<Boolean, Vector3f>(true, vOut);
+			} else {
+				return new Pair<Boolean, Vector3f>(false, vOut);
+			}	
 		}
 	}
 	
