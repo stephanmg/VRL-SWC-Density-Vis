@@ -272,7 +272,7 @@ public final class SWCUtility {
 		   /// preprocess, determine characteristic edge length
 		   int size = 0;
 		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
-		   ArrayList<Float> e_lengths = new ArrayList<Float>(incidents.size());
+		   //ArrayList<Float> e_lengths = new ArrayList<Float>(incidents.size());
 		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : incidents.entrySet()) {
 			   ArrayList<Vector3f> vecs = entry.getValue();
 			   size += vecs.size();
@@ -280,13 +280,12 @@ public final class SWCUtility {
 				Vector3f temp = new Vector3f(entry.getKey());
 				temp.sub(vec);
 			   	lambda += temp.length();
-				e_lengths.add(temp.length());
+				//e_lengths.add(temp.length());
 			   }
 		   }
 		   lambda /= (size - incidents.size());
-		   System.out.println("Maximum edge length [\\mu m]: " + Collections.max(e_lengths));
-		   System.out.println("Charachteristic edge length [\\mu m]: " + lambda);
-		   lambda = 22;
+		   //System.out.println("Maximum edge length [\\mu m]: " + Collections.max(e_lengths));
+		   System.out.println("Characteristic edge length [\\mu m]: " + lambda);
 		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
@@ -325,6 +324,17 @@ public final class SWCUtility {
 				 /// we search within the charachteristic length boundaries, then we consider
 				 /// later only width and height and length boxes for intersections or we
 				 /// may use Gillians approach 
+				
+				 /**
+				  *  the same goes for y and z (so at the border we dont need to go any further!)
+				 if (x > lambda) {
+					 lambda_x_min = x-lambda;
+				 }
+				 if (x+width < lambda) {
+					 lambda_x_max = x+width+lambda;
+				 }
+				 */
+				 
 				 double[] upper = {x+width+lambda, y+height+lambda, z+depth+lambda};
 				 double[] lower = {x-lambda, y-lambda, z-lambda};
 				 
