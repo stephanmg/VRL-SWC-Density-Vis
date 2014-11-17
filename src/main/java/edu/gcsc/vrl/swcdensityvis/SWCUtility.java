@@ -287,15 +287,12 @@ public final class SWCUtility {
 		   //System.out.println("Maximum edge length [\\mu m]: " + Collections.max(e_lengths));
 		   System.out.println("Characteristic edge length [\\mu m]: " + lambda);
 		   
-		   /**
-		    * note: performance optimization
-		    * if width and height and depth >= 2 * lambda then lambda = 0;
-		    * 
-		    * note: the same holds for the depth and height ...
-		    * if (width > lambda) {
-		    *     lambda -=width
-		    * }
-		    */
+		   /// increate performance. if bounding box already larger as characteristic edge length
+		   /// then it is safe to set the lambda offset to zero
+		   float lambda_y = lambda, lambda_x = lambda, lambda_z = lambda;
+		   if (width  > 2*lambda) lambda_x = 0;
+		   if (height > 2*lambda) lambda_y = 0;
+		   if (depth  > 2*lambda) lambda_z = 0;
 		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
@@ -304,6 +301,9 @@ public final class SWCUtility {
 		   
 		   /// iterate with the width, height, depth over the bounding box of the cells
 		   /// note, that the cuboids get created explicit, which may not be necessary
+		   /// note: it could be more efficient to iterate instead over the BoundingBoxes of each Edge
+		   ///       then we need an indexing scheme for inserting into a hashmap since the number of
+		   ///       boxes can be very large, i. e. > 10e9 boxes need to be the same for every geometry!
 		   int cube_index = 0;
 		   for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
 			 for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
@@ -335,18 +335,26 @@ public final class SWCUtility {
 				 /// later only width and height and length boxes for intersections or we
 				 /// may use Gillians approach 
 				
-				 /**
-				  *  the same goes for y and z (so at the border we dont need to go any further!)
-				 if (x > lambda) {
-					 lambda_x_min = x-lambda;
-				 }
-				 if (x+width < lambda) {
-					 lambda_x_max = x+width+lambda;
-				 }
-				 */
+				 /// note: optimization is pari with non-optimization for boundary for now
+				 /*float lambda_x_min = lambda, lambda_y_min = lambda, lambda_z_min = lambda;
+				 float lambda_x_max = lambda, lambda_y_max = lambda, lambda_z_max = lambda;
 				 
-				 double[] upper = {x+width+lambda, y+height+lambda, z+depth+lambda};
-				 double[] lower = {x-lambda, y-lambda, z-lambda};
+				 if (lambda < (x - bounding.getSecond().x)) lambda_x_min = 0;
+				 if (lambda < (y - bounding.getSecond().y)) lambda_y_min = 0;
+				 if (lambda < (z - bounding.getSecond().z)) lambda_z_min = 0;
+				 
+				 if (lambda < (bounding.getSecond().x - x)) lambda_x_max = 0;
+				 if (lambda < (bounding.getSecond().y - y)) lambda_y_max = 0;
+				 if (lambda < (bounding.getSecond().z - z)) lambda_z_max = 0;
+				 
+				 double[] upper = {x+width+lambda_x_max, y+height+lambda_y_max, z+depth+lambda_z_max};
+				 double[] lower = {x-lambda_x_min, y-lambda_y_min, z-lambda_z_min};*/
+
+				 double[] upper = {x+width+lambda_x, y+height+lambda_y, z+depth+lambda_z};
+				 double[] lower = {x-lambda_x, y-lambda_y, z-lambda_z};
+				 
+				 ///double[] upper = {x+width+lambda, y+height+lambda, z+depth+lambda};
+				 ///double[] lower = {x-lambda, y-lambda, z-lambda};
 				 
 				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
 				 /// speed bottleneck is here the kdtree obvious
