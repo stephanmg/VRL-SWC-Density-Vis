@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -333,7 +334,11 @@ public final class SWCUtility {
 				 
 				// a list of nodes which are in the range lower to upper
 				 float length = 0.f;
+				 
+				// sampling cube normals stay the same within one cuboid and also the plane describing vertices inside the plane
 				 for (ArrayList<Vector3f> elem : temps) { 
+				ArrayList<Vector3f> cube_points = new ArrayList<Vector3f>(Arrays.asList(p1, p5, p3, p2, p7, p8));
+				ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8); 
 				// starting vertex (last vertex in list ...)
 				  Vector3f starting_vertex = new Vector3f(elem.get(elem.size()-1));
 				   
@@ -342,18 +347,18 @@ public final class SWCUtility {
 				/// for now the starting vertex, aka the compartment, is the first 
 				/// vertex in the attached meta-data arraylist for each compartment 
 				/// we have inserted in the kd tree before
-				   for (Vector3f elem2 : elem) { 
-					ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8); 
+				 //  for (Vector3f elem2 : elem) { 
 					float val = 0.f;
 					/// determine the amount of edge in the sampling cube for each edge
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
+					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem, cube_points, normals);
+					// val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
 					//val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
 				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
 				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(3)); // p1, p2 vertices in plane and normal: top
 				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p7, normals.get(4)); // p1, p2 vertices in plane and normal: left 
 				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p4, p8, normals.get(5)); // p1, p2 vertices in plane and normal: right 
 					length+=val;
-				   }
+				 ///  }
 				 }
 				 // add summed length to cuboids, if length is not null, to hashmap.
 				 // this is sparse then
@@ -424,7 +429,56 @@ public final class SWCUtility {
 	/// return values 
 	return vals;
 }
-	  
+	 
+	/**
+	 * @brief  
+	 * @todo check if this is correct
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param width
+	 * @param height
+	 * @param depth
+	 * @param p1
+	 * @param end_vertices
+	 * @param cube_points
+	 * @param cube_normals
+	 * @return 
+	 */
+	public static float EdgeSegmentWithinCuboid(float x, float y, float z, float width, float height, float depth, Vector3f p1, ArrayList<Vector3f> end_vertices, ArrayList<Vector3f> cube_points, ArrayList<Vector3f> cube_normals) {
+		float length = 0.f;
+	for (Vector3f p2 : end_vertices) {
+		/// Case 1: Both vertices inside cube
+		if ( ((p1.x <= x+width && p1.x >= x) &&
+		      (p1.y <= y+height && p1.y >= y) && 
+		      (p1.z <= z+depth && p1.z >= z)) &&
+		     ((p2.x <= x+width && p2.x >= x) &&
+		      (p2.y <= y+height && p2.y >= y) && 
+		      (p2.z <= z+depth && p2.z >= z)) ) {
+			//System.err.println("if");
+			Vector3f temp = new Vector3f(p1);
+			temp.sub(p2);
+			length += temp.length();
+		/// Case 2: One vertex inside cube or one vertex outside the cube
+		} else {
+			for (int i = 0; i < 6; i++) {
+				Vector3f vOut = new Vector3f();
+				Vector3f dir = new Vector3f(p2);
+				dir.sub(p1);
+				if(RayPlaneIntersection(vOut, 0.0f, p1, dir, cube_points.get(i), cube_normals.get(0), 1.0e-6f)) {
+					Vector3f temp = new Vector3f(vOut);
+					temp.sub(p1);
+					length += temp.length();
+				}
+			}
+		}
+		/// note however: 
+		/// using characteristic length := max { length(Edge) } \forall Edge in Edges
+		/// Case 3: does not happen -> we can also use Gillian's approach, as the
+		/// boxes here get slightly larger then the user supplies in the end ...
+	}	
+	return length;
+}
 	/**
 	 * @brief determines amount of an edge within an sampling cube
 	 * @param x
@@ -492,7 +546,7 @@ public final class SWCUtility {
 			}
 		/// Case 3: Both vertices outside the cube (can not happen, but must be handled!)
 		} else {
-			System.err.println("else branch!");
+			System.err.println("else branch (in the implementation this cannot happen)!");
 			Vector3f vOut1 = new Vector3f();
 			Vector3f vOut2 = new Vector3f();
 			boolean intersects = RayPlaneIntersection(vOut1, 0.0f, p1, v1, v2, normal, 1.0e-6f);
