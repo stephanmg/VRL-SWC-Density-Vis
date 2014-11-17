@@ -526,7 +526,7 @@ public final class SWCUtility {
 					temp.sub(p1);
 					length += temp.length();
 					/**
-					 * @todo we need LinePlaneIntersection here ...
+					 * @todo we need LinePlaneIntersection here ... and cubes are wrongly defined above (cf getCubeNormals and cube vertices ...
 					 */
 					//return 0;
 				}
