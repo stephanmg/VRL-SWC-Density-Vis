@@ -44,6 +44,7 @@ public class SWCUtilityTests {
 	public void tearDown() {
 	}
 	
+	/*
 	@Test
 	public void testComputeDensity() {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
@@ -57,7 +58,7 @@ public class SWCUtilityTests {
 		 System.err.println("File not found: " + e);
 	 	}
 		 
-	}
+	}*/
 
 	
 	 @Test

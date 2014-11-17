@@ -255,6 +255,8 @@ public final class SWCUtility {
 		/// store lengthes in the cuboids and the cell itself
 		private volatile HashMap<Integer, Float> lengths = new HashMap<Integer, Float>();
 		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
+		/// note: characteristic edge length (arithmetic mean for now, could use min, max instead too)
+		private volatile float lambda = 0.f;
 	
 		/**
 		 * @brief def ctor
@@ -265,17 +267,32 @@ public final class SWCUtility {
 
  		 @Override 
 		 public HashMap<Integer, Float> call() {
+		   /// preprocess, determine characteristic edge length
+		   int size = 0;
+		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
+		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : incidents.entrySet()) {
+			   ArrayList<Vector3f> vecs = entry.getValue();
+			   size += vecs.size();
+			   for (Vector3f vec : vecs) {
+				Vector3f temp = new Vector3f(entry.getKey());
+				temp.sub(vec);
+			   	lambda += temp.length();
+			   }
+		   }
+		   lambda /= (size - incidents.size());
+		   System.out.println("Charachteristic edge length [\\mu m]: " + lambda);
+		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
 	           /// leaf node with and edge (getIncidents)
-		   KDTree<ArrayList<Vector3f>> tree = buildKDTree(getIndicents(cell.getValue()));
+		   KDTree<ArrayList<Vector3f>> tree = buildKDTree(incidents);
 		   
 		   /// iterate with the width, height, depth over the bounding box of the cells
 		   /// note, that the cuboids get created explicit, which may not be necessary
 		   int cube_index = 0;
-		   for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=width) {
-			 for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=height) {
-			   for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=depth) {
+		   for (float x = bounding.getSecond().x-lambda; x < bounding.getFirst().x+lambda; x+=width) {
+			 for (float y = bounding.getSecond().y-lambda; y < bounding.getFirst().y+lambda; y+=height) {
+			   for (float z = bounding.getSecond().z-lambda; z < bounding.getFirst().z+lambda; z+=depth) {
 				  /*
 				   *              
 				   *            p5 .... p6    
@@ -313,7 +330,7 @@ public final class SWCUtility {
 				 } catch (KeySizeException e) {
 				 	System.err.println("Keysize exception: " + e);  
 				 }
-				 	
+				 
 				// a list of nodes which are in the range lower to upper
 				 float length = 0.f;
 				 for (ArrayList<Vector3f> elem : temps) { 
@@ -330,11 +347,11 @@ public final class SWCUtility {
 					float val = 0.f;
 					/// determine the amount of edge in the sampling cube for each edge
 					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(0)); // p1, p2 vertices in plane and normal: front 
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(3)); // p1, p2 vertices in plane and normal: top
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p7, normals.get(4)); // p1, p2 vertices in plane and normal: left 
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p4, p8, normals.get(5)); // p1, p2 vertices in plane and normal: right 
+					//val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p5, p6, normals.get(1)); // p1, p2 vertices in plane and normal: rear
+				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p4, normals.get(2)); // p1, p2 vertices in plane and normal: bottom
+				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p1, p2, normals.get(3)); // p1, p2 vertices in plane and normal: top
+				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p3, p7, normals.get(4)); // p1, p2 vertices in plane and normal: left 
+				//	val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem2, p4, p8, normals.get(5)); // p1, p2 vertices in plane and normal: right 
 					length+=val;
 				   }
 				 }
@@ -433,10 +450,10 @@ public final class SWCUtility {
 		     ((p2.x <= x+width && p2.x >= x) &&
 		      (p2.y <= y+height && p2.y >= y) && 
 		      (p2.z <= z+depth && p2.z >= z)) ) {
+			//System.err.println("if");
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
-			//return temp.length();
-			return 0;
+			return temp.length();
 		/// Case 2: One vertex inside cube 
 		} else if ( ((p1.x <= x+width && p1.x >= x) &&
 		      (p1.y <= y+height && p1.y >= y) && 
@@ -444,7 +461,7 @@ public final class SWCUtility {
 		     ((p2.x <= x+width && p2.x >= x) &&
 		      (p2.y <= y+height && p2.y >= y) && 
 		      (p2.z <= z+depth && p2.z >= z)) ) {
-			//System.err.println("elseif branch!");
+			//System.err.println("else if");
 			if (((p1.x <= x+width && p1.x >= x) &&
 		      		(p1.y <= y+height && p1.y >= y) && 
 		      		(p1.z <= z+depth && p1.z >= z))) {
@@ -454,25 +471,28 @@ public final class SWCUtility {
 				if (intersects) {
 					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
-					return temp.length();
+					//return temp.length();
+					return 0;
 				} else {
 					return 0;
 				}
 				
 			} else {
+				//System.err.println("else");
 				Vector3f vOut = new Vector3f();
 				boolean intersects = RayPlaneIntersection(vOut, 0.0f, p2, v1, v2, normal, 1.0e-6f);
 				if (intersects) {
 					Vector3f temp = new Vector3f(vOut);
 					temp.sub(p1);
-					return temp.length();
+					//return temp.length();
+					return 0;
 				} else {
 					return 0;
 				}
 			}
 		/// Case 3: Both vertices outside the cube (can not happen, but must be handled!)
 		} else {
-			//System.err.println("else branch!");
+			System.err.println("else branch!");
 			Vector3f vOut1 = new Vector3f();
 			Vector3f vOut2 = new Vector3f();
 			boolean intersects = RayPlaneIntersection(vOut1, 0.0f, p1, v1, v2, normal, 1.0e-6f);
