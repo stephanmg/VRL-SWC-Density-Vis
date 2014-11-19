@@ -489,7 +489,7 @@ public final class SWCUtility {
 	 
 	/**
 	 * @brief  
-	 * @todo check if this is correct
+	 * @todo check if this is correct -> exchange here LinePlaneIntersection with RayBoxIntersection -> no normals needed anymore -> add JUnit unit tests!
 	 * @param x
 	 * @param y
 	 * @param z
