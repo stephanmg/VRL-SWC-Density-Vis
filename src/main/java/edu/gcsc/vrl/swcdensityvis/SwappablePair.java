@@ -6,8 +6,8 @@
 
 package edu.gcsc.vrl.swcdensityvis;
 
-import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,7 +17,8 @@ import lombok.ToString;
  * @param <T> a number wrapper
  * @author stephan
  */
-@Getter @Setter @AllArgsConstructor @ToString public class SwappablePair<T extends java.lang.Number> {
+@Getter @Setter @AllArgsConstructor @EqualsAndHashCode @ToString 
+public class SwappablePair<T extends java.lang.Number> {
 	private T first;
 	private T second;
 }
