@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
  /**
@@ -75,6 +74,17 @@ import javax.vecmath.Vector3f;
 	  }
 		
 	  /**
+	   * 
+	   *              
+	   *            p5 .... p6    
+	   *         .  .      .
+	   *     .      .   .  .
+	   *  .         .      .
+	   * p1 .... p2 .      .
+	   * .       .  p7    .p8
+	   * .  .    .     .
+	   * p3 .... p4 . 
+	   *
 	   * @brief calculates the normal of a (rectangular) plane
 	   * @param p1
 	   * @param p2
@@ -83,6 +93,9 @@ import javax.vecmath.Vector3f;
 	   * @return 
 	   */
 	  private static Vector3f calculateNormal(Vector3f p1, Vector3f p2, Vector3f p3, Vector3f p4) {
+		  /**
+		   * @todo this is wrong here ... normals are arbitrary orientated, not necessarily to outside or to inside
+		   */
 		Vector3f a = new Vector3f(p3);
 		a.sub(p2);
 		Vector3f b = new Vector3f(p1);
@@ -716,6 +729,135 @@ public final class SWCUtility {
 		}
 		return kd;
 	}
+	
+	/**
+	 * 
+	 * @param v1
+	 * @param v2
+	 * @param boxMin
+	 * @param boxMax
+	 * @return 
+	 */
+	public static Pair<Boolean, Pair<Float, Float>> LineBoxIntersection(Vector3f v1, Vector3f v2, Vector3f boxMin, Vector3f boxMax) {
+		Vector3f vDir = new Vector3f(v2);
+		vDir.sub(v1);
+		Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(v1, vDir, boxMin, boxMax);
+		
+		if (res.getFirst()) {
+			float tNear = res.getSecond().getFirst();
+			float tFar = res.getSecond().getSecond();
+			if ((tNear * tFar < 0) || (tNear >= 0 && tNear <= 1.)) {
+				return res;
+			}
+		}
+		return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(res.getSecond().getFirst(), res.getSecond().getFirst()));
+	}
+	
+	/**
+	 * 
+	 * @param rayFrom
+	 * @param rayDir
+	 * @param boxMin
+	 * @param boxMax
+	 * @return 
+	 */
+	public static Pair<Boolean, Pair<Float, Float>> RayBoxIntersection(Vector3f rayFrom, Vector3f rayDir, Vector3f boxMin, Vector3f boxMax) {
+		Pair<Boolean, Pair<Float, Float>> res = new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0.f, 0.f));
+		float t1, t2;
+		boolean bMinMaxSet = false;
+		float eps = 1e-6f;
+		float tMin = -1f, tMax = -1f;
+		float tNearOut, tFarOut;
+
+		if (Math.abs(rayDir.x) > eps) {
+			t1 = (boxMin.x - rayFrom.x) / rayDir.x;	
+			t2 = (boxMax.x - rayFrom.x) / rayDir.x;
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+			tMin = t1;
+			tMax = t2;
+			bMinMaxSet = true;
+		} else {
+			if (rayFrom.x < boxMin.x) {
+				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+			}
+			if (rayFrom.x > boxMax.x) {
+				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+			}
+		}
+		
+		if (Math.abs(rayDir.y) > eps) {
+			t1 = (boxMin.y - rayFrom.y) / rayDir.y;
+			t2 = (boxMax.y - rayFrom.y) / rayDir.y;
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+			if (bMinMaxSet) {
+				if ((t1 <= tMax) && (t2 >= tMin)) {
+					tMin = Math.max(t1, tMin);
+					tMax = Math.min(t2, tMax);
+				} else {
+					return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+				}
+			} else {
+				tMin = t1;
+				tMax = t2;
+			}
+		} else {
+			if (rayFrom.y < boxMin.y) {
+				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+			}
+			if (rayFrom.y > boxMax.y) {
+				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+			}
+		}
+
+	if (Math.abs(rayDir.z) > eps) {
+		t1 = (boxMin.z - rayFrom.z) / rayDir.z;
+		t2 = (boxMax.z - rayFrom.z) / rayDir.z;
+		if (t1 > t2) {
+			float temp = t1;
+			t1 = t2;
+			t2 = temp;
+		}
+		if (bMinMaxSet) {
+			if ((t1 <= tMax) && (t2 >= tMin)) {
+				tMin = Math.max(t1, tMin);
+				tMax = Math.min(t2, tMax);
+			} else {
+				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+			}
+		} else {
+			tMin = t1;
+			tMax = t2;
+		}
+		bMinMaxSet = true;
+	} else {
+		if (rayFrom.z < boxMin.z) {
+			return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+		} 
+		if (rayFrom.z > boxMax.z) {
+			return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
+		}
+	}
+	
+	if (bMinMaxSet) {
+		if (Math.abs(tMin) > Math.abs(tMax)) {
+			float temp = tMin;
+			tMin = tMax;
+			tMax = temp;
+		}
+		tNearOut = tMin;
+		tFarOut = tMax;
+		return new Pair<Boolean, Pair<Float, Float>>(true, new Pair<Float, Float>(tNearOut, tFarOut));
+	} 
+	return new Pair<Boolean, Pair<Float, Float>>(true, new Pair<Float, Float>(0f, 0f));
+}
 	
 	/**
 	 * @brief main method
