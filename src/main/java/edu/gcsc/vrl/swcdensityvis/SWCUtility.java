@@ -247,9 +247,9 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 100.f;
-	  final float height = 100.f; 
-	  final float depth = 100.f; 
+	  final float width = 1.f;
+	  final float height = 1.f; 
+	  final float depth = 1.f; 
 	
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
@@ -513,13 +513,16 @@ public final class SWCUtility {
 			Vector3f dir = new Vector3f(p2);
 			dir.sub(p1);
 			for (int i = 0; i < 6; i++) {
-				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, dir, cube_points.get(i), cube_normals.get(i), 1.0e-12f);
+				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, dir, cube_points.get(i), cube_normals.get(i), 1.0e-6f);
 				if (intersects.getFirst()) {
 					Vector3f temp = new Vector3f(intersects.getSecond());
 					temp.sub(p1);
 					length += temp.length();
 					/**
 					 * @todo this calculation is wrong -> leads to large dendritic lengthes if sampling cube is really small 1x1x1 micron. 
+					 */
+					/**
+					 * @todo use also RayBoxIntersection
 					 */
 				}
 			}
@@ -533,7 +536,7 @@ public final class SWCUtility {
 			Vector3f dir = new Vector3f(p1);
 			dir.sub(p2);
 			for (int i = 0; i < 6; i++) {
-				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p2, dir, cube_points.get(i), cube_normals.get(i), 1.0e-12f);
+				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p2, dir, cube_points.get(i), cube_normals.get(i), 1.0e-6f);
 				if (intersects.getFirst()) {
 					Vector3f temp = new Vector3f(intersects.getSecond());
 					temp.sub(p2);
@@ -652,7 +655,7 @@ public final class SWCUtility {
 			v.scale(tOut, rayDir);
 			Vector3f vOut = new Vector3f();
 			vOut.add(rayFrom, v);
-			/// this actually is line plane intersection?! here is something wrong ...
+			/// here could be something wrong too
 			if (tOut <= 1. + tol && tOut >= -tol) {
 				return new Pair<Boolean, Vector3f>(true, vOut);
 			} else {
