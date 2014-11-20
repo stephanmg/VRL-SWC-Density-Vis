@@ -8,16 +8,19 @@ package edu.gcsc.vrl.swcdensityvis.test;
 
 import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.SWCUtility;
+import eu.mihosoft.vrl.reflection.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 /**
  *
@@ -43,6 +46,75 @@ public class SWCUtilityTests {
 	@After
 	public void tearDown() {
 	}
+	
+	@Test
+	public void testRayBoxIntersectionTestX() {
+		Vector3f p1 = new Vector3f(0.5f, 0.5f, 0.5f);
+		Vector3f p2 = new Vector3f(1.5f, 0.5f, 0.5f);
+		Vector3f dir = new Vector3f(p2);
+		dir.sub(p1);
+		
+		Vector3f boxmin = new Vector3f(0, 0, 0);
+		Vector3f boxmax = new Vector3f(1, 1, 1);
+		Pair<Boolean, Pair<Float, Float>> res = SWCUtility.RayBoxIntersection(p1, dir, boxmin, boxmax);
+		assertTrue(res.getFirst());
+		
+		Vector3f x1 = new Vector3f(p1);
+		Vector3f scaled1 = new Vector3f(dir);
+		scaled1.scale(res.getSecond().getFirst());
+
+		x1.add(scaled1);
+
+		Vector3f segment = new Vector3f(x1);				
+		segment.sub(p1);
+		assertTrue(segment.length() == 0.5);
+	}
+	@Test
+	public void testRayBoxIntersectionTestY() {
+		Vector3f p1 = new Vector3f(0.5f, 0.5f, 0.5f);
+		Vector3f p2 = new Vector3f(0.5f, 1.5f, 0.5f);
+		Vector3f dir = new Vector3f(p2);
+		dir.sub(p1);
+		
+		Vector3f boxmin = new Vector3f(0, 0, 0);
+		Vector3f boxmax = new Vector3f(1, 1, 1);
+		Pair<Boolean, Pair<Float, Float>> res = SWCUtility.RayBoxIntersection(p1, dir, boxmin, boxmax);
+		assertTrue(res.getFirst());
+		
+		Vector3f x1 = new Vector3f(p1);
+		Vector3f scaled1 = new Vector3f(dir);
+		scaled1.scale(res.getSecond().getFirst());
+
+		x1.add(scaled1);
+
+		Vector3f segment = new Vector3f(x1);				
+		segment.sub(p1);
+		assertTrue(segment.length() == 0.5);
+	}
+	
+	@Test
+	public void testRayBoxIntersectionTestZ() {
+		Vector3f p1 = new Vector3f(0.5f, 0.5f, 0.5f);
+		Vector3f p2 = new Vector3f(0.5f, 0.5f, 1.5f);
+		Vector3f dir = new Vector3f(p2);
+		dir.sub(p1);
+		
+		Vector3f boxmin = new Vector3f(0, 0, 0);
+		Vector3f boxmax = new Vector3f(1, 1, 1);
+		Pair<Boolean, Pair<Float, Float>> res = SWCUtility.RayBoxIntersection(p1, dir, boxmin, boxmax);
+		assertTrue(res.getFirst());
+		
+		Vector3f x1 = new Vector3f(p1);
+		Vector3f scaled1 = new Vector3f(dir);
+		scaled1.scale(res.getSecond().getFirst());
+
+		x1.add(scaled1);
+
+		Vector3f segment = new Vector3f(x1);				
+		segment.sub(p1);
+		assertTrue(segment.length() == 0.5);
+	}
+	
 	
 	/*
 	@Test

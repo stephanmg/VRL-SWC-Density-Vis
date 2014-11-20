@@ -247,9 +247,9 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 1.f;
-	  final float height = 1.f; 
-	  final float depth = 1.f; 
+	  final float width = 10.f;
+	  final float height = 10.f; 
+	  final float depth = 10.f; 
 	
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
@@ -395,15 +395,11 @@ public final class SWCUtility {
 				 
 				/// sampling cube normals stay the same within one cuboid and also the plane describing vertices inside the plane
 				 for (ArrayList<Vector3f> elem : temps) { 
-				ArrayList<Vector3f> cube_points = new ArrayList<Vector3f>(Arrays.asList(p2, p5, p6, p1, p4, p5));
-				ArrayList<Vector3f> normals = SamplingCuboid.getSamplingCuboidNormals(p1, p2, p3, p4, p5, p6, p7, p8); 
 				 /// starting vertex is the last element in the attached meta data for each node in the kd-tree
 				  Vector3f starting_vertex = new Vector3f(elem.get(elem.size()-1));
 				   
-					float val = 0.f;
-					/// determine the amount of edge in the sampling cube for each edge
-					val += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem, cube_points, normals);
-					length+=val;
+				/// determine the amount of edge in the sampling cube for each edge
+				length += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem);
 				 }
 				 // add summed length to cuboids, if length is not null, to hashmap.
 				 // this is sparse then
@@ -477,7 +473,7 @@ public final class SWCUtility {
 	 
 	/**
 	 * @brief  
-	 * @todo check if this is correct -> introduce JUnit Tests.
+	 * @todo check if this is correct -> introduce JUnit Tests. case 1 is verified, case 2, 3 needs to be verified
 	 * @param x
 	 * @param y
 	 * @param z
@@ -486,14 +482,12 @@ public final class SWCUtility {
 	 * @param depth
 	 * @param p1
 	 * @param end_vertices
-	 * @param cube_points
-	 * @param cube_normals
 	 * @return 
 	 */
-	public static float EdgeSegmentWithinCuboid(float x, float y, float z, float width, float height, float depth, Vector3f p1, ArrayList<Vector3f> end_vertices, ArrayList<Vector3f> cube_points, ArrayList<Vector3f> cube_normals) {
+	public static float EdgeSegmentWithinCuboid(float x, float y, float z, float width, float height, float depth, Vector3f p1, ArrayList<Vector3f> end_vertices) {
 		float length = 0.f;
 	for (Vector3f p2 : end_vertices) {
-		/// Case 1: Both vertices inside cube
+		/// Case 1: Both vertices inside cube (verified to work)
 		if ( ((p1.x <= x+width && p1.x >= x) &&
 		      (p1.y <= y+height && p1.y >= y) && 
 		      (p1.z <= z+depth && p1.z >= z)) &&
@@ -512,19 +506,17 @@ public final class SWCUtility {
 		      (p1.z <= z+depth && p1.z >= z))) ) { 
 			Vector3f dir = new Vector3f(p2);
 			dir.sub(p1);
-			for (int i = 0; i < 6; i++) {
-				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, dir, cube_points.get(i), cube_normals.get(i), 1.0e-6f);
-				if (intersects.getFirst()) {
-					Vector3f temp = new Vector3f(intersects.getSecond());
-					temp.sub(p1);
-					length += temp.length();
-					/**
-					 * @todo this calculation is wrong -> leads to large dendritic lengthes if sampling cube is really small 1x1x1 micron. 
-					 */
-					/**
-					 * @todo use also RayBoxIntersection
-					 */
-				}
+			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
+			if (res.getFirst()) {
+				Vector3f x1 = new Vector3f(p1);
+				Vector3f scaled1 = new Vector3f(dir);
+				scaled1.scale(res.getSecond().getFirst());
+
+				x1.add(scaled1);
+
+				Vector3f segment = new Vector3f(x1);				
+				segment.sub(p1);
+				length += segment.length();
 			}
 		/// Case 2: One vertex inside cube (p1 out, p2 in)
 		} else if  ( ((p1.x > x+width || p1.x < x) || 
@@ -535,14 +527,18 @@ public final class SWCUtility {
 		      (p2.z <= z+depth && p2.z >= z))) ) { 
 			Vector3f dir = new Vector3f(p1);
 			dir.sub(p2);
-			for (int i = 0; i < 6; i++) {
-				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p2, dir, cube_points.get(i), cube_normals.get(i), 1.0e-6f);
-				if (intersects.getFirst()) {
-					Vector3f temp = new Vector3f(intersects.getSecond());
-					temp.sub(p2);
-					length += temp.length();
-				}
-			}	
+			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p2, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
+			if (res.getFirst()) {
+				Vector3f x1 = new Vector3f(p2);
+				Vector3f scaled1 = new Vector3f(dir);
+				scaled1.scale(res.getSecond().getFirst());
+
+				x1.add(scaled1);
+
+				Vector3f segment = new Vector3f(x1);				
+				segment.sub(p2);
+				length += segment.length();
+			}
 		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside
 		} else if  ( ( (p1.x > x+width || p1.x < x) ||
 		      (p1.y > y+height || p1.y < y) || 
@@ -570,7 +566,7 @@ public final class SWCUtility {
 			} 
 		/// Case 4: if this happens, then something is wrong with the conditionals above.
 		} else {
-			System.out.println("p1: " + p1 + ", p2: " + p2 + ", x: " + x + ", y: " + y + ", z: " + z + ", , width+x: " + (width+x) + ", height+y: " + (height+y) + ", depth+z: " + (depth+z));
+			System.err.println("p1: " + p1 + ", p2: " + p2 + ", x: " + x + ", y: " + y + ", z: " + z + ", , width+x: " + (width+x) + ", height+y: " + (height+y) + ", depth+z: " + (depth+z));
 		}
 	}	
 	return length;
@@ -632,42 +628,8 @@ public final class SWCUtility {
 		return kd;
 	}
 
-
-	
-
 	/**
-	 * @brief determines the first intersection point of a ray with a plane
-	 * @param rayFrom
-	 * @param rayDir
-	 * @param p
-	 * @param normal
-	 * @param tol
-	 * @return 
-	 */
-	public static Pair<Boolean, Vector3f> RayPlaneIntersection(Vector3f rayFrom, Vector3f rayDir, Vector3f p, Vector3f normal, float tol) {
-		float denom = rayDir.dot(normal);
-		if (Math.abs(denom) < tol) {
-			return new Pair<Boolean, Vector3f>(false, new Vector3f());
-		} else {
-			Vector3f v = new Vector3f(p);
-			v.sub(rayFrom);
-			Float tOut = v.dot(normal) / denom;
-			v.scale(tOut, rayDir);
-			Vector3f vOut = new Vector3f();
-			vOut.add(rayFrom, v);
-			/// here could be something wrong too
-			if (tOut <= 1. + tol && tOut >= -tol) {
-				return new Pair<Boolean, Vector3f>(true, vOut);
-			} else {
-				return new Pair<Boolean, Vector3f>(false, vOut);
-			}	
-		}
-	}
-	
-	
-	
-	/**
-	 * 
+	 * @brief 
 	 * @param rayFrom
 	 * @param rayDir
 	 * @param boxMin
@@ -675,7 +637,7 @@ public final class SWCUtility {
 	 * @return 
 	 */
 	public static Pair<Boolean, Pair<Float, Float>> RayBoxIntersection(Vector3f rayFrom, Vector3f rayDir, Vector3f boxMin, Vector3f boxMax) {
-		Pair<Boolean, Pair<Float, Float>> res = new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0.f, 0.f));
+		
 		float t1, t2;
 		boolean bMinMaxSet = false;
 		float eps = 1e-6f;
@@ -701,6 +663,8 @@ public final class SWCUtility {
 				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
 			}
 		}
+
+		
 		
 		if (Math.abs(rayDir.y) > eps) {
 			t1 = (boxMin.y - rayFrom.y) / rayDir.y;
@@ -721,6 +685,7 @@ public final class SWCUtility {
 				tMin = t1;
 				tMax = t2;
 			}
+			bMinMaxSet = true;
 		} else {
 			if (rayFrom.y < boxMin.y) {
 				return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(-1f, -1f));
@@ -769,9 +734,7 @@ public final class SWCUtility {
 		tFarOut = tMax;
 		return new Pair<Boolean, Pair<Float, Float>>(true, new Pair<Float, Float>(tNearOut, tFarOut));
 	} 
-	/**
-	 * @todo here we need to implement some more code
-	 */
+	/// if ray has no direction, then return no intersection
 	return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0f, 0f));
 }
 
