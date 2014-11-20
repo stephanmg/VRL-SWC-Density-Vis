@@ -375,9 +375,6 @@ public final class SWCUtility {
 				 double[] upper = {x+width+lambda_x, y+height+lambda_y, z+depth+lambda_z};
 				 double[] lower = {x-lambda_x, y-lambda_y, z-lambda_z};
 				 
-				 ///double[] upper = {x+width+lambda, y+height+lambda, z+depth+lambda};
-				 ///double[] lower = {x-lambda, y-lambda, z-lambda};
-				 
 				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
 				 /// speed bottleneck is here the kdtree obvious
 				 /// note: that up to 1,000,000,000 iterations it's quite fine
