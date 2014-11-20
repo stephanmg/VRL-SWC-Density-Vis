@@ -247,9 +247,9 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 1.f;
-	  final float height = 1.f; 
-	  final float depth = 1.f; 
+	  final float width = 100.f;
+	  final float height = 100.f; 
+	  final float depth = 100.f; 
 	
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
@@ -500,14 +500,13 @@ public final class SWCUtility {
 		     ((p2.x <= x+width && p2.x >= x) &&
 		      (p2.y <= y+height && p2.y >= y) && 
 		      (p2.z <= z+depth && p2.z >= z)) ) {
-			//System.err.println("if");
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
 			length += temp.length();
-		/// Case 2: One vertex inside the cube
-		} else if ( ((p2.x > x+width || p2.x < x) &&
-		      (p2.y > y+height || p2.y < y) && 
-		      (p2.z > z+depth || p2.z < z)) &&
+		/// Case 2: One vertex inside the cube (p1 in, p2 out)
+		} else if ( ((p2.x > x+width || p2.x < x) || 
+		      (p2.y > y+height || p2.y < y) || 
+		      (p2.z > z+depth || p2.z < z)) || 
 			 ( ((p1.x <= x+width && p1.x >= x) &&
 		      (p1.y <= y+height && p1.y >= y) && 
 		      (p1.z <= z+depth && p1.z >= z))) ) { 
@@ -519,11 +518,14 @@ public final class SWCUtility {
 					Vector3f temp = new Vector3f(intersects.getSecond());
 					temp.sub(p1);
 					length += temp.length();
+					/**
+					 * @todo this calculation is wrong -> leads to large dendritic lengthes if sampling cube is really small 1x1x1 micron. 
+					 */
 				}
 			}
-		/// Case 2: One vertex inside cube
-		} else if  ( ((p1.x > x+width || p1.x < x) &&
-		      (p1.y > y+height || p1.y < y) && 
+		/// Case 2: One vertex inside cube (p1 out, p2 in)
+		} else if  ( ((p1.x > x+width || p1.x < x) || 
+		      (p1.y > y+height || p1.y < y) || 
 		      (p1.z > z+depth || p1.z < z)) &&
 			 ( ((p2.x <= x+width && p2.x >= x) &&
 		      (p2.y <= y+height && p2.y >= y) && 
@@ -539,15 +541,12 @@ public final class SWCUtility {
 				}
 			}	
 		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside
-		} else { /**
-		 * @todo this catches also some cases which we dont really want to catch!
-		 */
-		/*} else if  ( ( (p1.x > x+width || p1.x < x) ||
+		} else if  ( ( (p1.x > x+width || p1.x < x) ||
 		      (p1.y > y+height || p1.y < y) || 
 		      (p1.z > z+depth || p1.z < z) )  && 
 			  ( (p2.x > x+width || p2.x < x) || 
 		      (p2.y > y+height || p2.y < y) || 
-		      (p2.z > z+depth || p2.z < z) ) ) { */
+		      (p2.z > z+depth || p2.z < z) ) ) { 
 			Vector3f dir = new Vector3f(p1);
 			dir.sub(p2);
 			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
@@ -566,12 +565,10 @@ public final class SWCUtility {
 				segment.sub(x1);
 				length += segment.length();
 			} 
+		/// Case 4: if this happens, then something is wrong with the conditionals above.
+		} else {
+			System.out.println("p1: " + p1 + ", p2: " + p2 + ", x: " + x + ", y: " + y + ", z: " + z + ", , width+x: " + (width+x) + ", height+y: " + (height+y) + ", depth+z: " + (depth+z));
 		}
-			
-			/**
-			 * @todo we should never be here. this is an error.
-			 */
-			//System.err.println("never ever we should be here");
 	}	
 	return length;
 }
