@@ -247,9 +247,9 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 10.f;
-	  final float height = 10.f; 
-	  final float depth = 10.f; 
+	  final float width = 1.f;
+	  final float height = 1.f; 
+	  final float depth = 1.f; 
 	
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
@@ -263,7 +263,7 @@ public final class SWCUtility {
 	   * 
 	   * @todo KD TREE is not necessary, we could just go over the EDGES directly... if we have very few edges
 	   *       but how do we get edges which do not have one vertex at least in the cuboid then?! 
-	   *       (e. g. Case 3 ideas added already below)
+	   *       (e. g. Case 3 ideas added already below) so we can here use the approach suggested by gillian
 	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
 	   * 
 	   * @see la4j package @ http://la4j.org/
@@ -539,12 +539,15 @@ public final class SWCUtility {
 				}
 			}	
 		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside
-		} else if  ( ( (p1.x > x+width || p1.x < x) ||
+		} else { /**
+		 * @todo this catches also some cases which we dont really want to catch!
+		 */
+		/*} else if  ( ( (p1.x > x+width || p1.x < x) ||
 		      (p1.y > y+height || p1.y < y) || 
 		      (p1.z > z+depth || p1.z < z) )  && 
 			  ( (p2.x > x+width || p2.x < x) || 
 		      (p2.y > y+height || p2.y < y) || 
-		      (p2.z > z+depth || p2.z < z) ) ) { 
+		      (p2.z > z+depth || p2.z < z) ) ) { */
 			Vector3f dir = new Vector3f(p1);
 			dir.sub(p2);
 			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
@@ -563,127 +566,16 @@ public final class SWCUtility {
 				segment.sub(x1);
 				length += segment.length();
 			} 
-		} else {
+		}
+			
 			/**
 			 * @todo we should never be here. this is an error.
 			 */
 			//System.err.println("never ever we should be here");
-		}
 	}	
 	return length;
 }
-	/**
-	 * @brief determines amount of an edge within an sampling cube
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param width
-	 * @param height
-	 * @param depth
-	 * @param p1
-	 * @param p2
-	 * @param v1
-	 * @param v2
-	 * @param normal
-	 * @return 
-	 * 
-	 * @todo: note better implement a function like RayBoxIntersection, or we use all faces of the cube and call RayPlaneIntersection... revise for speedup of computation
-	 */
-	public static float EdgeSegmentWithinCuboid(float x, float y, float z, float width, float height, float depth, Vector3f p1, Vector3f p2, Vector3f v1, Vector3f v2, Vector3f normal) {
-		/// Case 1: Both vertices inside cube
-		if ( ((p1.x <= x+width && p1.x >= x) &&
-		      (p1.y <= y+height && p1.y >= y) && 
-		      (p1.z <= z+depth && p1.z >= z)) &&
-		     ((p2.x <= x+width && p2.x >= x) &&
-		      (p2.y <= y+height && p2.y >= y) && 
-		      (p2.z <= z+depth && p2.z >= z)) ) {
-			//System.err.println("if");
-			Vector3f temp = new Vector3f(p1);
-			temp.sub(p2);
-			return temp.length();
-		/// Case 2: One vertex inside cube 
-		} else if ( ((p1.x <= x+width && p1.x >= x) &&
-		      (p1.y <= y+height && p1.y >= y) && 
-		      (p1.z <= z+depth && p1.z >= z)) || 
-		     ((p2.x <= x+width && p2.x >= x) &&
-		      (p2.y <= y+height && p2.y >= y) && 
-		      (p2.z <= z+depth && p2.z >= z)) ) {
-			//System.err.println("else if");
-			if (((p1.x <= x+width && p1.x >= x) &&
-		      		(p1.y <= y+height && p1.y >= y) && 
-		      		(p1.z <= z+depth && p1.z >= z))) {
-				/// if p1 inside, construct line starting from p1
-				Vector3f vOut = new Vector3f();
-				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, v1, v2, normal, 1.0e-6f);
-				if (intersects.getFirst()) {
-					Vector3f temp = new Vector3f(vOut);
-					temp.sub(p1);
-					//return temp.length();
-					return 0;
-				} else {
-					return 0;
-				}
-				
-			} else {
-				//System.err.println("else");
-				Vector3f vOut = new Vector3f();
-				Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p2, v1, v2, normal, 1.0e-6f);
-				if (intersects.getFirst()) {
-					Vector3f temp = new Vector3f(vOut);
-					temp.sub(p1);
-					//return temp.length();
-					return 0;
-				} else {
-					return 0;
-				}
-			}
-		/// Case 3: Both vertices outside the cube (can not happen, but must be handled!)
-		} else {
-			System.err.println("else branch (in the implementation this cannot happen)!");
-			Vector3f vOut1 = new Vector3f();
-			Vector3f vOut2 = new Vector3f();
-			Pair<Boolean, Vector3f> intersects = RayPlaneIntersection(p1, v1, v2, normal, 1.0e-6f);
-			Pair<Boolean, Vector3f> intersects2 = RayPlaneIntersection(p2, v1, v2, normal, 1.0e-6f);
-			if (intersects.getFirst() && intersects2.getFirst()) {
-				Vector3f temp = new Vector3f(vOut1);
-				temp.sub(vOut2);
-				return temp.length();
-			} else {
-				return 0;
-			}
-		}
-	}
-	
-	
-	/**
-	 * @brief determines the first intersection point of a ray with a plane
-	 * @param rayFrom
-	 * @param rayDir
-	 * @param p
-	 * @param normal
-	 * @param tol
-	 * @return 
-	 */
-	public static Pair<Boolean, Vector3f> RayPlaneIntersection(Vector3f rayFrom, Vector3f rayDir, Vector3f p, Vector3f normal, float tol) {
-		float denom = rayDir.dot(normal);
-		if (Math.abs(denom) < tol) {
-			return new Pair<Boolean, Vector3f>(false, new Vector3f());
-		} else {
-			Vector3f v = new Vector3f(p);
-			v.sub(rayFrom);
-			Float tOut = v.dot(normal) / denom;
-			v.scale(tOut, rayDir);
-			Vector3f vOut = new Vector3f();
-			vOut.add(rayFrom, v);
-			/// this actually is line plane intersection?! here is something wrong ...
-			if (tOut <= 1. + tol && tOut >= -tol) {
-				return new Pair<Boolean, Vector3f>(true, vOut);
-			} else {
-				return new Pair<Boolean, Vector3f>(false, vOut);
-			}	
-		}
-	}
-	
+
 	/**
 	 * @brief get all incident vertices
 	 * @todo see implementation notes concerning speedup of computation
@@ -739,29 +631,40 @@ public final class SWCUtility {
 		}
 		return kd;
 	}
+
+
 	
+
 	/**
-	 * 
-	 * @param v1
-	 * @param v2
-	 * @param boxMin
-	 * @param boxMax
+	 * @brief determines the first intersection point of a ray with a plane
+	 * @param rayFrom
+	 * @param rayDir
+	 * @param p
+	 * @param normal
+	 * @param tol
 	 * @return 
 	 */
-	public static Pair<Boolean, Pair<Float, Float>> LineBoxIntersection(Vector3f v1, Vector3f v2, Vector3f boxMin, Vector3f boxMax) {
-		Vector3f vDir = new Vector3f(v2);
-		vDir.sub(v1);
-		Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(v1, vDir, boxMin, boxMax);
-		
-		if (res.getFirst()) {
-			float tNear = res.getSecond().getFirst();
-			float tFar = res.getSecond().getSecond();
-			if ((tNear * tFar < 0) || (tNear >= 0 && tNear <= 1.)) {
-				return res;
-			}
+	public static Pair<Boolean, Vector3f> RayPlaneIntersection(Vector3f rayFrom, Vector3f rayDir, Vector3f p, Vector3f normal, float tol) {
+		float denom = rayDir.dot(normal);
+		if (Math.abs(denom) < tol) {
+			return new Pair<Boolean, Vector3f>(false, new Vector3f());
+		} else {
+			Vector3f v = new Vector3f(p);
+			v.sub(rayFrom);
+			Float tOut = v.dot(normal) / denom;
+			v.scale(tOut, rayDir);
+			Vector3f vOut = new Vector3f();
+			vOut.add(rayFrom, v);
+			/// this actually is line plane intersection?! here is something wrong ...
+			if (tOut <= 1. + tol && tOut >= -tol) {
+				return new Pair<Boolean, Vector3f>(true, vOut);
+			} else {
+				return new Pair<Boolean, Vector3f>(false, vOut);
+			}	
 		}
-		return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(res.getSecond().getFirst(), res.getSecond().getFirst()));
 	}
+	
+	
 	
 	/**
 	 * 
@@ -871,6 +774,8 @@ public final class SWCUtility {
 	 */
 	return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0f, 0f));
 }
+
+
 	
 	/**
 	 * @brief main method
