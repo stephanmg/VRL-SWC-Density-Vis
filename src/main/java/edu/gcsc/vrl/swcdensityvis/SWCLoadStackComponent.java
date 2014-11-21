@@ -69,3 +69,4 @@ public class SWCLoadStackComponent implements Serializable {
 		eu.mihosoft.vrl.system.VMessage.info("Successfully parsed the SWC file.", "");
 	}
 }
+

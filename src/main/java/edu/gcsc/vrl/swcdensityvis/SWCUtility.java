@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
+/// imports
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeySizeException;
@@ -26,86 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.vecmath.Vector3f;
-
- /**
-   * @brief calculate sampling cuboid normals (note: as they dont change 
-   * 		we can also call this once for our (invariant) sampling cuboid)
-   */
-  class SamplingCuboid {
-	private static final SamplingCuboid instance = new SamplingCuboid();
-	
-	private SamplingCuboid() {
-	}
-
-  	public static SamplingCuboid getInstance() {
-   		return SamplingCuboid.instance;
-	}
-
-	  /**      
-	   * @brief calculates all normals of a cuboid
-	   *              
-	   *            p5 .... p6    
-	   *         .  .      .
-	   *     .      .   .  .
-	   *  .         .      .
-	   * p1 .... p2 .      .
-	   * .       .  p7    .p8
-	   * .  .    .     .
-	   * p3 .... p4 . 
-	   * 
-	   * @param p1
-	   * @param p2
-	   * @param p3
-	   * @param p4
-	   * @param p5
-	   * @param p6
-	   * @return 
-	   */
-	  public static ArrayList<Vector3f> getSamplingCuboidNormals(Vector3f p1, Vector3f p2, Vector3f p3, Vector3f p4, Vector3f p5, Vector3f p6, Vector3f p7, Vector3f p8) {
-		ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
-		temp.add(calculateNormal(p3, p4, p2, p1)); // front
-		temp.add(calculateNormal(p8, p7, p5, p6)); // rear
-		temp.add(calculateNormal(p4, p8, p6, p2)); // right
-		temp.add(calculateNormal(p7, p3, p1, p5)); // left
-		temp.add(calculateNormal(p3, p4, p8, p7)); // bottom
-		temp.add(calculateNormal(p1, p2, p6, p5)); // top
-		return temp;
-	  }
-		
-	  /**
-	   * 
-	   *              
-	   *            p5 .... p6    
-	   *         .  .      .
-	   *     .      .   .  .
-	   *  .         .      .
-	   * p1 .... p2 .      .
-	   * .       .  p7    .p8
-	   * .  .    .     .
-	   * p3 .... p4 . 
-	   *
-	   * @brief calculates the normal of a (rectangular) plane
-	   * @param p1
-	   * @param p2
-	   * @param p3
-	   * @param p4
-	   * @return 
-	   */
-	  private static Vector3f calculateNormal(Vector3f bottomleft, Vector3f bottomright, Vector3f topright, Vector3f topleft) {
-		  /**
-		   * @todo this is wrong here ... normals are arbitrary orientated, not necessarily to outside or to inside
-		   */
-		Vector3f a = new Vector3f(topleft);
-		a.sub(bottomleft);
-		Vector3f b = new Vector3f(bottomright);
-		b.sub(bottomleft);
-		Vector3f c = new Vector3f();
-		c.cross(a, b);
-		//c.normalize();
-		return c;
-	  }
-  }
-	
 
 /**
  *
@@ -181,15 +97,14 @@ public final class SWCUtility {
 	return compartments;
 	}
 	
-	
 	/**
 	 * @brief get bounding box for an anonymous cell
 	 * @param cell
 	 * @return pair min max coordinates 3d
 	 */
-	public static Pair<Vector3f, Vector3f> getBoundingBox(final ArrayList<SWCCompartmentInformation> cell) {
+	public static Pair<Vector3f, Vector3f> getBoundingBox(final Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
 		return getBoundingBox(	new HashMap<String, ArrayList<SWCCompartmentInformation>>()
-						{{ put("Anonymous cell", cell); }}
+						{{ put(cell.getKey(), cell.getValue()); }}
 					);
 	}
 	
@@ -234,6 +149,17 @@ public final class SWCUtility {
 	}
 	
 	/**
+	 * @brief get dimensions for a named cell
+	 * @param cell
+	 * @return 
+	 */
+	public static Vector3f getDimensions(final Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
+		return getDimensions(new HashMap<String, ArrayList<SWCCompartmentInformation>>()
+						{{ put(cell.getKey(), cell.getValue()); }});
+
+	}
+	
+	/**
 	 * @brief compute dendritic length in cuboid
 	 * @return a hashmap representing dendritic length in each sampling cuboid
 	 * @param cells
@@ -252,19 +178,11 @@ public final class SWCUtility {
 
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
-	   *
-	   * @todo RayPlaneIntersection is errorneous, this needs to be fixed immediately before resolving
-	   *       potential speed bottlenecks (see the next todos) or the cube construction may be (!!) errorneous.
-	   * @todo probably the cuboids dont need to be created explicit, thus performance should increase
-	   * @todo revise the intersection algorithms in general for speed bottlenecks and correcteness:
-	   *        the edge length detection still seems to be at a point errorneous...
-	   * @todo revise the buildKDtree (* most sever speed trap)
-	   * 
-	   * @todo KD TREE is not necessary, we could just go over the EDGES directly... if we have very few edges
-	   *       but how do we get edges which do not have one vertex at least in the cuboid then?! 
-	   *       (e. g. Case 3 ideas added already below) so we can here use the approach suggested by gillian
-	   * @todo probably we should use sparse data structure instead of the HashMap approach (see below)
-	   * 
+	   * @todo performance penalties: i. build kdtree and operations on kdtree (maybe we don't need the kdtree,
+	   *                                 this could probably the case if we have geometries with a few edges!)
+	   * 			         ii. intersection algorithms
+	   * 				iii. hashmap as sparse data structure, maybe we should chose some structure
+	   *                                 from the linear algebra for java package, cf. below
 	   * @see la4j package @ http://la4j.org/
 	   */
 	  class PartialDensityComputer implements Callable<HashMap<Integer, Float>> {
@@ -286,7 +204,7 @@ public final class SWCUtility {
 
  		 @Override 
 		 public HashMap<Integer, Float> call() {
-		   /// preprocess, determine characteristic edge length
+		   /// preprocess, determine characteristic edge length (one can chose also something different)
 		   int size = 0;
 		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
 		   //ArrayList<Float> e_lengths = new ArrayList<Float>(incidents.size());
@@ -308,12 +226,6 @@ public final class SWCUtility {
 		   System.out.println("Characteristic edge length for x-coordinate [\\mu m]: " + lambda_x);
 		   System.out.println("Characteristic edge length for y-coordinate [\\mu m]: " + lambda_y);
 		   System.out.println("Characteristic edge length for z-coordinate [\\mu m]: " + lambda_z);
-		   
-		   /// increate performance. if bounding box already larger as characteristic edge length
-		   /// then it is safe to set the lambda offset to zero
-		   /*if (width  > 2*lambda_x) { lambda_x = 0; }
-		   if (height > 2*lambda_y) { lambda_y = 0; }
-		   if (depth  > 2*lambda_z) { lambda_z = 0; }*/
 		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
@@ -342,29 +254,11 @@ public final class SWCUtility {
 				   *
 				   *
 				   */
-				  /// we search within the charachteristic length boundaries, then we consider
-				 /// later only width and height and length boxes for intersections or we
-				 /// may use Gillians approach 
-				
-				 /// note: optimization is pari with non-optimization for boundary for now
-				 /*float lambda_x_min = lambda, lambda_y_min = lambda, lambda_z_min = lambda;
-				 float lambda_x_max = lambda, lambda_y_max = lambda, lambda_z_max = lambda;
-				 
-				 if (lambda < (x - bounding.getSecond().x)) lambda_x_min = 0;
-				 if (lambda < (y - bounding.getSecond().y)) lambda_y_min = 0;
-				 if (lambda < (z - bounding.getSecond().z)) lambda_z_min = 0;
-				 
-				 if (lambda < (bounding.getSecond().x - x)) lambda_x_max = 0;
-				 if (lambda < (bounding.getSecond().y - y)) lambda_y_max = 0;
-				 if (lambda < (bounding.getSecond().z - z)) lambda_z_max = 0;
-				 
-				 double[] upper = {x+width+lambda_x_max, y+height+lambda_y_max, z+depth+lambda_z_max};
-				 double[] lower = {x-lambda_x_min, y-lambda_y_min, z-lambda_z_min};*/
-
 				 double[] upper = {x+width+lambda_x, y+height+lambda_y, z+depth+lambda_z};
 				 double[] lower = {x-lambda_x, y-lambda_y, z-lambda_z};
 				 
 				 List<ArrayList<Vector3f>> temps = new ArrayList<ArrayList<Vector3f>>();
+				 
 				 /// speed bottleneck is here the kdtree obvious
 				 /// note: that up to 1,000,000,000 iterations it's quite fine
 				 /// and done within 13 seconds (when using #procs geometries)
@@ -376,24 +270,25 @@ public final class SWCUtility {
 				 	System.err.println("Keysize exception: " + e);  
 				 }
 				 
-				// a list of nodes which are in the range lower to upper
 				 float length = 0.f;
 				 
-				/// sampling cube normals stay the same within one cuboid and also the plane describing vertices inside the plane
+				 /// a list of all edges within the bigger sampling cube bounding box
 				 for (ArrayList<Vector3f> elem : temps) { 
-				 /// starting vertex is the last element in the attached meta data for each node in the kd-tree
-				  Vector3f starting_vertex = new Vector3f(elem.get(elem.size()-1));
+					 /// starting vertex is the last in attached metadata ArrayList
+				  	Vector3f starting_vertex = new Vector3f(elem.get(elem.size()-1));
 				   
-				/// determine the amount of edge in the sampling cube for each edge
-				length += EdgeSegmentWithinCuboid(x, y, z, width, height, depth, starting_vertex, elem);
+					/// determine the amount of edge in each sampling cube
+					length += EdgeSegmentWithinCuboid(
+						x, y, z, width, height, depth,
+						starting_vertex, elem);
 				 }
-				 // add summed length to cuboids, if length is not null, to hashmap.
-				 // this is sparse then
-				 if (length != 0) {
+				 
+				 /// if length is not zero in this cube, add it to the hashmap with cube_index
+			 	if (length != 0) {
 			 		lengths.put(cube_index, length);
-				 }
-				 cube_index++;
-			   }
+				}
+				cube_index++;
+			     }
 			 }
 		   }
 		   return lengths;
@@ -449,11 +344,10 @@ public final class SWCUtility {
 		System.out.println("Serial work [s]: " +timeSpentInMillisecondsSerial/1000.0);
 	
 	} catch (ExecutionException e) {
-	  e.printStackTrace();
+		System.err.println(e);
 	} catch (InterruptedException e) {
-	  e.printStackTrace();
+		System.err.println(e);
 	}
-	/// return values 
 	return vals;
 }
 	 
@@ -482,11 +376,12 @@ public final class SWCUtility {
 		      (p2.z <= z+depth && p2.z >= z)) ) {
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
-				if (temp.length() > Math.sqrt(width*width +height*height + depth*depth)) {
-					System.err.println("erroneous segment!");
-				} else {
 			length += temp.length();
-				}
+			/*if (temp.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+				System.err.println("erroneous segment!");
+			} else {
+				length += temp.length();
+			}*/
 		/// Case 2: One vertex inside the cube (p1 in, p2 out) (dominates if the sampling cube is of the size of the largest edge length in the geometry
 		} else if ( ((p2.x > x+width || p2.x < x) || 
 		      (p2.y > y+height || p2.y < y) || 
@@ -501,16 +396,15 @@ public final class SWCUtility {
 				Vector3f x1 = new Vector3f(p1);
 				Vector3f scaled1 = new Vector3f(dir);
 				scaled1.scale(res.getSecond().getFirst());
-
-
 				x1.add(scaled1);
 				Vector3f segment = new Vector3f(x1);				
 				segment.sub(p1);
-				if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+				length += segment.length();
+				/*if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
 					System.err.println("erroneous segment!");
 				} else {
 				length += segment.length();
-				}
+				}*/
 			}
 		/// Case 2: One vertex inside cube (p1 out, p2 in)
 		} else if  ( ((p1.x > x+width || p1.x < x) || 
@@ -527,17 +421,16 @@ public final class SWCUtility {
 				Vector3f scaled_dir = new Vector3f(dir);
 				scaled_dir.scale(res.getSecond().getFirst());
 				x1.add(scaled_dir);
-
 				Vector3f segment = new Vector3f(x1);				
 				segment.sub(p2);
-				if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
-					System.err.println("erroneous segment!");
+				length += segment.length();
+				/*if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+					System.err.println("Erroneous segment!");
 				} else {
 				length += segment.length();
-				}
+				}*/
 			}
-		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside (dominates if the sampling cube is very small) -> this case 3 is still buggy, figure out why -> seem to be the case
-		/// that edges are counted twice... somehow or calculation is here jsut wrong
+		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside (dominates if the sampling cube is very small) 
 		} else if  ( ( (p1.x > x+width || p1.x < x) ||
 		      (p1.y > y+height || p1.y < y) || 
 		      (p1.z > z+depth || p1.z < z) )  && 
@@ -546,7 +439,6 @@ public final class SWCUtility {
 		      (p2.z > z+depth || p2.z < z) ) ) { 
 			Vector3f dir = new Vector3f(p2);
 			dir.sub(p1);
-	//		Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
 			Pair<Boolean, Pair<Float, Float>> res = LineBoxIntersection(p1, p2, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
 			if (res.getFirst()) {
 				Vector3f x1 = new Vector3f(p2);
@@ -564,15 +456,16 @@ public final class SWCUtility {
 				/// determine segment
 				Vector3f segment = new Vector3f(x2);				
 				segment.sub(x1);
-				if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
-					System.err.println("erroneous segment!");
+				length += segment.length();
+				/*if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+					System.err.println("Erroneous segment!");
 				} else {
 					length += segment.length();
-				}
+				}*/
 			} 
 		/// Case 4: if this happens, then something is wrong with the conditionals above.
 		} else {
-			System.err.println("p1: " + p1 + ", p2: " + p2 + ", x: " + x + ", y: " + y + ", z: " + z + ", , width+x: " + (width+x) + ", height+y: " + (height+y) + ", depth+z: " + (depth+z));
+			System.err.println("***Erronreous case detected***\np1: " + p1 + ", p2: " + p2 + ", x: " + x + ", y: " + y + ", z: " + z + ", , width+x: " + (width+x) + ", height+y: " + (height+y) + ", depth+z: " + (depth+z));
 		}
 	}	
 	return length;
@@ -584,21 +477,8 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return 
 	 */
-	public static HashMap<Vector3f, ArrayList<Vector3f>> getIndicents(ArrayList<SWCCompartmentInformation> cell) {
-		/// split into initializing phase (init keys of ArrayList<ArrayList<Vector3f>> to v0)
-		/// and a populating phase (i. e. add to ArrayList the incident to V0) to get rid of O(n^2) for loop
-		/// if necessary in the future (then we need to make the convention, that the arraylist is ordered
-		/// in the same way as the compartments are appearing in the single swc file...
-		/*
-		// init phase
-		ArrayList<ArrayList<Vector3f>> incidents2 = new ArrayList<ArrayList<Vector3f>>(cell.size());
-		// populate phase
-		for (SWCCompartmentInformation info : cell) {
-		  incidents2.get(info.getConnectivity().getSecond()).add(info.getCoordinates());
-		}
-		*/
-	  
-		HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());
+	public static HashMap<Vector3f, ArrayList<Vector3f>> getIndicents(final ArrayList<SWCCompartmentInformation> cell) {
+		final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());
 		for (SWCCompartmentInformation info : cell) {
 			ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
 			Vector3f v0 = info.getCoordinates();
@@ -611,6 +491,18 @@ public final class SWCUtility {
 			incidents.put(v0, temp);
 		}
 		return incidents;
+		/// split into initializing phase (init keys of ArrayList<ArrayList<Vector3f>> to v0)
+		/// and a populating phase (i. e. add to ArrayList the incident to V0) to get rid of O(n^2) for loop
+		/// if necessary in the future (then we need to make the convention, that the arraylist is ordered
+		/// in the same way as the compartments are appearing in the single swc file...
+		/*
+		// init phase
+		ArrayList<ArrayList<Vector3f>> incidents2 = new ArrayList<ArrayList<Vector3f>>(cell.size());
+		// populate phase
+		for (SWCCompartmentInformation info : cell) {
+		  incidents2.get(info.getConnectivity().getSecond()).add(info.getCoordinates());
+		}
+		*/
 	}
 
 	/**
@@ -618,7 +510,7 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return the newly created kd tree
 	 */
-	public static KDTree<ArrayList<Vector3f>> buildKDTree(HashMap<Vector3f, ArrayList<Vector3f>> cell) {
+	public static KDTree<ArrayList<Vector3f>> buildKDTree(final HashMap<Vector3f, ArrayList<Vector3f>> cell) {
 		KDTree<ArrayList<Vector3f>> kd = new KDTree<ArrayList<Vector3f>>(3);
 		try {
 		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : cell.entrySet()) {
@@ -627,15 +519,15 @@ public final class SWCUtility {
 		  	kd.insert(key, entry.getValue());
 		   }
 		} catch (KeyDuplicateException e) {
-	    	System.err.println(e);
+	    		System.err.println(e);
 		} catch (KeySizeException e) {
-	    	System.err.println(e);
+	    		System.err.println(e);
 		}
 		return kd;
 	}
 
 	/**
-	 * @brief 
+	 * @brief computes intersection between ray and box
 	 * @param rayFrom
 	 * @param rayDir
 	 * @param boxMin
@@ -755,9 +647,8 @@ public final class SWCUtility {
 	}
 }
 	
-
 	/**
-	 * @brief LineBoxIntersection
+	 * @brief calculates the intersection between line and box
 	 * @param v1
 	 * @param v2
 	 * @param boxMin
@@ -778,22 +669,27 @@ public final class SWCUtility {
 		return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0f, 0f));
 	}
 
-public static boolean BoxProbe(Vector3f rayFrom, Vector3f boxMin, Vector3f boxMax) {
-if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
-	return false;
-}
+	/**
+	 * @brief determine if the ray starting point is within the bounding box
+	 * @param rayFrom
+	 * @param boxMin
+	 * @param boxMax
+	 * @return 
+	 */
+	public static boolean BoxProbe(Vector3f rayFrom, Vector3f boxMin, Vector3f boxMax) {
+		if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
+			return false;
+		}
 		if (rayFrom.y < boxMin.y || rayFrom.y > boxMax.y) {
 			return false;
 		}
-		
+			
 		if (rayFrom.z < boxMin.z || rayFrom.z > boxMax.z) {
 			return false;
 		}
-		
+			
 		return true;
-}
-
-
+	}
 
 	
 	/**
@@ -808,8 +704,22 @@ if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI_original.swc")));
 			 	//cells.put("dummy" + i, SWCUtility.parse(new File("data/BC130711AB.swc")));
 			}
-
-			/*
+		
+			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
+			System.out.println("Time for setup [s]: " +timeSpentInMilliseconds/1000.0);
+			
+			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+			
+			millisecondsStart = System.currentTimeMillis();
+			for (Map.Entry<Integer, Float> e : res.entrySet()) {
+				System.out.println("Cuboid cell #" + e.getKey() + " with dendritic length of " + e.getValue());
+			}
+			
+			timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
+			System.out.println("Time for output [s]: " +timeSpentInMilliseconds/1000.0);
+			
+		/// debug code here	
+		/*
 			int size_edges = 0;
 			for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
 		HashMap<Vector3f, ArrayList<Vector3f>> incidents = SWCUtility.getIndicents(cell.getValue());
@@ -822,25 +732,10 @@ if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
 			for (Vector3f vertex : inci.getValue()) {
 				System.out.println("Vertex:" + vertex);
 			}*/
-
-			
-			long timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
-			System.out.println("Time for setup [s]: " +timeSpentInMilliseconds/1000.0);
-			
-			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
-			
-			millisecondsStart = System.currentTimeMillis();
-			for (Map.Entry<Integer, Float> e : res.entrySet()) {
-				System.out.println("Cuboid cell #" + e.getKey() + " with dendritic length of " + e.getValue());
-			}
-			
-			
-			timeSpentInMilliseconds = System.currentTimeMillis() - millisecondsStart;
-			System.out.println("Time for output [s]: " +timeSpentInMilliseconds/1000.0);
-		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 		}
 	}
 }
 	
+

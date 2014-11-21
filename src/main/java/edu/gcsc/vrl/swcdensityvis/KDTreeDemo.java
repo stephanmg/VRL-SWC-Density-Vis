@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
+/// imports
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeySizeException;
 import java.io.File;
@@ -16,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import javax.vecmath.Vector3f;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 /**
  *
  * @author stephan

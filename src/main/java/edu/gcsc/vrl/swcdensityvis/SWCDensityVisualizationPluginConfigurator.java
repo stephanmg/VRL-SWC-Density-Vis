@@ -9,6 +9,7 @@ import eu.mihosoft.vrl.system.PluginIdentifier;
 import eu.mihosoft.vrl.system.VPluginAPI;
 import eu.mihosoft.vrl.system.VPluginConfigurator;
 
+
 /**
  * 
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>

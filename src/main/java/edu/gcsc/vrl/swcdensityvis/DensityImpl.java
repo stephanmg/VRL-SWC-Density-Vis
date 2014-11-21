@@ -1,9 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
+/// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.ImageVoxels;
 import edu.gcsc.vrl.densityvis.VoxelSet;

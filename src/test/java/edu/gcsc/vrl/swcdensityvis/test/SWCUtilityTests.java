@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
+/// imports
 import edu.gcsc.vrl.swcdensityvis.SWCUtility;
 import eu.mihosoft.vrl.reflection.Pair;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +11,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 /**
  *

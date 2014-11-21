@@ -27,3 +27,5 @@ public class SWCCompartmentInformation {
 	private Pair<Integer, Integer> connectivity;
 	private double thickness;
 }
+
+
