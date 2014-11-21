@@ -250,7 +250,7 @@ public final class SWCUtility {
 	  final float width = 10.f;
 	  final float height = 10.f; 
 	  final float depth = 10.f; 
-	
+
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
 	   *
@@ -312,9 +312,9 @@ public final class SWCUtility {
 		   
 		   /// increate performance. if bounding box already larger as characteristic edge length
 		   /// then it is safe to set the lambda offset to zero
-		   if (width  > 2*lambda_x) { lambda_x = 0; }
+		   /*if (width  > 2*lambda_x) { lambda_x = 0; }
 		   if (height > 2*lambda_y) { lambda_y = 0; }
-		   if (depth  > 2*lambda_z) { lambda_z = 0; }
+		   if (depth  > 2*lambda_z) { lambda_z = 0; }*/
 		   
 		   /// create a kd tree for the geometry, attach to leaf all compartment nodes
 	           /// each lead node gets attached the vertices which are connected to the
@@ -343,17 +343,7 @@ public final class SWCUtility {
 				   *
 				   *
 				   */
-				 Vector3f p1 = new Vector3f(x, y+height, z);
-				 Vector3f p2 = new Vector3f(x+width, y+height, z);
-				 Vector3f p3 = new Vector3f(x, y, z);
-				 Vector3f p4 = new Vector3f(x+width, y, z);
-				 
-				 Vector3f p5 = new Vector3f(x, y+height, z+depth);
-				 Vector3f p6 = new Vector3f(x+width, y+height, z+depth);
-				 Vector3f p7 = new Vector3f(x, y, z+depth);
-				 Vector3f p8 = new Vector3f(x+width, y, z+depth);
-				 
-				 /// we search within the charachteristic length boundaries, then we consider
+				  /// we search within the charachteristic length boundaries, then we consider
 				 /// later only width and height and length boxes for intersections or we
 				 /// may use Gillians approach 
 				
@@ -493,11 +483,15 @@ public final class SWCUtility {
 		      (p2.z <= z+depth && p2.z >= z)) ) {
 			Vector3f temp = new Vector3f(p1);
 			temp.sub(p2);
+				if (temp.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+					System.err.println("erroneous segment!");
+				} else {
 			length += temp.length();
-		/// Case 2: One vertex inside the cube (p1 in, p2 out)
+				}
+		/// Case 2: One vertex inside the cube (p1 in, p2 out) (dominates if the sampling cube is of the size of the largest edge length in the geometry
 		} else if ( ((p2.x > x+width || p2.x < x) || 
 		      (p2.y > y+height || p2.y < y) || 
-		      (p2.z > z+depth || p2.z < z)) || 
+		      (p2.z > z+depth || p2.z < z)) && 
 			 ( ((p1.x <= x+width && p1.x >= x) &&
 		      (p1.y <= y+height && p1.y >= y) && 
 		      (p1.z <= z+depth && p1.z >= z))) ) { 
@@ -509,11 +503,15 @@ public final class SWCUtility {
 				Vector3f scaled1 = new Vector3f(dir);
 				scaled1.scale(res.getSecond().getFirst());
 
-				x1.add(scaled1);
 
+				x1.add(scaled1);
 				Vector3f segment = new Vector3f(x1);				
 				segment.sub(p1);
+				if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+					System.err.println("erroneous segment!");
+				} else {
 				length += segment.length();
+				}
 			}
 		/// Case 2: One vertex inside cube (p1 out, p2 in)
 		} else if  ( ((p1.x > x+width || p1.x < x) || 
@@ -527,39 +525,50 @@ public final class SWCUtility {
 			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p2, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
 			if (res.getFirst()) {
 				Vector3f x1 = new Vector3f(p2);
-				Vector3f scaled1 = new Vector3f(dir);
-				scaled1.scale(res.getSecond().getFirst());
-
-				x1.add(scaled1);
+				Vector3f scaled_dir = new Vector3f(dir);
+				scaled_dir.scale(res.getSecond().getFirst());
+				x1.add(scaled_dir);
 
 				Vector3f segment = new Vector3f(x1);				
 				segment.sub(p2);
+				if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+					System.err.println("erroneous segment!");
+				} else {
 				length += segment.length();
+				}
 			}
-		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside
+		/// Case 3: End vertex and start vertex outside of the sampling cube, i. e. p1 and p2 outside (dominates if the sampling cube is very small) -> this case 3 is still buggy, figure out why -> seem to be the case
+		/// that edges are counted twice... somehow or calculation is here jsut wrong
 		} else if  ( ( (p1.x > x+width || p1.x < x) ||
 		      (p1.y > y+height || p1.y < y) || 
 		      (p1.z > z+depth || p1.z < z) )  && 
 			  ( (p2.x > x+width || p2.x < x) || 
 		      (p2.y > y+height || p2.y < y) || 
 		      (p2.z > z+depth || p2.z < z) ) ) { 
-			Vector3f dir = new Vector3f(p1);
-			dir.sub(p2);
+			Vector3f dir = new Vector3f(p2);
+			dir.sub(p1);
 			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
 			if (res.getFirst()) {
 				Vector3f x1 = new Vector3f(p1);
 				Vector3f x2 = new Vector3f(p1);
 				Vector3f scaled1 = new Vector3f(dir);
 				Vector3f scaled2 = new Vector3f(dir);
+				
 				scaled1.scale(res.getSecond().getFirst());
 				scaled2.scale(res.getSecond().getSecond());
-
+				
+				/// get intersection points
 				x1.add(scaled1);
 				x2.add(scaled2);
-
+				
+				/// determine segment
 				Vector3f segment = new Vector3f(x2);				
 				segment.sub(x1);
-				length += segment.length();
+				if (segment.length() > Math.sqrt(width*width +height*height + depth*depth)) {
+					System.err.println("erroneous segment!");
+				} else {
+					length += segment.length();
+				}
 			} 
 		/// Case 4: if this happens, then something is wrong with the conditionals above.
 		} else {
@@ -637,7 +646,7 @@ public final class SWCUtility {
 		
 		float t1, t2;
 		boolean bMinMaxSet = false;
-		float eps = 1e-6f;
+		float eps = 1.0e-6f;
 		float tMin = -1f, tMax = -1f;
 		float tNearOut, tFarOut;
 
@@ -747,16 +756,18 @@ public final class SWCUtility {
 			long millisecondsStart = System.currentTimeMillis();
 			for (int i = 0; i < 8; i++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI_original.swc")));
+			 	//cells.put("dummy" + i, SWCUtility.parse(new File("data/BC130711AB.swc")));
 			}
 
-		/*	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
+			/*
+			int size_edges = 0;
+			for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell : cells.entrySet()) {
 		HashMap<Vector3f, ArrayList<Vector3f>> incidents = SWCUtility.getIndicents(cell.getValue());
 		for (Map.Entry<Vector3f, ArrayList<Vector3f>> inci : incidents.entrySet()) {
-			if (inci.getValue().size() >= 3) {
-				System.err.println("Size of edges:" + inci.getValue().size());
+				//System.err.println("Size of edges:" + inci.getValue().size());
+			size_edges += inci.getValue().size() - 1;
 			}
-		}
-			}*/
+			System.out.println("Size of edges: " + size_edges);
 			/*System.out.println("Compartment: " + inci.getKey());
 			for (Vector3f vertex : inci.getValue()) {
 				System.out.println("Vertex:" + vertex);
