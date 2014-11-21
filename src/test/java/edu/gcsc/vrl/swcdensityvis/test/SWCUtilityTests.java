@@ -11,6 +11,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+/** @todo make use of easymock to mock things away in test cases next */
+import static org.easymock.EasyMock.createNiceMock;
 
 /**
  *
