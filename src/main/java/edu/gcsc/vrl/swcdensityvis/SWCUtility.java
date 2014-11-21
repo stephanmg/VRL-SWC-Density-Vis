@@ -102,6 +102,7 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return pair min max coordinates 3d
 	 */
+	@SuppressWarnings("serial")
 	public static Pair<Vector3f, Vector3f> getBoundingBox(final Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
 		return getBoundingBox(	new HashMap<String, ArrayList<SWCCompartmentInformation>>()
 						{{ put(cell.getKey(), cell.getValue()); }}
@@ -153,6 +154,7 @@ public final class SWCUtility {
 	 * @param cell
 	 * @return 
 	 */
+	@SuppressWarnings("serial")
 	public static Vector3f getDimensions(final Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
 		return getDimensions(new HashMap<String, ArrayList<SWCCompartmentInformation>>()
 						{{ put(cell.getKey(), cell.getValue()); }});
