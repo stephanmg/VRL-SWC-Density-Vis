@@ -184,6 +184,7 @@ public final class SWCUtility {
 	   * 				iii. hashmap as sparse data structure, maybe we should chose some structure
 	   *                                 from the linear algebra for java package, cf. below
 	   * @see la4j package @ http://la4j.org/
+	   * @see profiler @ https://profiler.netbeans.org/
 	   */
 	  class PartialDensityComputer implements Callable<HashMap<Integer, Float>> {
 		/// store lengthes in the cuboids and the cell itself

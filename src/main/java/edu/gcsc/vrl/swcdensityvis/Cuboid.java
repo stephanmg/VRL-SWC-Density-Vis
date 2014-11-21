@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @brief a cuboid class
+ * @brief an (immutable) cuboid 
  * @author stephan
  */
 @ToString @EqualsAndHashCode @AllArgsConstructor @Getter @Setter 
