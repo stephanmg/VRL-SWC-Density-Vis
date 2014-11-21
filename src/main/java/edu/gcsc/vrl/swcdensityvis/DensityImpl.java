@@ -19,12 +19,12 @@ import javax.vecmath.Vector3f;
  */
 class DensityImpl implements Density {
 
-    private ImageVoxels cube; // ImageJ input
+    private final ImageVoxels cube; // ImageJ input
     private HashMap<String, ArrayList<SWCCompartmentInformation>> input; // input from swc import ... do this in ImageVoxels
     private int voxelWidth;
     private int voxelHeight;
     private int voxelDepth;
-    private ArrayList<WritableVoxel> voxels = new ArrayList<WritableVoxel>();
+    private final ArrayList<WritableVoxel> voxels = new ArrayList<WritableVoxel>();
 
     /**
      * Constructor. <b>Note:</b> computes the average density for each voxel
@@ -114,6 +114,7 @@ class DensityImpl implements Density {
     }
 
     @Override
+    @SuppressWarnings("ReturnOfCollectionOrArrayField")
     public List<? extends VoxelSet> getVoxels() {
         return voxels;
     }

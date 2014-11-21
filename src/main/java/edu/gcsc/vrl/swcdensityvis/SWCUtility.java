@@ -203,6 +203,7 @@ public final class SWCUtility {
 		}
 
  		 @Override 
+		 @SuppressWarnings("ReturnOfCollectionOrArrayField")
 		 public HashMap<Integer, Float> call() {
 		   /// preprocess, determine characteristic edge length (one can chose also something different)
 		   int size = 0;
@@ -680,6 +681,7 @@ public final class SWCUtility {
 		if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
 			return false;
 		}
+		
 		if (rayFrom.y < boxMin.y || rayFrom.y > boxMax.y) {
 			return false;
 		}
