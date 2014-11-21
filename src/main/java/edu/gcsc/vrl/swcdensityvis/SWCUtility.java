@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -547,10 +546,11 @@ public final class SWCUtility {
 		      (p2.z > z+depth || p2.z < z) ) ) { 
 			Vector3f dir = new Vector3f(p2);
 			dir.sub(p1);
-			Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
+	//		Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(p1, dir, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
+			Pair<Boolean, Pair<Float, Float>> res = LineBoxIntersection(p1, p2, new Vector3f(x, y, z), new Vector3f(x+width, y+height, z+depth));
 			if (res.getFirst()) {
-				Vector3f x1 = new Vector3f(p1);
-				Vector3f x2 = new Vector3f(p1);
+				Vector3f x1 = new Vector3f(p2);
+				Vector3f x2 = new Vector3f(p2);
 				Vector3f scaled1 = new Vector3f(dir);
 				Vector3f scaled2 = new Vector3f(dir);
 				
@@ -754,6 +754,30 @@ public final class SWCUtility {
 		}
 	}
 }
+	
+
+	/**
+	 * @brief LineBoxIntersection
+	 * @param v1
+	 * @param v2
+	 * @param boxMin
+	 * @param boxMax
+	 * @return 
+	 */
+	public static Pair<Boolean, Pair<Float, Float>> LineBoxIntersection(Vector3f v1, Vector3f v2, Vector3f boxMin, Vector3f boxMax) {
+		Vector3f dir = new Vector3f(v2);
+		dir.sub(v1);
+		Pair<Boolean, Pair<Float, Float>> res = RayBoxIntersection(v1, dir, boxMin, boxMax);
+		if (res.getFirst()) {
+			float tNear = res.getSecond().getFirst();
+			float tFar = res.getSecond().getSecond();
+			if ( (tNear >= 0 && tNear <= 1.0) && (tFar >= 0 && tNear <= 1.0)) {
+				return res;
+			}
+		}
+		return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0f, 0f));
+	}
+
 public static boolean BoxProbe(Vector3f rayFrom, Vector3f boxMin, Vector3f boxMax) {
 if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
 	return false;
