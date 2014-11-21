@@ -648,7 +648,7 @@ public final class SWCUtility {
 		boolean bMinMaxSet = false;
 		float eps = 1.0e-6f;
 		float tMin = -1f, tMax = -1f;
-		float tNearOut, tFarOut;
+		float tNearOut = 0, tFarOut = 0;
 
 		if (Math.abs(rayDir.x) > eps) {
 			t1 = (boxMin.x - rayFrom.x) / rayDir.x;	
@@ -739,10 +739,36 @@ public final class SWCUtility {
 		tNearOut = tMin;
 		tFarOut = tMax;
 		return new Pair<Boolean, Pair<Float, Float>>(true, new Pair<Float, Float>(tNearOut, tFarOut));
-	} 
-	/// if ray has no direction, then return no intersection
-	return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0f, 0f));
+	}  else {
+		if (BoxProbe(rayFrom, boxMin, boxMax)) {
+			if (tNearOut != 0) {
+				tNearOut = 0;
+			}
+			if (tFarOut != 0) {
+				tFarOut = 0;
+			}
+			
+			return new Pair<Boolean, Pair<Float, Float>>(true, new Pair<Float, Float>(tNearOut, tFarOut));
+		} else {
+			return new Pair<Boolean, Pair<Float, Float>>(false, new Pair<Float, Float>(0.f, 0.f));
+		}
+	}
 }
+public static boolean BoxProbe(Vector3f rayFrom, Vector3f boxMin, Vector3f boxMax) {
+if (rayFrom.x < boxMin.x || rayFrom.x > boxMax.x) {
+	return false;
+}
+		if (rayFrom.y < boxMin.y || rayFrom.y > boxMax.y) {
+			return false;
+		}
+		
+		if (rayFrom.z < boxMin.z || rayFrom.z > boxMax.z) {
+			return false;
+		}
+		
+		return true;
+}
+
 
 
 	
