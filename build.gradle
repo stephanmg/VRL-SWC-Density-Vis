@@ -63,3 +63,13 @@ task installVRLPlugin(dependsOn: [clean,jar]) << {
         include '**/*.jar'
     }
 }
+
+apply plugin: "jacoco"
+
+jacocoTestReport {
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+        }
+    }
