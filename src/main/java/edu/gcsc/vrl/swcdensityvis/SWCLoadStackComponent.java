@@ -28,7 +28,7 @@ public class SWCLoadStackComponent implements Serializable {
 	 * @param file path to SWC file 
 	 */
 	public void get_file(
-		@ParamInfo(name = "Filename") File file
+		@ParamInfo(name = "Filename", style="load-dialog") File file
 	) {
 		m_file = file;
 	}
@@ -38,7 +38,7 @@ public class SWCLoadStackComponent implements Serializable {
 	 * @param folder 
 	 */
 	public void parse_stack(
-		@ParamInfo(name = "Folder") File folder
+		@ParamInfo(name = "Folder", style="load-folder-dialog") File folder
 	) {
 		File[] swcFiles = folder.listFiles(new FilenameFilter()
 		{
