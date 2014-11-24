@@ -337,10 +337,17 @@ public final class SWCUtility {
 			}
 		}
 		
-		double total_length = 0;
+		/// total length
+		float total_length = 0;
 		for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
 			total_length += entry.getValue() / cells.size();
 		}
+		
+		/// densities
+		for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
+			entry.setValue(entry.getValue() / total_length);
+		}
+		
 		System.out.println("Total dendritic length [\\mu m]: " + total_length);
 		
 		System.out.println("Non-zero cuboids: " + vals.size());
@@ -532,6 +539,7 @@ public final class SWCUtility {
 
 	/**
 	 * @brief computes intersection between ray and box
+	 * @note however we can use SwappablePair implementation to swap pairs
 	 * @param rayFrom
 	 * @param rayDir
 	 * @param boxMin
