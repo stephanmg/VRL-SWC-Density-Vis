@@ -28,21 +28,16 @@ public final class CuboidUtility {
 	public static int[] getCuboidId(Cuboid bounding, Cuboid sample, float step_x, float step_y, float step_z) {
 		return new int[]
 		{
-			(int)( sample.getX() / ((bounding.getWidth() - bounding.getX()) / step_x)), 
-		        (int)( sample.getY() / ((bounding.getHeight() - bounding.getY()) / step_y)),  
-		        (int)( sample.getZ() / ((bounding.getDepth() - bounding.getZ()) / step_z))
+			(int) Math.abs((bounding.getX() + sample.getX() * step_x)),
+			(int) Math.abs((bounding.getY() + sample.getY() * step_y)),
+			(int) Math.abs((bounding.getZ() + sample.getZ() * step_z))
 		};
+
 	}
 	
 	/**
-	public int getCuboidId(Cuboid bounding, Cuboid sample, float step_x, float step_y, float step_z) {
-		int[] res = getCuboidId(bounding, sample, step_x, step_y, step_z);
-		return res[0] * res[1] * res[2];
-	}*/
-	
-
-	/**
-	 * @brief get cuboid by it
+	 * @brief get cuboid by id 
+	 * @todo implement
 	 * 
 	 * @param bounding
 	 * @param id
@@ -69,7 +64,7 @@ public final class CuboidUtility {
 	 * @param step_z
 	 * @return 
 	 */
-	public Pair<int[], int[]> getSampleCuboidBounding(Cuboid bounding, Cuboid min, Cuboid max, float step_x, float step_y, float step_z) {
+	public static Pair<int[], int[]> getSampleCuboidBounding(Cuboid bounding, Cuboid min, Cuboid max, float step_x, float step_y, float step_z) {
 		int[] lo = getCuboidId(bounding, new Cuboid(min.getX()-step_x, min.getY()-step_y, min.getZ()-step_z, min.getWidth()-step_x, min.getY()-step_y, min.getZ()-step_z), step_x, step_y, step_z);
 		int[] hi = getCuboidId(bounding, new Cuboid(max.getX()+step_x, max.getY()+step_y, max.getZ()+step_z, max.getWidth()+step_x, max.getY()+step_y, max.getZ()+step_z), step_x, step_y, step_z);
 		return new Pair<int[], int[]>(lo, hi);

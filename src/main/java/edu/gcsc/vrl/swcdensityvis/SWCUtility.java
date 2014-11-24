@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 /**
@@ -194,15 +193,20 @@ public final class SWCUtility {
 		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
 		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : incidents.entrySet()) {
 			for (Vector3f edge : entry.getValue()) {
-				Pair<Vector3f, Vector3f> bounding_s = EdgeUtility.getBounding(new Edge<Vector3f>(entry.getKey(), edge));
-		   	for (float x = bounding_s.getFirst().x; x < bounding_s.getSecond().x; x+=width) {
-				 for (float y = bounding_s.getFirst().y; y < bounding_s.getSecond().y; y+=height) {
-				   for (float z = bounding_s.getFirst().z; z < bounding_s.getSecond().z; z+=depth) {
-					   
-					   int[] index = CuboidUtility.getCuboidId(
-						   new Cuboid(bounding.getFirst().x, bounding.getFirst().y, bounding.getFirst().z, bounding.getSecond().x, bounding.getSecond().y, bounding.getSecond().z),
-						   new Cuboid(x, y, z, bounding_s.getSecond().x, bounding_s.getSecond().y, bounding_s.getSecond().z), width, depth, height);
-					   Integer real_index = index[0] * index[1] * index[2];
+				Pair<Vector3f, Vector3f> bounding_e = EdgeUtility.getBounding(new Edge<Vector3f>(entry.getKey(), edge));
+				Cuboid bounding_ee = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z);
+				Cuboid min = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, width, depth, height);
+				Cuboid max = new Cuboid(bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z, width, depth, height);
+				Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBounding(bounding_ee, min, max, width, depth, height);
+				
+			for (int i = bounding_ss.getFirst()[0]; i < bounding_ss.getSecond()[0]; i++) {
+				for (int j = bounding_ss.getFirst()[1]; j < bounding_ss.getSecond()[1]; j++) {
+					for (int k = bounding_ss.getFirst()[2]; k < bounding_ss.getSecond()[2]; k++) {
+						float x = bounding_e.getFirst().x;
+						float y = bounding_e.getFirst().y;
+						float z = bounding_e.getFirst().z;
+						
+					   Integer real_index = i * j * k;
 					   float len = EdgeSegmentWithinCuboid(x, y, z, width, height, depth, edge, new ArrayList<Vector3f>(Arrays.asList(entry.getKey())));
 					   if (len != 0) {
 						if (lengths.containsKey(real_index)) {
@@ -844,6 +848,7 @@ public final class SWCUtility {
 			System.out.println("Time for setup [s]: " +timeSpentInMilliseconds/1000.0);
 			
 			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+		//	HashMap<Integer, Float> res = SWCUtility.computeDensityAlternative(cells);
 			
 			millisecondsStart = System.currentTimeMillis();
 			for (Map.Entry<Integer, Float> e : res.entrySet()) {
