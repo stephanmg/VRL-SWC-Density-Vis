@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 /**
@@ -160,6 +162,126 @@ public final class SWCUtility {
 						{{ put(cell.getKey(), cell.getValue()); }});
 
 	}
+	
+
+	public static HashMap<Integer, Float> computeDensityAlternative(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	  final Vector3f dims = SWCUtility.getDimensions(cells);
+	  final Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(cells);
+	  System.out.println("Dimensions of all cells: " + dims);
+	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
+	  
+	  /// sampling cube in geometry dimensions (i. e. µm!)
+	  final float width = 10.f;
+	  final float height = 10.f; 
+	  final float depth = 10.f; 
+	  
+	   class PartialDensityComputer implements Callable<HashMap<Integer, Float>> {
+		/// store lengthes in the cuboids and the cell itself
+		private volatile HashMap<Integer, Float> lengths = new HashMap<Integer, Float>();
+		private volatile Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell;
+	
+		/**
+		 * @brief def ctor
+		 */
+		public PartialDensityComputer(Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell) {
+		  this.cell = cell;
+		}
+
+ 		 @Override 
+		 @SuppressWarnings("ReturnOfCollectionOrArrayField")
+		 public HashMap<Integer, Float> call() {
+		   /// preprocess, determine characteristic edge length (one can chose also something different)
+		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
+		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : incidents.entrySet()) {
+			for (Vector3f edge : entry.getValue()) {
+				Pair<Vector3f, Vector3f> bounding_s = EdgeUtility.getBounding(new Edge<Vector3f>(entry.getKey(), edge));
+		   	for (float x = bounding_s.getFirst().x; x < bounding_s.getSecond().x; x+=width) {
+				 for (float y = bounding_s.getFirst().y; y < bounding_s.getSecond().y; y+=height) {
+				   for (float z = bounding_s.getFirst().z; z < bounding_s.getSecond().z; z+=depth) {
+					   
+					   int[] index = CuboidUtility.getCuboidId(
+						   new Cuboid(bounding.getFirst().x, bounding.getFirst().y, bounding.getFirst().z, bounding.getSecond().x, bounding.getSecond().y, bounding.getSecond().z),
+						   new Cuboid(x, y, z, bounding_s.getSecond().x, bounding_s.getSecond().y, bounding_s.getSecond().z), width, depth, height);
+					   Integer real_index = index[0] * index[1] * index[2];
+					   float len = EdgeSegmentWithinCuboid(x, y, z, width, height, depth, edge, new ArrayList<Vector3f>(Arrays.asList(entry.getKey())));
+					   if (len != 0) {
+						if (lengths.containsKey(real_index)) {
+							lengths.put(real_index, lengths.get(real_index)  + len);
+						} else {
+							lengths.put(real_index, len);
+						}
+					   }
+				   }
+				 }
+			}
+			}
+		   }
+		   return lengths;
+		 }
+	   }
+	// take number of available processors and create a fixed thread pool,
+	// the executor executes then at most the number of available processors
+	// threads to calculate the partial density (Callable PartialDensityComputer)
+	int processors = Runtime.getRuntime().availableProcessors();
+	ExecutorService executor = Executors.newFixedThreadPool(processors);
+	System.out.println("Number of processors: " + processors);
+	
+	ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
+	for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> cell :  cells.entrySet()) {
+		Callable<HashMap<Integer, Float>> c = new PartialDensityComputer(cell);
+		callables.add(c);
+	}
+	
+	HashMap<Integer, Float> vals = new HashMap<Integer, Float>();
+	try {
+		/// perform parallel work
+		long millisecondsStartParallel = System.currentTimeMillis();
+		List<Future<HashMap<Integer, Float>>> results = executor.invokeAll(callables);
+		ArrayList<HashMap<Integer, Float>> subresults = new ArrayList<HashMap<Integer, Float>>();
+		for (Future<HashMap<Integer, Float>> res : results) {
+		  subresults.add(res.get());
+		}
+		executor.shutdown();
+		long timeSpentInMillisecondsParallel = System.currentTimeMillis() - millisecondsStartParallel;
+		System.out.println("Parallel work [s]: " +timeSpentInMillisecondsParallel/1000.0);
+			
+		long millisecondsStartSerial = System.currentTimeMillis();
+		/// serial summation. note, the below could also be done in parallel somehow
+		for (HashMap<Integer, Float> result : subresults) {
+			for (Map.Entry<Integer, Float> map_entry : result.entrySet()) {
+				if (vals.containsKey(map_entry.getKey())) {
+					vals.put(map_entry.getKey(), map_entry.getValue() + vals.get(map_entry.getKey()));
+				} else {
+					vals.put(map_entry.getKey(), map_entry.getValue()); 
+				}
+			}
+		}
+		
+		/// total length
+		float total_length = 0;
+		for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
+			total_length += entry.getValue() / cells.size();
+		}
+		
+		/// densities
+		for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
+			entry.setValue(entry.getValue() / total_length);
+		}
+		
+		System.out.println("Total dendritic length [\\mu m]: " + total_length);
+		
+		System.out.println("Non-zero cuboids: " + vals.size());
+		long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;
+		System.out.println("Serial work [s]: " +timeSpentInMillisecondsSerial/1000.0);
+	
+	} catch (ExecutionException e) {
+		System.err.println(e);
+	} catch (InterruptedException e) {
+		System.err.println(e);
+	}
+	return vals;
+}
+		
 	
 	/**
 	 * @brief compute dendritic length in cuboid

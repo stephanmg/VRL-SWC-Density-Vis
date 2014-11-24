@@ -25,7 +25,7 @@ public final class EdgeUtility {
 	 * @param edge
 	 * @return 
 	 */
-	public Pair<Vector3f, Vector3f> getBounding(Edge<Vector3f> edge) {
+	public static Pair<Vector3f, Vector3f> getBounding(Edge<Vector3f> edge) {
 		return new Pair<Vector3f, Vector3f>(
 			   new Vector3f(
 				Collections.min(Arrays.asList(edge.getFrom().x, edge.getTo().x)),
