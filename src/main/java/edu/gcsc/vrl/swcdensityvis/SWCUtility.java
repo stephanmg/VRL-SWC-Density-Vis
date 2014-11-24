@@ -162,7 +162,12 @@ public final class SWCUtility {
 
 	}
 	
-
+	
+	/**
+	 * @brief computes the density in an alternative way, i. e. iterates over the edges
+	 * @param cells
+	 * @return 
+	 */
 	public static HashMap<Integer, Float> computeDensityAlternative(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 	  final Vector3f dims = SWCUtility.getDimensions(cells);
 	  final Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(cells);

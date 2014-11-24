@@ -3,34 +3,29 @@ package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
-import edu.gcsc.vrl.densityvis.ImageVoxels;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- *
+ * @brief density utility class
  * @author stephan
- * @brief 
  */
-public class DensityUtil {
-    /**
-     * Computes the density distribution in the specified image voxel data. The
-     * average density of each voxel set is stored in the density information
-     * object that is returned.
-     *
-     * @param imageVoxels image voxels (usually from .tif-stack)
-     * @param voxelSetWidth width of the voxel set (in image coordinates)
-     * @param voxelSetHeight height of the voxel set (in image coordinates)
-     * @param voxelSetDepth depth of the voxel set (in image coordinates)
-     * @return density information
-     */
-    public static Density computeDensity(ImageVoxels imageVoxels,
-            int voxelSetWidth, int voxelSetHeight, int voxelSetDepth) {
-        return new DensityImpl(
-                imageVoxels, voxelSetWidth, voxelSetHeight, voxelSetDepth);
-    }
-    
-    public static Density computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, int width, int height, int depth) {
+public final class DensityUtil {
+	/**
+	 * @brief private ctor
+	 */
+	private DensityUtil() {
+	}
+	
+        /**
+	 * @brief computes the density for the stack of SWC files
+	 * @param cells
+	 * @param width
+	 * @param height
+	 * @param depth
+	 * @return 
+	 */
+	public static Density computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, int width, int height, int depth) {
 	    return new DensityImpl(cells, width, height, depth);
     }
 }
