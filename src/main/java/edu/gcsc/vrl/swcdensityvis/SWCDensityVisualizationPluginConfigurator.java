@@ -18,7 +18,7 @@ import eu.mihosoft.vrl.system.VPluginConfigurator;
 public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurator {
 	public SWCDensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
-		setIdentifier(new PluginIdentifier("SWCDensityVisualizationPlugin", "0.0"));
+		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.0"));
 
 		setDescription("Visualizes the density of a bunch of SWC files");
 
@@ -26,7 +26,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 			"(c) Stephan Grein", "www", "license", "license text");
 
 		// allow export package
-		exportPackage("edgu.gcsc.vrl.swcdensityvis");
+		exportPackage("edu.gcsc.vrl.swcdensityvis");
 
 		// specify dependencies
 		addDependency(new PluginDependency("VRL", "0.4.2", "0.4.2"));
@@ -38,6 +38,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 		if (api instanceof VPluginAPI) {
 			VPluginAPI vapi = (VPluginAPI) api;
 			vapi.addComponent(SWCLoadStackComponent.class);
+			vapi.addComponent(ComputeDensity.class);
 			// vapi.addTypeRepresentation(MyType.class);
 		}
 	}

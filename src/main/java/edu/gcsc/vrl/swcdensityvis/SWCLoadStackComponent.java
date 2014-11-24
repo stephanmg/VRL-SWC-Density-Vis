@@ -17,7 +17,7 @@ import java.util.HashMap;
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
  * @brief imports the SWC file (TODO needs probably to be split into more components)
  */
-@ComponentInfo(name = "SWCDensityVisualization", category = "DensityVisualization/SWCDensityVisualization")
+@ComponentInfo(name = "SWCLoadStack", category = "Neuro/SWC-Density-Vis")
 public class SWCLoadStackComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private File m_file;

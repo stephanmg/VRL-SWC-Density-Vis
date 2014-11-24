@@ -45,6 +45,13 @@ class DensityImpl implements Density {
         compute();
     }
 
+    public DensityImpl(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, int width, int height, int depth) {
+	    this.cube = null;
+	    /**
+	     * @todo implement
+	     */
+    }
+
     /**
      * Computes the average density for each voxel subset.
      */

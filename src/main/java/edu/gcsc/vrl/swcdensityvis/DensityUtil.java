@@ -4,6 +4,8 @@ package edu.gcsc.vrl.swcdensityvis;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.ImageVoxels;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -26,5 +28,9 @@ public class DensityUtil {
             int voxelSetWidth, int voxelSetHeight, int voxelSetDepth) {
         return new DensityImpl(
                 imageVoxels, voxelSetWidth, voxelSetHeight, voxelSetDepth);
+    }
+    
+    public static Density computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, int width, int height, int depth) {
+	    return new DensityImpl(cells, width, height, depth);
     }
 }
