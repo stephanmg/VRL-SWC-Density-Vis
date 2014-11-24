@@ -44,7 +44,7 @@ dependencies {
     /// testing dependencies (from maven)
     testCompile group: 'junit', name: 'junit', version: '4.10'
     testCompile group: 'org.easymock', name: 'easymock', version: '2.5.2'
-    testCompile group: 'org.eluder.coveralls', name:'coveralls-maven-plugin', version: '1.2.0'
+    /* testCompile group: 'org.eluder.coveralls', name:'coveralls-maven-plugin', version: '1.2.0' */
     
     /// local dependencies from ug and plugins and vrl 
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
@@ -64,12 +64,14 @@ task installVRLPlugin(dependsOn: [clean,jar]) << {
     }
 }
 
+/*
 apply plugin: "jacoco"
 
 jacocoTestReport {
-        reports {
-            html.enabled = true
-            xml.enabled = true
-            csv.enabled = false
-        }
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
     }
+}
+*/
