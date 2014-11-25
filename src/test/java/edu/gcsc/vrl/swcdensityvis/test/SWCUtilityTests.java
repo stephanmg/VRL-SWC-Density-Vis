@@ -2,8 +2,13 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.SWCUtility;
 import eu.mihosoft.vrl.reflection.Pair;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -108,7 +113,6 @@ public class SWCUtilityTests {
 	}
 	
 	
-	/*
 	@Test
 	public void testComputeDensity() {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
@@ -122,7 +126,7 @@ public class SWCUtilityTests {
 		 System.err.println("File not found: " + e);
 	 	}
 		 
-	}*/
+	}
 
 	
 	 @Test

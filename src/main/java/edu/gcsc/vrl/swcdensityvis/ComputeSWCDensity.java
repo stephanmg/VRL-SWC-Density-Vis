@@ -55,6 +55,8 @@ public class ComputeSWCDensity implements java.io.Serializable {
 			eu.mihosoft.vrl.system.VMessage.info("Parsing SWC file", f.toString());
 		  	cells.put(f.getName(), SWCUtility.parse(f));
 		  }
+		  eu.mihosoft.vrl.system.VMessage.info("Computing density", "Total number of files for density computation: " + swcFiles.length);
+		  SWCUtility.computeDensity(cells);
   	} 
 	  catch (IOException e) {
 		   eu.mihosoft.vrl.system.VMessage.exception("File not found", e.toString());
