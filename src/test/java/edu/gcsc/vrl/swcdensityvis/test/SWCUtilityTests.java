@@ -145,7 +145,7 @@ public class SWCUtilityTests {
 		 
 	}
 
-	/*@Test
+	@Test
 	public void testDensityUtil() {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
@@ -161,7 +161,7 @@ public class SWCUtilityTests {
 		int height = 10;
 		int depth = 10;
       	Density density = DensityUtil.computeDensity(cells, width, height, depth);
-	}*/
+	}
 
 	
 	 @Test

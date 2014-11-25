@@ -52,7 +52,11 @@ final class DensityImpl implements Density {
 	for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=this.voxelWidth) {
 		for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=this.voxelHeight) {
 		 	  for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=this.voxelDepth) {
+				  if (density.containsKey(index)) {
 			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  density.get(index) * 255));
+				  } else {
+			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  0));
+					  }
 			   	/// note: density.get(index) in interval [0, 1] -> thus we multiply by 255 to have a color between 0 and 255
 			   	index++;
 			   }
