@@ -88,7 +88,7 @@ public final class SWCUtility {
 		{
     		@Override
  		 public boolean accept(File dir, String name) {
-        	 return name.endsWith(".xml");
+        	 return name.endsWith(".swc");
 		}});
 		
 		for (File f : swcFiles) {

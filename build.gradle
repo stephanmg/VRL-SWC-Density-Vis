@@ -48,11 +48,28 @@ dependencies {
     
     /// local dependencies from ug and plugins and vrl 
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
-    compile fileTree(dir: vrldir+"/plugins/", includes:['*.jar'])
+    //compile fileTree(dir: vrldir+"/plugins/", includes:['*.jar'])
     
     /// project lombok and levy's kd tree implementation
-    compile fileTree(dir: "jars/", includes:['*jar']);
+    compile fileTree(dir: "jars/", includes:['*.jar']);
+    compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
+    compile files(vrldir+'/plugins/Density-Vis.jar');
+    //runtime fileTree(dir: "jars/", includes:['*.jar']);
 }
+// create a fat-jar (class files plus dependencies
+// excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
+jar {
+    // dependencies except VRL
+    from configurations.runtime.asFileTree.
+        filter({file->return !file.name.startsWith("vrl-0")}).
+        filter({file->return !file.name.startsWith("Density-Vis.jar")}).
+        filter({file->return !file.name.startsWith("VRL-JFreeChart.jar")}).
+        files.collect { zipTree(it) }
+
+    // project class files compiled from source
+    from files(sourceSets.main.output.classesDir)
+}
+
 
 // compiles and installs the vrl plugin to the specified folder
 task installVRLPlugin(dependsOn: [clean,jar]) << {

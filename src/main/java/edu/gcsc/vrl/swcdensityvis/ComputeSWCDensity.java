@@ -12,17 +12,20 @@ package edu.gcsc.vrl.swcdensityvis;
  */
 
 import edu.gcsc.vrl.densityvis.Density;
+import edu.gcsc.vrl.densityvis.DensityResult;
+import static edu.gcsc.vrl.swcdensityvis.SWCUtility.parse;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @ComponentInfo(name="ComputeSWCDensity", category="Neuro/SWC-Density-Vis")
-public class ComputeDensity implements java.io.Serializable {
+public class ComputeSWCDensity implements java.io.Serializable {
   private static final long serialVersionUID=1L;
 
   // add your code here
@@ -33,7 +36,7 @@ public class ComputeDensity implements java.io.Serializable {
   public DensityResult compute(
     @ParamInfo(
       name="Input folder",
-      style="load-dialog",
+      style="load-folder-dialog",
       options="endings=[\"swc\"]; description=\"SWC files (.swc)\"") File folder,
     @ParamInfo(name="width", style="default", options="value=10;min=5") int width,
     @ParamInfo(name="height", style="default", options="value=10;min=5") int height,
@@ -41,9 +44,18 @@ public class ComputeDensity implements java.io.Serializable {
   ) {
 	  HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 	  try {
-	  for (File f : folder.listFiles()) {
-		  cells.put(f.getName(), SWCUtility.parse(f));
-  	} }
+		  File[] swcFiles = folder.listFiles(new FilenameFilter()
+		{
+    		@Override
+ 		 public boolean accept(File dir, String name) {
+        	 return name.endsWith(".swc");
+		}});
+		  
+		  for (File f : swcFiles) {
+			eu.mihosoft.vrl.system.VMessage.info("Parsing SWC file", f.toString());
+		  	cells.put(f.getName(), SWCUtility.parse(f));
+		  }
+  	} 
 	  catch (IOException e) {
 		   eu.mihosoft.vrl.system.VMessage.exception("File not found", e.toString());
 	  }
@@ -51,7 +63,8 @@ public class ComputeDensity implements java.io.Serializable {
   /**
    * @todo this needs to be adjusted
    */
-      Density density = DensityUtil.computeDensity(cells, width, height, depth);
+     /* Density density = DensityUtil.computeDensity(cells, width, height, depth);*/
+	  Density density = null;
       VTriangleArray vta = new VTriangleArray();
       return new DensityResult(density, vta);
   }
