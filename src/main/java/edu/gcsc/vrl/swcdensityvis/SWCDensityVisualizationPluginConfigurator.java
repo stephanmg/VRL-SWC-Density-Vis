@@ -39,7 +39,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 		setCopyrightInfo("SWCDensityVisualizationPlugin",
 			"(c) Stephan Grein", "www", "license", "license text");
 
-		// allow export package
+		// allow export package to use by other projects
 		exportPackage("edu.gcsc.vrl.swcdensityvis");
 
 		// specify dependencies

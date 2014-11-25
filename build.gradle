@@ -171,6 +171,7 @@ dependencies {
   compile('edu.gcsc.vrl.densityvis:Density-Vis').ext.git = 'https://github.com/NeuroBox3D/VRL-Density-Vis.git'
   compile('edu.gcsc.vrl.jfreechart:JFreeChart').ext.git  = 'https://github.com/miho/VRL-JFreeChart.git'
   compile('eu.mihosoft.vrl:vrl').ext.git                 = 'https://github.com/VRL-Studio/VRL.git'
+  compile('eu.mihosoft.jcsg').ext.git                    = 'https://github.com/miho/JCSG/tree/java6.git'
 
 }
 */

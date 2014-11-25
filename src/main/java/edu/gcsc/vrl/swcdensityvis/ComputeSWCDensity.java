@@ -18,11 +18,13 @@ import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
+import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.vecmath.Vector3f;
 
 @ComponentInfo(name="ComputeSWCDensity", category="Neuro/SWC-Density-Vis")
 public class ComputeSWCDensity implements java.io.Serializable {
@@ -62,12 +64,9 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		   eu.mihosoft.vrl.system.VMessage.exception("File not found", e.toString());
 	  }
 	  
-  /**
-   * @todo this needs to be adjusted
-   */
-     /* Density density = DensityUtil.computeDensity(cells, width, height, depth);*/
-	  Density density = null;
-      VTriangleArray vta = new VTriangleArray();
+      Density density = DensityUtil.computeDensity(cells, width, height, depth);
+      Vector3f dim = SWCUtility.getDimensions(cells);
+      VTriangleArray vta = new Cube(dim.x,dim.y,dim.z).toCSG().toVTriangleArray();
       return new DensityResult(density, vta);
   }
 }
