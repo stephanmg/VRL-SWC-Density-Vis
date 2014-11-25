@@ -242,6 +242,7 @@ public final class SWCUtility {
 	}
 	
 	HashMap<Integer, Float> vals = new HashMap<Integer, Float>();
+	/*
 	try {
 		/// perform parallel work
 		long millisecondsStartParallel = System.currentTimeMillis();
@@ -287,7 +288,7 @@ public final class SWCUtility {
 		System.err.println(e);
 	} catch (InterruptedException e) {
 		System.err.println(e);
-	}
+	}*/
 	return vals;
 }
 		

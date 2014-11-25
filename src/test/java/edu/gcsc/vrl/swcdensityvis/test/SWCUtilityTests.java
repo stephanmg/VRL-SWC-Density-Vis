@@ -2,6 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
 /// imports
+import edu.gcsc.vrl.densityvis.Density;
+import edu.gcsc.vrl.swcdensityvis.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.SWCUtility;
 import eu.mihosoft.vrl.reflection.Pair;
@@ -127,6 +129,39 @@ public class SWCUtilityTests {
 	 	}
 		 
 	}
+
+	@Test
+	public void testComputeDensityAlternative() {
+		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+		try {
+			for (int i = 0; i < 1; i ++) {
+			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+			}
+			HashMap<Integer, Float> res = SWCUtility.computeDensityAlternative(cells);
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+	 	}
+		 
+	}
+
+	/*@Test
+	public void testDensityUtil() {
+		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+		try {
+			for (int i = 0; i < 1; i ++) {
+			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+			}
+			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+	 	}
+		int width = 10;
+		int height = 10;
+		int depth = 10;
+      	Density density = DensityUtil.computeDensity(cells, width, height, depth);
+	}*/
 
 	
 	 @Test
