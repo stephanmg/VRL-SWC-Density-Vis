@@ -41,17 +41,16 @@ dependencies {
     /// testing dependencies (from maven)
     testCompile group: 'junit', name: 'junit', version: '4.10'
     testCompile group: 'org.easymock', name: 'easymock', version: '2.5.2'
-    /* testCompile group: 'org.eluder.coveralls', name:'coveralls-maven-plugin', version: '1.2.0' */
+    /// add mockito dependencies here if necessary
     
-    /// local dependencies from ug and plugins and vrl 
-    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
-    //compile fileTree(dir: vrldir+"/plugins/", includes:['*.jar'])
-    
-    /// project lombok and levy's kd tree implementation
-    compile fileTree(dir: "jars/", includes:['*.jar']);
+    /// VRL dependencies (local dependencies)
     compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
     compile files(vrldir+'/plugins/Density-Vis.jar');
-    //runtime fileTree(dir: "jars/", includes:['*.jar']);
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
+    
+    /// project lombok and levy's kd tree implementation (local dependencies)
+    compile fileTree(dir: "jars/", includes:['*.jar']);
+    
 }
 // create a fat-jar (class files plus dependencies
 // excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
@@ -151,9 +150,8 @@ task testReport(type: TestReport) {
     }
 }
 
-
 /*
-/// add git dependencies
+/// add git dependencies (remote dependencies like maven)
 /// for now we add dependency as jars, but we could also
 /// make use of https://github.com/bat-cha/gradle-plugin-git-dependencies
 /// which provides a way to add github projects as dependencies 
