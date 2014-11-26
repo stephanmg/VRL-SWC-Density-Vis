@@ -229,17 +229,17 @@ public class SWCUtilityTests {
 		 
 		 rayFrom = new Vector3f(-2, 0, 0);
 		 val = SWCUtility.BoxProbe(rayFrom, boxMin, boxMax);
-		 assertTrue("Point should be outside the box", val);
+		 assertTrue("Point should be outside the box", !val);
 		 
 		 
 		 rayFrom = new Vector3f(0, -2, 0);
 		 val = SWCUtility.BoxProbe(rayFrom, boxMin, boxMax);
-		 assertTrue("Point should be outside the box", val);
+		 assertTrue("Point should be outside the box", !val);
 		 
 		 
 		 rayFrom = new Vector3f(0, 0, -2);
 		 val = SWCUtility.BoxProbe(rayFrom, boxMin, boxMax);
-		 assertTrue("Point should be outside the box", val);
+		 assertTrue("Point should be outside the box", !val);
 	 }
 	 
 	}
