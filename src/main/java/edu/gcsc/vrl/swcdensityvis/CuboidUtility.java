@@ -46,7 +46,7 @@ public final class CuboidUtility {
 	 * @param step_z
 	 * @return 
 	 */
-	public Cuboid getCuboidbyId(Cuboid bounding, int[] id, float step_x, float step_y, float step_z) {
+	public static Cuboid getCuboidbyId(Cuboid bounding, int[] id, float step_x, float step_y, float step_z) {
 		return new Cuboid(id[0], id[1], id[2], step_x, step_y, step_z);
 	}
 	
