@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -242,4 +243,45 @@ public class SWCUtilityTests {
 		 assertTrue("Point should be outside the box", !val);
 	 }
 	 
+	 @Test
+	 public void getBoundingBox() {
+		 HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+		try {
+			for (int i = 0; i < 1; i ++) {
+			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+			}
+			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+	 	}
+		
+		 for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
+			 SWCUtility.getBoundingBox(entry);
+		 }
+		 /**
+		  * @todo check boundings
+		  */
+	 }
+	 
+	 @Test
+	 public void getDimensions() {
+		 HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
+		try {
+			for (int i = 0; i < 1; i ++) {
+			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
+			}
+			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+	 	}
+		
+		 for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
+			 SWCUtility.getDimensions(entry);
+		 }	 
+	 /**
+	  * @todo check dims
+	  */
+	 }
 	}
