@@ -49,10 +49,10 @@ public class SWCCompartmentInformationTests {
 	}
 	
 	@Test
-	public void index() {
+	public void type() {
 		SWCCompartmentInformation s = new SWCCompartmentInformation();
-		s.setIndex(1);
-		assertEquals("index should be 1", s.getIndex(), 1, DELTA);
+		s.setType(1);
+		assertEquals("type should be 1", s.getType(), 1, DELTA);
 	}
 
 	@Test

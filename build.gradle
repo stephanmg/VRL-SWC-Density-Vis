@@ -90,6 +90,16 @@ buildscript {
     }
 }
 
+test {
+	jacoco {
+		excludes = [ 
+		   "edu/gcsc/vrl/swcdensityvis/ComputeSWCDensity.*", 
+		   "edu/gcsc/vrl/swcdensityvis/SWCLoadStackComponent.*",
+		   "edu/gcsc/vrl/swcdensityvis/SWCDensityVisualizationPluginConfigurator.*"
+		]	
+	}
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
