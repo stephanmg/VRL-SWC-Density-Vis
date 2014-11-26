@@ -606,9 +606,6 @@ public final class SWCUtility {
 					length += segment.length();
 				}*/
 			} 
-		/// Case 4: if this happens, then something is wrong with the conditionals above.
-		} else {
-			System.err.println("***Erronreous case detected***\np1: " + p1 + ", p2: " + p2 + ", x: " + x + ", y: " + y + ", z: " + z + ", , width+x: " + (width+x) + ", height+y: " + (height+y) + ", depth+z: " + (depth+z));
 		}
 	}	
 	return length;

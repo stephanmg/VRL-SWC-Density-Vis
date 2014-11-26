@@ -163,6 +163,7 @@ public class SWCUtilityTests {
 		int height = 10;
 		int depth = 10;
       	Density density = DensityUtil.computeDensity(cells, width, height, depth);
+	assertTrue("Voxels in density should not be zero: ", density.getVoxels().size() != 0);
 	}
 
 	
