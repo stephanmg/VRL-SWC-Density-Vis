@@ -83,7 +83,7 @@ public final class SWCUtility {
 	 */
 	@SuppressWarnings("NestedAssignment")
 	public static HashMap<String, ArrayList<SWCCompartmentInformation>> parseStack(File folder) throws IOException { 
-		HashMap<String, ArrayList<SWCCompartmentInformation>> compartments = null;
+		HashMap<String, ArrayList<SWCCompartmentInformation>> compartments = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 		File[] swcFiles = folder.listFiles(new FilenameFilter()
 		{
     		@Override

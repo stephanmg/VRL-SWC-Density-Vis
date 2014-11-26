@@ -106,7 +106,6 @@ jacocoTestReport.doFirst {
 			     
 	/// this does not work:
 	/// classDirectories = all_files - exclude;
-
 	classDirectories = files(base_dir+'/Cuboid.class', base_dir+'/CuboidUtility.class',
 	                         base_dir+'/DensityImpl.class', base_dir+'/DensityUtil.class',
 				 base_dir+'/Edge.class', base_dir+'/EdgeUtility.class',
@@ -116,6 +115,7 @@ jacocoTestReport.doFirst {
 }
 
 jacocoTestReport {
+    description = "Generates Jacoco coverage reports for unit tests"
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
         html.enabled = true

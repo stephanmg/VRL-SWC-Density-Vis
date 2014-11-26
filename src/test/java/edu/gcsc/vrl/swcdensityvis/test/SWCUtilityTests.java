@@ -183,4 +183,28 @@ public class SWCUtilityTests {
 		  * @todo implement
 		  */
 	 }
+	 
+	 @Test
+	 public void parseStack() {
+		try {
+			SWCUtility.parseStack(new File("data/"));
+		
+	 	} catch (IOException e) {
+		 System.err.println("File not found: " + e);
+		 fail("File not found: " + e);
+	 	}
+	 }
+	 
+	 @Test
+	 public void BoxProbe() {
+		 Vector3f rayFrom = new Vector3f(0, 0, 0);
+		 Vector3f boxMin = new Vector3f(-1, -1, -1); 
+		 Vector3f boxMax = new Vector3f(1, 1, 1); 
+		 boolean val = SWCUtility.BoxProbe(rayFrom, boxMin, boxMax);
+		 assertTrue("Point should be within the box", val);
+		 
+		 /**
+		  * @todo implement all if branches
+		  */
+	 }
 }
