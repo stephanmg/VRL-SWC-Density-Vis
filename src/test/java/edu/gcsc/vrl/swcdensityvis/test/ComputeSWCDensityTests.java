@@ -5,7 +5,7 @@
  */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.ComputeSWCDensity;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -17,10 +17,9 @@ import static org.junit.Assert.*;
  *
  * @author stephan
  */
-public class SWCCompartmentInformationTests {
-	private static final double DELTA = 1e-6;
+public class ComputeSWCDensityTests {
 	
-	public SWCCompartmentInformationTests() {
+	public ComputeSWCDensityTests() {
 	}
 	
 	@BeforeClass
@@ -39,27 +38,12 @@ public class SWCCompartmentInformationTests {
 	public void tearDown() {
 	}
 
-
 	@Test
-	public void thickness() {
-		SWCCompartmentInformation s = new SWCCompartmentInformation();
-		s.setThickness(1);
-		assertEquals("thickness should be 1", s.getThickness(), 1, DELTA);
-		
-	}
-	
-	@Test
-	public void index() {
-		SWCCompartmentInformation s = new SWCCompartmentInformation();
-		s.setIndex(1);
-		assertEquals("index should be 1", s.getIndex(), 1, DELTA);
-	}
-
-	@Test
-	public void remaining_tests() {
+	public void compute_density() {
+		ComputeSWCDensity d = new ComputeSWCDensity();
+		assertTrue("compute swc density can be instantiated", (d != null));
 		/**
 		 * @todo implement
 		 */
 	}
-	
 }
