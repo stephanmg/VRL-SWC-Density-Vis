@@ -10,6 +10,7 @@ import eu.mihosoft.vrl.reflection.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.vecmath.Vector3f;
 import org.junit.After;
@@ -26,6 +27,7 @@ import static org.easymock.EasyMock.createNiceMock;
  * @author stephan
  */
 public class SWCUtilityTests {
+	private static final double DELTA = 1e-6;
 	
 	public SWCUtilityTests() {
 	}
@@ -166,6 +168,17 @@ public class SWCUtilityTests {
 	
 	 @Test
 	 public void testEdgeSegmentWithinCube() {
+		 float x = 1;
+		 float y = 1;
+		 float z = 1;
+		 float width = 11;
+		 float depth = 11;
+		 float height = 11;
+		 
+		 float length = SWCUtility.EdgeSegmentWithinCuboid(x, y, z, width, depth, height, new Vector3f(1, 1, 1), new ArrayList<Vector3f>(Arrays.asList(new Vector3f(11, 11, 11))));
+		 
+		 assertEquals("Length should be " + Math.sqrt(3*Math.pow(10, 2)), Math.sqrt(3*Math.pow(10, 2)), length, DELTA);
+
 		 /**
 		  * @todo implement
 		  */

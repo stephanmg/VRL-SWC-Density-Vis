@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.Cuboid;
 import edu.gcsc.vrl.swcdensityvis.Edge;
 import javax.vecmath.Vector3f;
 import org.junit.After;
