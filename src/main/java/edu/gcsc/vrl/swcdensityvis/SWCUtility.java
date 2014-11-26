@@ -839,6 +839,7 @@ public final class SWCUtility {
 	 * @param args 
 	 */
 	public static void main(String... args) {
+		/*
 	   	HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 		try {
 			long millisecondsStart = System.currentTimeMillis();
@@ -875,9 +876,10 @@ public final class SWCUtility {
 			for (Vector3f vertex : inci.getValue()) {
 				System.out.println("Vertex:" + vertex);
 			}*/
+		/*
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
-		}
+		}*/
 	}
 }
 	
