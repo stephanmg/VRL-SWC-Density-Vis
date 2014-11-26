@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * 
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>

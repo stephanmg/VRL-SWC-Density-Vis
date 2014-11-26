@@ -1,19 +1,9 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author stephan
- */
-
+/// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
-import static edu.gcsc.vrl.swcdensityvis.SWCUtility.parse;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
@@ -26,12 +16,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.vecmath.Vector3f;
 
+/**
+ * @brief computes the density
+ */
 @ComponentInfo(name="ComputeSWCDensity", category="Neuro/SWC-Density-Vis")
 public class ComputeSWCDensity implements java.io.Serializable {
   private static final long serialVersionUID=1L;
-
-  // add your code here
-
   @OutputInfo(
     name="Density"
   )
