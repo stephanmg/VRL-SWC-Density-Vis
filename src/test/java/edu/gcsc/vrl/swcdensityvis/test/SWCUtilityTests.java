@@ -116,6 +116,29 @@ public class SWCUtilityTests {
 		assertTrue(segment.length() == 0.5);
 	}
 	
+	@Test
+	public void testRayBoxIntersectionWithNoDirection() {
+		Vector3f p1 = new Vector3f(0.5f, 0.5f, 0.5f);
+		Vector3f p2 = new Vector3f(0.5f, 0.5f, 0.5f);
+		Vector3f dir = new Vector3f(p2);
+		dir.sub(p1);
+		
+		Vector3f boxmin = new Vector3f(0, 0, 0);
+		Vector3f boxmax = new Vector3f(1, 1, 1);
+		Pair<Boolean, Pair<Float, Float>> res = SWCUtility.RayBoxIntersection(p1, dir, boxmin, boxmax);
+		assertTrue(res.getFirst());
+		
+		Vector3f x1 = new Vector3f(p1);
+		Vector3f scaled1 = new Vector3f(dir);
+		scaled1.scale(res.getSecond().getFirst());
+
+		x1.add(scaled1);
+
+		Vector3f segment = new Vector3f(x1);				
+		segment.sub(p1);
+		assertTrue(segment.length() == 0.0);
+	}
+	
 	
 	@Test
 	public void testComputeDensity() {
