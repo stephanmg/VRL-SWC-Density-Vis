@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
  *
  * @author stephan
  */
-public class SwappablePairTests {
+public class SwappablePairUtilityTests {
 	
-	public SwappablePairTests() {
+	public SwappablePairUtilityTests() {
 	}
 	
 	@BeforeClass
@@ -38,11 +38,13 @@ public class SwappablePairTests {
 	@After
 	public void tearDown() {
 	}
-	
+
 	@Test
-	public void construct() {
-		SwappablePair<Integer> p = new SwappablePair<Integer>(0, 0);
-		assertTrue("Instance could not be created.", (p != null));
+	public void swap() {
+		SwappablePair<Integer> p = new SwappablePair<Integer>(1, 0);
+		SwappablePairUtility.swap(p);
+		assertTrue("first element should now be 0, second eleent should now be 1", (p.getFirst() == 0 && p.getSecond() == 1));
 	}
+
 	
 }

@@ -5,8 +5,6 @@
  */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.SwappablePair;
-import edu.gcsc.vrl.swcdensityvis.SwappablePairUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,9 +16,9 @@ import static org.junit.Assert.*;
  *
  * @author stephan
  */
-public class SwappablePairTests {
+public class SWCCompartmentInformationTests {
 	
-	public SwappablePairTests() {
+	public SWCCompartmentInformationTests() {
 	}
 	
 	@BeforeClass
@@ -38,11 +36,11 @@ public class SwappablePairTests {
 	@After
 	public void tearDown() {
 	}
-	
+
 	@Test
-	public void construct() {
-		SwappablePair<Integer> p = new SwappablePair<Integer>(0, 0);
-		assertTrue("Instance could not be created.", (p != null));
+	public void all_tests() {
+		/**
+		 * @todo implement
+		 */
 	}
-	
 }

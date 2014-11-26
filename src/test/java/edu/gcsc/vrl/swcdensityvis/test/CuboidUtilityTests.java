@@ -1,12 +1,10 @@
+package edu.gcsc.vrl.swcdensityvis.test;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.gcsc.vrl.swcdensityvis.test;
-
-import edu.gcsc.vrl.swcdensityvis.SwappablePair;
-import edu.gcsc.vrl.swcdensityvis.SwappablePairUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,9 +16,9 @@ import static org.junit.Assert.*;
  *
  * @author stephan
  */
-public class SwappablePairTests {
+public class CuboidUtilityTests {
 	
-	public SwappablePairTests() {
+	public CuboidUtilityTests() {
 	}
 	
 	@BeforeClass
@@ -40,9 +38,23 @@ public class SwappablePairTests {
 	}
 	
 	@Test
-	public void construct() {
-		SwappablePair<Integer> p = new SwappablePair<Integer>(0, 0);
-		assertTrue("Instance could not be created.", (p != null));
+	public void getSampleCuboidBounding() {
+		/**
+		 * @todo implement
+		 */
 	}
 	
+	@Test
+	public void getCuboidById() {
+		/**
+		 * @todo implement
+		 */
+	}
+	
+	@Test
+	public void getCuboidId() {
+		/**
+		 * @todo implement
+		 */
+	}
 }
