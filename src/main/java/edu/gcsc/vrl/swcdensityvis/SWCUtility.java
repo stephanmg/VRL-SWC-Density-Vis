@@ -890,6 +890,8 @@ public final class SWCUtility {
 			for (Vector3f vertex : inci.getValue()) {
 				System.out.println("Vertex:" + vertex);
 			}*/
+		
+		
 		/*
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);

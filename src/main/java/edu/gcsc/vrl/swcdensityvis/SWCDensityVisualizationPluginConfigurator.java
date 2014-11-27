@@ -54,6 +54,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 			VPluginAPI vapi = (VPluginAPI) api;
 			vapi.addComponent(SWCLoadStackComponent.class);
 			vapi.addComponent(ComputeSWCDensity.class);
+			vapi.addComponent(ComputeSWCDistance.class);
 			// vapi.addTypeRepresentation(MyType.class);
 		}
 	}
