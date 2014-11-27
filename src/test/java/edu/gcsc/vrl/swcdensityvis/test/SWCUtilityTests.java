@@ -148,12 +148,15 @@ public class SWCUtilityTests {
 			for (int i = 0; i < 1; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
-			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 	 	}
-		 
+		
+		HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
+		assertTrue("Resulting HashMap should not be zero.", !res.isEmpty());
+		res = SWCUtility.computeDensity(cells, 10.f, 10.f, 10.f);
+		assertTrue("Resulting HashMap should not be zero.", !res.isEmpty());
 	}
 
 	@Test
@@ -163,11 +166,12 @@ public class SWCUtilityTests {
 			for (int i = 0; i < 1; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
-			HashMap<Integer, Float> res = SWCUtility.computeDensityAlternative(cells);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 	 	}
+		HashMap<Integer, Float> res = SWCUtility.computeDensityAlternative(cells);
+		//assertTrue("Result should not be empty", !res.isEmpty());
 		 
 	}
 
@@ -178,7 +182,6 @@ public class SWCUtilityTests {
 			for (int i = 0; i < 1; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
-			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
@@ -187,7 +190,7 @@ public class SWCUtilityTests {
 		int height = 10;
 		int depth = 10;
       	Density density = DensityUtil.computeDensity(cells, width, height, depth);
-	assertTrue("Voxels in density should not be zero: ", density.getVoxels().size() != 0);
+	assertTrue("Voxels in density should not be zero: ", !density.getVoxels().isEmpty());
 	}
 
 	
@@ -205,7 +208,7 @@ public class SWCUtilityTests {
 		 assertEquals("Length should be " + Math.sqrt(3*Math.pow(10, 2)), Math.sqrt(3*Math.pow(10, 2)), length, DELTA);
 
 		 /**
-		  * @todo implement
+		  * @todo implement other cases too
 		  */
 	 }
 	 
@@ -250,18 +253,16 @@ public class SWCUtilityTests {
 			for (int i = 0; i < 1; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
-			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 	 	}
 		
 		 for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
-			 SWCUtility.getBoundingBox(entry);
+			 Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(entry);
+			 assertEquals("Bounding min should agree.", bounding.getSecond(), new Vector3f(-75.14f, -22.01f, -14.62f));
+			 assertEquals("Bounding max should agree.", bounding.getFirst(), new Vector3f(2.14f, 26.74f, 19.47f));
 		 }
-		 /**
-		  * @todo check boundings
-		  */
 	 }
 	 
 	 @Test
@@ -271,14 +272,14 @@ public class SWCUtilityTests {
 			for (int i = 0; i < 1; i ++) {
 			 	cells.put("dummy" + i, SWCUtility.parse(new File("data/02a_pyramidal2aFI.swc")));
 			}
-			HashMap<Integer, Float> res = SWCUtility.computeDensity(cells);
 		
 	 	} catch (IOException e) {
 		 System.err.println("File not found: " + e);
 	 	}
 		
 		 for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
-			 SWCUtility.getDimensions(entry);
+			Vector3f dim = SWCUtility.getDimensions(entry);
+		 	assertEquals("Dimensions don't agree.", dim, new Vector3f(77.28f, 48.75f, 34.09f));
 		 }	 
 	 /**
 	  * @todo check dims

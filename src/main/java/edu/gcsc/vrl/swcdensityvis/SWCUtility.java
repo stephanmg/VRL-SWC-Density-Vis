@@ -30,6 +30,9 @@ import javax.vecmath.Vector3f;
  * @brief utilites for SWC files
  */
 public final class SWCUtility {
+	private final static float DEFAULT_WIDTH = 10.f;
+	private final static float DEFAULT_HEIGHT = 10.f;
+	private final static float DEFAULT_DEPTH = 10.f;
 	/**
 	 * @brief private ctor since utility classs should be final and private
 	 */
@@ -292,13 +295,24 @@ public final class SWCUtility {
 	return vals;
 }
 		
+	/**
+	 * @brief compute dendritic length in cuboid
+	 * @return a hashmap repreesentint dendritic length in each sampling cuboid
+	 * @param cells
+	 */
+	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+		return computeDensity(cells, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_DEPTH);
+	}
 	
 	/**
 	 * @brief compute dendritic length in cuboid
 	 * @return a hashmap representing dendritic length in each sampling cuboid
 	 * @param cells
+	 * @param width_
+	 * @param height_
+	 * @param depth_
 	 */
-	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, float width_, float height_, float depth_) {
 	  /// get dimensions and bounding box and report
 	  final Vector3f dims = SWCUtility.getDimensions(cells);
 	  final Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(cells);
@@ -306,9 +320,9 @@ public final class SWCUtility {
 	  System.out.println("Bounding box Min: " + bounding.getSecond()  + ", Max:" + bounding.getFirst());
 	  
 	  /// sampling cube in geometry dimensions (i. e. µm!)
-	  final float width = 10.f;
-	  final float height = 10.f; 
-	  final float depth = 10.f; 
+	  final float width = width_;
+	  final float height = height_;
+	  final float depth = depth_;
 
 	  /**
 	   * @brief thread, e. g. callable, which computes for one cell the dendritic length in each cuboid
