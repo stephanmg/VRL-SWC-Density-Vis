@@ -4,6 +4,7 @@ package edu.gcsc.vrl.swcdensityvis;
 /// imports
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;

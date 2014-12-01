@@ -5,3 +5,4 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 Badges:
 * [![CI Build Status](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis.svg?branch=master)](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis)
 * [![CI Coverage Status](https://coveralls.io/repos/stephanmg/VRL-SWC-Density-Vis/badge.png)](https://coveralls.io/r/stephanmg/VRL-SWC-Density-Vis)
+* [![Stories in Ready](https://badge.waffle.io/NeuroBox3D/VRL-SWC-Density-Vis.png?label=ready&title=Ready)](http://waffle.io/NeuroBox3D/VRL-SWC-Density-Vis)

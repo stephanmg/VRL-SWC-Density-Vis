@@ -9,11 +9,13 @@ import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
+import eu.mihosoft.vrl.visual.VComboBox;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.JComboBox;
 import javax.vecmath.Vector3f;
 
 /**
@@ -32,8 +34,11 @@ public class ComputeSWCDensity implements java.io.Serializable {
       options="endings=[\"swc\"]; description=\"SWC files (.swc)\"") File folder,
     @ParamInfo(name="width", style="default", options="value=10;min=5") int width,
     @ParamInfo(name="height", style="default", options="value=10;min=5") int height,
-    @ParamInfo(name="depth", style="default", options="value=10;min=5") int depth
+    @ParamInfo(name="depth", style="default", options="value=10;min=5") int depth,
+    @ParamInfo(name="selection", style="default") VComboBox combo
   ) {
+	  combo.addItem("foo");
+	  combo.addItem("bar");
 	  HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 	  try {
 		  File[] swcFiles = folder.listFiles(new FilenameFilter()
