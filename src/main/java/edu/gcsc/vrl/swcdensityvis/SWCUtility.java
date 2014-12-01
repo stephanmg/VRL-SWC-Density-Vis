@@ -651,6 +651,8 @@ public final class SWCUtility {
 	public static HashMap<Vector3f, ArrayList<Vector3f>> getIndicents(final ArrayList<SWCCompartmentInformation> cell, String type) {
 		// get clean type string
 		String type_clean = get_clean_choice(type);
+		// get index
+		int index = SWCCompartmentType.valueOf(type_clean).ordinal();
 		
 		if (DEFAULT_SELECTION.equals(type)) {
 			return getIndicents(cell);
@@ -661,7 +663,7 @@ public final class SWCUtility {
 				Vector3f v0 = info.getCoordinates();
 				for (SWCCompartmentInformation info2 : cell) {
 					if (info.getIndex() == info2.getConnectivity().getSecond()-1) {
-						if (SWCCompartmentType.valueOf(type_clean).ordinal() == info.getType()) {
+						if (index == info.getType()) {
 							temp.add(info2.getCoordinates());
 						}
 					}
