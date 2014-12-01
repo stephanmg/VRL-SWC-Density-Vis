@@ -153,7 +153,7 @@ public class SWCUtilityTests {
 		 System.err.println("File not found: " + e);
 	 	}
 		
-		HashMap<Integer, Float> res = SWCUtility.computeDensity(cells, SWCUtility.DEFAULT_SELECTION);
+		HashMap<Integer, Float> res = SWCUtility.computeDensity(cells, "UNKNOWN");
 		assertTrue("Resulting HashMap should not be zero.", !res.isEmpty());
 		res = SWCUtility.computeDensity(cells, SWCUtility.DEFAULT_WIDTH, SWCUtility.DEFAULT_HEIGHT, 
 			                               SWCUtility.DEFAULT_DEPTH, SWCUtility.DEFAULT_SELECTION);
