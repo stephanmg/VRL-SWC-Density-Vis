@@ -60,6 +60,7 @@ jar {
         filter({file->return !file.name.startsWith("vrl-0")}).
         filter({file->return !file.name.startsWith("Density-Vis.jar")}).
         filter({file->return !file.name.startsWith("VRL-JFreeChart.jar")}).
+        filter({file->return !file.name.startsWith("VRL-SWC-Density-Vis.jar")}).
         files.collect { zipTree(it) }
 
     // project class files compiled from source

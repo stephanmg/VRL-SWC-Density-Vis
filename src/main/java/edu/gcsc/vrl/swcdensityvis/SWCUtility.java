@@ -294,7 +294,6 @@ public final class SWCUtility {
 	}*/
 	return vals;
 }
-		
 	/**
 	 * @brief compute dendritic length in cuboid
 	 * @return a hashmap repreesentint dendritic length in each sampling cuboid

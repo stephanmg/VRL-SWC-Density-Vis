@@ -7,6 +7,7 @@ import edu.gcsc.vrl.densityvis.DensityResult;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.types.SelectionInputType;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import eu.mihosoft.vrl.visual.VComboBox;
@@ -30,15 +31,13 @@ public class ComputeSWCDensity implements java.io.Serializable {
   public DensityResult compute(
     @ParamInfo(
       name="Input folder",
-      style="load-folder-dialog",
+      style="load-dialog",
       options="endings=[\"swc\"]; description=\"SWC files (.swc)\"") File folder,
     @ParamInfo(name="width", style="default", options="value=10;min=5") int width,
     @ParamInfo(name="height", style="default", options="value=10;min=5") int height,
     @ParamInfo(name="depth", style="default", options="value=10;min=5") int depth,
-    @ParamInfo(name="selection", style="default") VComboBox combo
+    @ParamInfo(name="selection", style="selection", options="value=[\"all\", \"undefined\", \"axon\", \"(basal) dendrite\", \"apical dendrite\", \"fork point\", \"end point\", \"custom\"") String choice
   ) {
-	  combo.addItem("foo");
-	  combo.addItem("bar");
 	  HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 	  try {
 		  File[] swcFiles = folder.listFiles(new FilenameFilter()
@@ -53,6 +52,9 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		  	cells.put(f.getName(), SWCUtility.parse(f));
 		  }
 		  eu.mihosoft.vrl.system.VMessage.info("Computing density", "Total number of files for density computation: " + swcFiles.length);
+		  /**
+		   * @todo introduce computeDensity() function which resepects the String choice
+		   */
 		  SWCUtility.computeDensity(cells);
   	} 
 	  catch (IOException e) {
