@@ -625,6 +625,30 @@ public final class SWCUtility {
 }
 
 	/**
+	 * @brief get a selection of incidents
+	 * @param cell
+	 * @param type
+	 * @return 
+	 */
+	public static HashMap<Vector3f, ArrayList<Vector3f>> getIndicents(final ArrayList<SWCCompartmentInformation> cell, String type) {
+		final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());
+		for (SWCCompartmentInformation info : cell) {
+			ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
+			Vector3f v0 = info.getCoordinates();
+			for (SWCCompartmentInformation info2 : cell) {
+				if (info.getIndex() == info2.getConnectivity().getSecond()-1) {
+					if (SWCCompartmentType.valueOf(type).ordinal() == info.getType()) {
+							temp.add(info2.getCoordinates());
+					}
+				}
+			}
+			temp.add(v0); // starting vertex: this could be improved certainly
+			incidents.put(v0, temp);
+		}
+		return incidents;
+	}
+	
+	/**
 	 * @brief get all incident vertices
 	 * @todo see implementation notes concerning speedup of computation
 	 * @param cell

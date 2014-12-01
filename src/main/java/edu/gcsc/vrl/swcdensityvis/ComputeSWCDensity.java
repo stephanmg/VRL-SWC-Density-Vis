@@ -36,7 +36,7 @@ public class ComputeSWCDensity implements java.io.Serializable {
     @ParamInfo(name="width", style="default", options="value=10;min=5") int width,
     @ParamInfo(name="height", style="default", options="value=10;min=5") int height,
     @ParamInfo(name="depth", style="default", options="value=10;min=5") int depth,
-    @ParamInfo(name="selection", style="selection", options="value=[\"all\", \"undefined\", \"axon\", \"(basal) dendrite\", \"apical dendrite\", \"fork point\", \"end point\", \"custom\"") String choice
+    @ParamInfo(name="selection", style="selection", options="value=[\"all\", \"undefined\", \"axon\", \"(basal) dendrite\", \"apical dendrite\", \"fork point\", \"end point\", \"custom\"]") String choice
   ) {
 	  HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 	  try {
@@ -52,10 +52,15 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		  	cells.put(f.getName(), SWCUtility.parse(f));
 		  }
 		  eu.mihosoft.vrl.system.VMessage.info("Computing density", "Total number of files for density computation: " + swcFiles.length);
+		  
 		  /**
-		   * @todo introduce computeDensity() function which resepects the String choice
+		   * @todo this could be improved...
 		   */
-		  SWCUtility.computeDensity(cells);
+		  if ("ALL".equals(choice)) {
+		  	SWCUtility.computeDensity(cells);
+		  } else {
+			 // SWCUtility.computeDensity(cells, choice);
+		  }
   	} 
 	  catch (IOException e) {
 		   eu.mihosoft.vrl.system.VMessage.exception("File not found", e.toString());
