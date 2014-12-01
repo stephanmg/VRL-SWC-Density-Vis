@@ -30,9 +30,11 @@ import javax.vecmath.Vector3f;
  * @brief utilites for SWC files
  */
 public final class SWCUtility {
-	private final static float DEFAULT_WIDTH = 10.f;
-	private final static float DEFAULT_HEIGHT = 10.f;
-	private final static float DEFAULT_DEPTH = 10.f;
+	public final static float DEFAULT_WIDTH = 10.f;
+	public final static float DEFAULT_HEIGHT = 10.f;
+	public final static float DEFAULT_DEPTH = 10.f;
+	public final static String DEFAULT_SELECTION = "ALL";
+	
 	/**
 	 * @brief private ctor since utility classs should be final and private
 	 */
@@ -300,8 +302,14 @@ public final class SWCUtility {
 	 * @param cells
 	 */
 	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
-		return computeDensity(cells, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_DEPTH);
+		return computeDensity(cells, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_DEPTH, DEFAULT_SELECTION);
 	}
+	
+	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, String type) {
+		return computeDensity(cells, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_DEPTH, type);
+	}
+
+	
 	
 	/**
 	 * @brief compute dendritic length in cuboid
@@ -310,8 +318,9 @@ public final class SWCUtility {
 	 * @param width_
 	 * @param height_
 	 * @param depth_
+	 * @param type
 	 */
-	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, float width_, float height_, float depth_) {
+	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, float width_, float height_, float depth_, final String type) {
 	  /// get dimensions and bounding box and report
 	  final Vector3f dims = SWCUtility.getDimensions(cells);
 	  final Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(cells);
@@ -355,7 +364,7 @@ public final class SWCUtility {
 		 public HashMap<Integer, Float> call() {
 		   /// preprocess, determine characteristic edge length (one can chose also something different)
 		   int size = 0;
-		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue());
+		   HashMap<Vector3f, ArrayList<Vector3f>> incidents = getIndicents(cell.getValue(), type);
 		   //ArrayList<Float> e_lengths = new ArrayList<Float>(incidents.size());
 		   for (Map.Entry<Vector3f, ArrayList<Vector3f>> entry : incidents.entrySet()) {
 			   ArrayList<Vector3f> vecs = entry.getValue();
@@ -625,27 +634,43 @@ public final class SWCUtility {
 }
 
 	/**
+	 * @brief cleans the choice string
+	 * @param type
+	 * @return 
+	 */
+	public static String get_clean_choice(String type) {
+		return type.replace(" ", "_").replace("(", "").replace(")", "").toUpperCase();
+	}
+	
+	/**
 	 * @brief get a selection of incidents
 	 * @param cell
 	 * @param type
 	 * @return 
 	 */
 	public static HashMap<Vector3f, ArrayList<Vector3f>> getIndicents(final ArrayList<SWCCompartmentInformation> cell, String type) {
-		final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());
-		for (SWCCompartmentInformation info : cell) {
-			ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
-			Vector3f v0 = info.getCoordinates();
-			for (SWCCompartmentInformation info2 : cell) {
-				if (info.getIndex() == info2.getConnectivity().getSecond()-1) {
-					if (SWCCompartmentType.valueOf(type).ordinal() == info.getType()) {
+		// get clean type string
+		String type_clean = get_clean_choice(type);
+		
+		if (DEFAULT_SELECTION.equals(type)) {
+			return getIndicents(cell);
+		} else {
+			final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());
+			for (SWCCompartmentInformation info : cell) {
+				ArrayList<Vector3f> temp = new ArrayList<Vector3f>();
+				Vector3f v0 = info.getCoordinates();
+				for (SWCCompartmentInformation info2 : cell) {
+					if (info.getIndex() == info2.getConnectivity().getSecond()-1) {
+						if (SWCCompartmentType.valueOf(type_clean).ordinal() == info.getType()) {
 							temp.add(info2.getCoordinates());
+						}
 					}
 				}
+				temp.add(v0); // starting vertex: this could be improved certainly
+				incidents.put(v0, temp);
 			}
-			temp.add(v0); // starting vertex: this could be improved certainly
-			incidents.put(v0, temp);
-		}
 		return incidents;
+		}
 	}
 	
 	/**

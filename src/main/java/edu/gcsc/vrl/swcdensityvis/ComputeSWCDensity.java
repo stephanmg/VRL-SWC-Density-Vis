@@ -59,7 +59,7 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		  if ("ALL".equals(choice)) {
 		  	SWCUtility.computeDensity(cells);
 		  } else {
-			 // SWCUtility.computeDensity(cells, choice);
+			SWCUtility.computeDensity(cells, choice);
 		  }
   	} 
 	  catch (IOException e) {
