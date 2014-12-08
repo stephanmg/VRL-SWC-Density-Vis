@@ -54,6 +54,9 @@ final class DensityImpl implements Density {
 		 	  for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=this.voxelDepth) {
 				  if (density.containsKey(index)) {
 			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  density.get(index) * 255));
+				/**
+				 * @todo multiplication with 255 not necessary, since we have no colors in input image
+				 */
 				  } else {
 			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  0));
 					  }

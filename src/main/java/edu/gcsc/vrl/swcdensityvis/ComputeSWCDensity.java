@@ -66,6 +66,9 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		   eu.mihosoft.vrl.system.VMessage.exception("File not found", e.toString());
 	  }
 	  
+      /**
+       * @todo here we need to scale the geometry to the range [0.1 to 100] for back and front plane clipping
+       */
       Density density = DensityUtil.computeDensity(cells, width, height, depth);
       Vector3f dim = SWCUtility.getDimensions(cells);
       VTriangleArray vta = new Cube(dim.x,dim.y,dim.z).toCSG().toVTriangleArray();
