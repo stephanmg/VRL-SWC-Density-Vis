@@ -48,7 +48,7 @@ final class DensityImpl implements Density { /// this can get an instance of teh
 	/// get the bounding box in physiological units, i. e. µm
 	Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(stack);
 	/// compute the density
-	HashMap<Integer, Float> density = SWCUtility.computeDensity(stack); 
+	HashMap<Integer, Float> density = SWCUtility.computeDensity(stack, 5f, 5f, 5f, "ALL"); 
 	/**
 	 * @todo computeDensity must respect the voxel width depth and height
 	 */
@@ -58,13 +58,13 @@ final class DensityImpl implements Density { /// this can get an instance of teh
 		for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y+=this.voxelHeight) {
 		 	  for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z+=this.voxelDepth) {
 				  if (density.containsKey(index)) {
-			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  density.get(index) * 255));
+			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  density.get(index)*255));
 				/**
 				 * @todo multiplication with 255 not necessary, since we have no colors in input image
 				 */
 				  } else {
 			   	voxels.add(new VoxelImpl((int)x, (int)y, (int)z, this.voxelWidth, this.voxelHeight, this.voxelDepth,  0));
-					  }
+				  }
 			   	/// note: density.get(index) in interval [0, 1] -> thus we multiply by 255 to have a color between 0 and 255
 			   	index++;
 			   }

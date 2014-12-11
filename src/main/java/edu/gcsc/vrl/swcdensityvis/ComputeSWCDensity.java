@@ -68,12 +68,12 @@ public class ComputeSWCDensity implements java.io.Serializable {
       /**
        * @todo here we need to scale the geometry to the range [0.1 to 100] for back and front plane clipping
        */
-      SWCUtility.scaleAndTransformAndCopyGeometry(cells, new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(100.0f-0.1f, 100.0f-0.1f, 100.0f-0.1f));
-      Density density = DensityUtil.computeDensity(cells, width, height, depth); /// density must respect new rescaled geometry...
       Vector3f dim = SWCUtility.getDimensions(cells);
       double backplane = 100.0;
       double frontplane = 0.1;
       double scaling_factor = (backplane - frontplane) / (Collections.max(Arrays.asList(dim.x, dim.y, dim.z)));
+      SWCUtility.scaleAndTransformAndCopyGeometry(cells, new Vector3f(0.1f, 0.1f, 0.1f), new Vector3f(100.0f-0.1f, 100.0f-0.1f, 100.0f-0.1f));
+      Density density = DensityUtil.computeDensity(cells, width, height, depth); /// density must respect new rescaled geometry...
       System.err.println("scaling_factor: " + scaling_factor);
       System.err.println("least coordinates: " + SWCUtility.getBoundingBox(cells).getSecond());
  //     VTriangleArray vta = new Cube(dim.x*scaling_factor,dim.y*scaling_factor,dim.z*scaling_factor).toCSG().toVTriangleArray();
