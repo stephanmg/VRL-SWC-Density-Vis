@@ -1,5 +1,5 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.geometry_import;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
@@ -16,14 +16,11 @@ import javax.vecmath.Vector3f;
  * @brief Density implementation for internal usage
  * @author stephan
  */
-final class DensityImpl implements Density { /// this can get an instance of teh ImportGeometryFooImpl in a general way... => plug in here SWC or Foo or Bar or other Importer
-    /// the SWC "stack"
-    private final HashMap<String, ArrayList<SWCCompartmentInformation>> stack;
+final class DensityImpl implements Density { 
+    private final GeometryImporter gi;
     private final int voxelWidth;
     private final int voxelHeight;
     private final int voxelDepth;
-    
-    /// the output voxels
     private final ArrayList<WritableVoxel> voxels = new ArrayList<WritableVoxel>();
 
     /**
@@ -33,8 +30,8 @@ final class DensityImpl implements Density { /// this can get an instance of teh
      * @param height
      * @param depth 
      */
-    public DensityImpl(HashMap<String, ArrayList<SWCCompartmentInformation>> stack, int voxelWidth, int voxelHeight, int voxelDepth) {
-	this.stack = stack;
+    public DensityImpl(GeometryImporter gi, int voxelWidth, int voxelHeight, int voxelDepth) {
+	this.gi = gi;
         this.voxelWidth = voxelWidth;
         this.voxelHeight = voxelHeight;
         this.voxelDepth = voxelDepth;
@@ -45,13 +42,9 @@ final class DensityImpl implements Density { /// this can get an instance of teh
      * Computes the average density for each voxel subset.
      */
     private void compute() {
-	/// get the bounding box in physiological units, i. e. µm
-	Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(stack);
-	/// compute the density
-	HashMap<Integer, Float> density = SWCUtility.computeDensity(stack); 
-	/**
-	 * @todo computeDensity must respect the voxel width depth and height
-	 */
+	gi.load_cells();
+	Pair<Vector3f, Vector3f> bounding = gi.getBoundingBox();
+	HashMap<Integer, Float> density = gi.computeDensity();
 	
 	int index = 0;
 	for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x+=this.voxelWidth) {

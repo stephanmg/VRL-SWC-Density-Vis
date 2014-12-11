@@ -3,8 +3,8 @@ package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
 import eu.mihosoft.vrl.annotation.ComponentInfo;
+import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import eu.mihosoft.vrl.lang.VLangUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -28,10 +28,19 @@ public class SWCLoadStackComponent implements Serializable {
 	 * @brief set filename
 	 * @param file path to SWC file 
 	 */
-	public void get_file(
+	public void set_file(
 		@ParamInfo(name = "Filename", style="load-dialog") File file
 	) {
 		m_file = file;
+	}
+	
+	/**
+	 * @brief gets the filename
+	 * @return 
+	 */
+	@OutputInfo(name="SWC File")
+	public File get_file() {
+		return m_file;
 	}
 
 	/**
