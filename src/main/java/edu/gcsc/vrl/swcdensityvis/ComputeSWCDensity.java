@@ -5,7 +5,7 @@ package edu.gcsc.vrl.swcdensityvis;
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
-import eu.mihosoft.vrl.annotation.OutputInfo;
+import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
@@ -27,8 +27,9 @@ public class ComputeSWCDensity implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@OutputInfo(
-		name = "Density", typeName = "Density of image (stack)"
+	@MethodInfo(
+		valueName = "Density",
+		valueTypeName = "Density"
 	)
 	public DensityResult compute(
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Folder|true|Input folder")
@@ -42,9 +43,9 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		@ParamGroupInfo(group = "Advanced options|true|Compute the density for the image (stack); Compartment|true|Compartment")
 		@ParamInfo(name = "Type", typeName = "Compartment", style = "selection", options = "value=[\"all\", \"undefined\", \"axon\", \"(basal) dendrite\", \"apical dendrite\", \"fork point\", \"end point\", \"custom\"]") String choice,
 		@ParamGroupInfo(group = "Advanced options|false|Compute the density for the image (stack); Scaling|false|Scaling")
-		@ParamInfo(name = "Custom scaling mode", typeName = "Enable custom scaling", options="value=false", style="default") boolean bCustomScale,
+		@ParamInfo(name = "Custom scaling mode", typeName = "Enable custom scaling", options = "value=false", style = "default") boolean bCustomScale,
 		@ParamGroupInfo(group = "Advanced options|false|Compute the density for the image (stack); Scaling|false|Scaling")
-		@ParamInfo(name = "Factor", typeName = "Custom scaling factor", options="value=1.0") double custom_scaling_factor
+		@ParamInfo(name = "Factor", typeName = "Custom scaling factor", options = "value=1.0") double custom_scaling_factor
 	) {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 		try {

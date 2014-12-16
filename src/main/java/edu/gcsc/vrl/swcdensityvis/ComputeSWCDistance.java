@@ -5,7 +5,7 @@ package edu.gcsc.vrl.swcdensityvis;
 import edu.gcsc.vrl.jfreechart.*;
 import edu.gcsc.vrl.densityvis.*;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
-import eu.mihosoft.vrl.annotation.OutputInfo;
+import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.math.Trajectory;
 import java.util.Collection;
@@ -16,7 +16,11 @@ public class ComputeSWCDistance implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// add your code here
-	@OutputInfo(name = "Trajectory")
+	@MethodInfo(
+		valueName="Trajectory",
+		valueTypeName="Trajectory"
+	)
+	
 	public Trajectory computeTraj(
 		@ParamInfo(name = "Density", typeName = "Density of the image (stack)", style = "default", options = "") DensityResult dens,
 		@ParamInfo(name = "Min Density", typeName = "Minimum density for visualization", style = "slider", options = "value=20;min=10;max=100;") int percentage) {
@@ -40,7 +44,10 @@ public class ComputeSWCDistance implements java.io.Serializable {
 	}
 
 	// add your code here
-	@OutputInfo(name = "Data")
+	@MethodInfo(
+		valueName="Histogram",
+		valueTypeName="Histogram"
+	)
 	public HistogramData computeHist(
 		@ParamInfo(name = "Density", style = "default", options = "") DensityResult dens,
 		@ParamInfo(name = "Min Density", style = "slider", options = "value=20;min=10;max=100;") int percentage) {
