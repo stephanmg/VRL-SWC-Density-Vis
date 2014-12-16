@@ -23,9 +23,10 @@ public final class DensityUtil {
 	 * @param width
 	 * @param height
 	 * @param depth
+	 * @param choice
 	 * @return 
 	 */
-	public static Density computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, int width, int height, int depth) {
-	    return new DensityImpl(cells, width, height, depth);
+	public static Density computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, int width, int height, int depth, String choice) {
+	    return new DensityImpl(cells, width, height, depth, choice);
     }
 }

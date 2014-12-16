@@ -322,16 +322,12 @@ public final class SWCUtility {
 	
 	/**
 	 * @brief scales and transform the geometry
-	 * @param cells_
+	 * @param cells
 	 * @param new_origin
 	 * @param new_dim
 	 * @param scaling_factor
-	 * @return a scaled version of the original geometry
 	 */
-	public static HashMap<String, ArrayList<SWCCompartmentInformation>> scaleAndTransformAndCopyGeometry(HashMap<String, ArrayList<SWCCompartmentInformation>> cells_, Vector3f new_origin, Vector3f new_dim, float scaling_factor) {
-		@SuppressWarnings("unchecked")
-		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = (HashMap<String, ArrayList<SWCCompartmentInformation>>) cells_.clone();
-		
+	public static void scaleAndTransformGeometry(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, Vector3f new_origin, Vector3f new_dim, float scaling_factor) {
 		for (Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry : cells.entrySet()) {
 			for (SWCCompartmentInformation compartment : entry.getValue()) {
 				Vector3f coords = new Vector3f(compartment.getCoordinates());
@@ -354,10 +350,15 @@ public final class SWCUtility {
 				compartment.setCoordinates(coords);
 			}
 		}
-		return cells;
 	}
-	public static HashMap<String, ArrayList<SWCCompartmentInformation>> scaleAndTransformAndCopyGeometry(HashMap<String, ArrayList<SWCCompartmentInformation>> cells_, Vector3f new_origin, Vector3f new_dim) {
-		return scaleAndTransformAndCopyGeometry(cells_, new_origin, new_dim, 0);
+	/**
+	 * @brief scales automatically
+	 * @param cells_
+	 * @param new_origin
+	 * @param new_dim 
+	 */
+	public static void scaleAndTransformGeometry(HashMap<String, ArrayList<SWCCompartmentInformation>> cells_, Vector3f new_origin, Vector3f new_dim) {
+		scaleAndTransformGeometry(cells_, new_origin, new_dim, 0);
 	}
 
 	/**
@@ -707,7 +708,7 @@ public final class SWCUtility {
 		// get index
 		int index = SWCCompartmentType.valueOf(type_clean).ordinal();
 
-		if (DEFAULT_SELECTION.equals(type)) {
+		if (DEFAULT_SELECTION.equalsIgnoreCase(type)) {
 			return getIndicents(cell);
 		} else {
 			final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>(cell.size());

@@ -22,6 +22,7 @@ final class DensityImpl implements Density { /// this can get an instance of teh
     private final int voxelWidth;
     private final int voxelHeight;
     private final int voxelDepth;
+    private final String choice;
     
     /// the output voxels
     private final ArrayList<WritableVoxel> voxels = new ArrayList<WritableVoxel>();
@@ -32,12 +33,14 @@ final class DensityImpl implements Density { /// this can get an instance of teh
      * @param width
      * @param height
      * @param depth 
+     * @param choice
      */
-    public DensityImpl(HashMap<String, ArrayList<SWCCompartmentInformation>> stack, int voxelWidth, int voxelHeight, int voxelDepth) {
+    public DensityImpl(HashMap<String, ArrayList<SWCCompartmentInformation>> stack, int voxelWidth, int voxelHeight, int voxelDepth, String choice) {
 	this.stack = stack;
         this.voxelWidth = voxelWidth;
         this.voxelHeight = voxelHeight;
         this.voxelDepth = voxelDepth;
+	this.choice = choice;
 	compute();
     }
 
@@ -48,7 +51,7 @@ final class DensityImpl implements Density { /// this can get an instance of teh
 	/// get the bounding box in physiological units, i. e. µm
 	Pair<Vector3f, Vector3f> bounding = SWCUtility.getBoundingBox(stack);
 	/// compute the density
-	HashMap<Integer, Float> density = SWCUtility.computeDensity(stack, 5f, 5f, 5f, "ALL"); 
+	HashMap<Integer, Float> density = SWCUtility.computeDensity(stack, voxelWidth, voxelHeight, voxelDepth, choice); 
 	/**
 	 * @todo computeDensity must respect the voxel width depth and height
 	 */
