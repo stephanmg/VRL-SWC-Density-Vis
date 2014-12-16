@@ -31,7 +31,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
     private File templateProjectSrc;
 	public SWCDensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
-		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.2"));
+		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.3"));
 
 		setDescription("Visualizes the density of a bunch of SWC files");
 
