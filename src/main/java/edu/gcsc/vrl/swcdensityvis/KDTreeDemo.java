@@ -18,7 +18,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class KDTreeDemo {
 	public static void main(String... args) {
-/*
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
 		 	cells.put("dummy", SWCUtility.parse(new File("data/02a_pyramidal2aFI_original.swc")));
@@ -38,7 +37,6 @@ public class KDTreeDemo {
 				System.out.println("Vertex:" + vertex);
 			}*/
 		}
-		/*
 		KDTree<ArrayList<Vector3f>> tree = SWCUtility.buildKDTree(incidents);
 		assertEquals("Tree size is required to be: 1514, but was: " + tree.size(), tree.size(), 1514);
 		double[] elem = {2.14, 14.34, -0.15};
@@ -47,13 +45,13 @@ public class KDTreeDemo {
 		double[] lo = {-100, -100,-100 };
 		double[] hi = {200, 200, 200};
 			List<ArrayList<Vector3f>> temps = tree.range(lo, hi);
-			/*System.out.println("temps size:" + temps.size());
+			System.out.println("temps size:" + temps.size());
 			for (ArrayList<Vector3f> temp : temps) {
 				System.out.println("temp size: " + temp.size());
 			}
 		}catch (KeySizeException e) {
 		}
-		/*	double [] A = {2, 5};
+			double [] A = {2, 5};
 	double [] B = {1, 1};
 	double [] C = {3, 9};
 	double [] T = {1, 10};
@@ -98,5 +96,4 @@ public class KDTreeDemo {
 	}
 		}
     }
-	*/
 }
