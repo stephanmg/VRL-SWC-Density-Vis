@@ -28,7 +28,7 @@ public class SWCDensityVisualization implements java.io.Serializable {
 
     @ParamInfo(name="Density") DensityResult density,
     @ParamGroupInfo(group="Visualization|false|no description") 
-    @ParamInfo(name="Min Density", style="slider", options="value=20;min=10;max=100;") int percentage,
+    @ParamInfo(name="Min Density", style="slider", options="value=10;min=1;max=100;") int percentage,
     @ParamGroupInfo(group="Visualization") 
     @ParamInfo(name="Membrane Color", style="color-chooser", options="value=java.awt.Color.green") Color mColor,
     @ParamGroupInfo(group="Visualization") 

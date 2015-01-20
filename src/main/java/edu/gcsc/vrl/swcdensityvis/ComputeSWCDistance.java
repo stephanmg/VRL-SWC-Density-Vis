@@ -50,7 +50,7 @@ public class ComputeSWCDistance implements java.io.Serializable {
 	)
 	public HistogramData computeHist(
 		@ParamInfo(name = "Density", style = "default", options = "") DensityResult dens,
-		@ParamInfo(name = "Min Density", style = "slider", options = "value=20;min=10;max=100;") int percentage) {
+		@ParamInfo(name = "Min Density", style = "slider", options = "value=10;min=1;max=100;") int percentage) {
 
 		Collection<Distance> distances
 			= DistanceUtil.computeDistance(

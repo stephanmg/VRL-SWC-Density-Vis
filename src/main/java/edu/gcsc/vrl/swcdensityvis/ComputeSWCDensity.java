@@ -64,6 +64,12 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		/// density must respect new rescaled geometry and therefore fit in cuboid
 		Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
 		double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
+		/* @todo the vta is way to big, since the geometry/density get's rescaled with the VisUtil.
+		         we could however rescale the cube too, or we just omit the cube for rendering,
+			since it isn't necessary in fact...
+					
+		*/
+			
 		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
 		
 		/// return density
