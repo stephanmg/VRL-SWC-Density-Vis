@@ -17,7 +17,7 @@ public final class DensityUtil {
 	
         /**
 	 * @brief computes the density for the stack of SWC files
-	 * @param igg
+	 * @param gi
 	 * @param width
 	 * @param height
 	 * @param depth
