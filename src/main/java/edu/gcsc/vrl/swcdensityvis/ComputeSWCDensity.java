@@ -6,6 +6,7 @@ import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
+import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
@@ -26,11 +27,13 @@ public class ComputeSWCDensity implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@MethodInfo(
-		valueName = "Density",
-		valueTypeName = "Density"
-	)
-	public DensityResult compute(
+	@MethodInfo(valueStyle = "multi-out", interactive = false)
+	@OutputInfo(
+		style = "multi-out",
+		elemNames = {"Density", "Geometry"},
+		elemTypes = { DensityResult.class, HashMap.class }
+		)
+	public Object[] compute(
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Folder|true|Input folder")
 		@ParamInfo(name = "Input folder", typeName = "Location of SWC files", style = "load-folder-dialog", options = "endings=[\"swc\"]; description=\"SWC files (.swc)\"") File folder,
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Dimensions|true|Dimensions")
@@ -71,8 +74,6 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		*/
 			
 		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
-		
-		/// return density
-		return new DensityResult(density, vta);
+		return new Object[]{new DensityResult(density, vta), cells};
 	}
 }
