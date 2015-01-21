@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import static javax.media.j3d.GeometryArray.COORDINATES;
+import javax.media.j3d.LineArray;
+import javax.vecmath.Vector3f;
 
 /**
  * @brief computes the density
@@ -72,6 +77,27 @@ public class ComputeSWCDensity implements java.io.Serializable {
 			since it isn't necessary in fact...
 					
 		*/
+		
+Iterator<Map.Entry<String, ArrayList<SWCCompartmentInformation>>> it = cells.entrySet().iterator();
+    while (it.hasNext()) {
+	  Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry = it.next();
+	  ArrayList<SWCCompartmentInformation> points = entry.getValue();
+	  for (SWCCompartmentInformation info : points) {
+		  LineArray la = new LineArray(2, COORDINATES);
+		  int from = info.getConnectivity().getFirst();
+		  int to = info.getConnectivity().getSecond() -1; 
+		  System.err.println("from: " + from);
+		  System.err.println("to: " + to);
+		  System.err.println("");
+		  if (from < 0 || to < 0) continue;
+		  Vector3f vector = points.get(from).getCoordinates();
+		  Vector3f vector2 = points.get(to).getCoordinates();
+		  System.err.println("vector: " + vector);
+		  System.err.println("vector2: " + vector2);
+		  System.err.println("");
+	  }
+    }
+	
 			
 		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
 		return new Object[]{new DensityResult(density, vta), cells};

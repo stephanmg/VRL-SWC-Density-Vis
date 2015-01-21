@@ -7,6 +7,7 @@ import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
@@ -81,14 +82,32 @@ public class SWCDensityVisualization implements java.io.Serializable {
 	  ArrayList<SWCCompartmentInformation> points = entry.getValue();
 	  for (SWCCompartmentInformation info : points) {
 		  LineArray la = new LineArray(2, COORDINATES);
-			  Vector3f vector = new Vector3f(info.getCoordinates());
-			  vector.scale(0.01f);
-			  Vector3f vector2 = new Vector3f(0, 0, 0);
-			  Point3f point = new Point3f(vector);
-			  Point3f point2 = new Point3f(vector2);
-			  la.setCoordinates(0, new Point3f[]{point, point2});
-			  Shape3D myShape = new Shape3D(la);
-			  result.add(myShape);
+		  int from = info.getConnectivity().getFirst();
+		  int to = info.getConnectivity().getSecond() -1; 
+		  System.err.println("from: " + from);
+		  System.err.println("to: " + to);
+		  System.err.println("");
+		  if (from == -1 || to < 0) continue;
+		  Vector3f vector_old = (points.get(from).getCoordinates());
+		  Vector3f vector2_old = (points.get(to).getCoordinates());
+		  /**
+		   * @todo we need to use copies!!!! not references....
+		   */
+		  Vector3f vector = new Vector3f(vector_old);
+		  Vector3f vector2 = new Vector3f(vector2_old);
+		  System.err.println("vector: " + vector);
+		  System.err.println("vector2: " + vector2);
+		  System.err.println("");
+		  vector.scale(0.01f);
+		  vector2.scale(0.01f);
+		  Point3f point = new Point3f(vector);
+		  Point3f point2 = new Point3f(vector2);
+		  System.err.println("point: " + point);
+		  System.err.println("point2: " + point2);
+		  System.err.println("");
+		  la.setCoordinates(0, new Point3f[]{point, point2});
+		  Shape3D myShape = new Shape3D(la);
+		  result.add(myShape);
  	 }
   }
     return result;
