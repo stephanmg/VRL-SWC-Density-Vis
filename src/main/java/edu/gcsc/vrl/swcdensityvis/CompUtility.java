@@ -24,10 +24,9 @@ public final class CompUtility {
 	 * @param cells
 	 * @return
 	 */
-	private static HashMap<String, QuickHull3D> hull(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
+	public static HashMap<String, QuickHull3D> hull(HashMap<String, ArrayList<SWCCompartmentInformation>> cells) {
 		HashMap<String, ArrayList<Point3d>> points = new HashMap<String, ArrayList<Point3d>>();
 		HashMap<String, QuickHull3D> hulls = new HashMap<String, QuickHull3D>();
-		@SuppressWarnings("unchecked")
 		Iterator<Map.Entry<String, ArrayList<SWCCompartmentInformation>>> it = cells.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, ArrayList<SWCCompartmentInformation>> entry = it.next();
