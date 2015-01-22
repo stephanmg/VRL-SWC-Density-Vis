@@ -59,6 +59,7 @@ final class DensityImpl implements Density {
 					if (density.containsKey(index)) {
 						/// note: density.get(index) in interval [0, 1] -> thus we multiply by 100, for making in the graphical representation available the density in percentage 0 to 100 %
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 1000));  /// note however, multiplication with 100 is not required!
+						/** @todo we need to take the default voxel volume into account for a density */
 					} else {
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, 0));
 					}
