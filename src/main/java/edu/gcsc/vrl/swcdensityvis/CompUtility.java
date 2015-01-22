@@ -6,12 +6,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.vecmath.Vector3f;
 
 /**
  * @brief computational utilities for density vis
  * @author stephan
  */
 public final class CompUtility {
+	private final static Vector3f ORIGO = new Vector3f(0, 0, 0);
+	private final static Vector3f X_UNIT_VECTOR = new Vector3f(1, 0, 0);
+	private final static Vector3f Y_UNIT_VECTOR = new Vector3f(0, 1, 0);
+	private final static Vector3f Z_UNIT_VECTOR = new Vector3f(0, 0, 1);
 
 	/**
 	 * @brief private ctor
@@ -46,5 +51,68 @@ public final class CompUtility {
 			hulls.put(key, hull);
 		}
 		return hulls;
+	}
+	
+	/**
+	 * @brief projects a point q to the plane defined by n and p
+	 * @param q - initial point
+	 * @param n - normal of the plane (can be non-normalized)
+	 * @param p - point within the plane
+	 * @return 
+	 */
+	public static Vector3f projectToPlane(Vector3f q, Vector3f n, Vector3f p) {
+		n.normalize();
+		Vector3f d = new Vector3f(q);
+		d.sub(p);
+		n.scale(n.dot(d));
+		Vector3f qPrime = new Vector3f(q);
+		qPrime.sub(n);
+		return qPrime;
+	}
+	
+	/**
+	 * @brief projects to xy-plane
+	 * @param q
+	 * @return 
+	 */
+	public static Vector3f projectToXYPlane(Vector3f q) {
+		return projectToPlane(q, Z_UNIT_VECTOR, ORIGO);
+	}
+
+	/**
+	 * @brief projects to xz-plane
+	 * @param q
+	 * @return 
+	 */
+	public static Vector3f projectToXZPlane(Vector3f q) {
+		return projectToPlane(q, Y_UNIT_VECTOR, ORIGO);
+	}
+	
+	/**
+	 * @brief proejcts to yz-plane
+	 * @param q
+	 * @return 
+	 */
+	public static Vector3f projectToYZPlane(Vector3f q) {
+		return projectToPlane(q, X_UNIT_VECTOR, ORIGO);
+	}
+	
+	
+	/**
+	 * @brief main for some tests
+	 * @param args 
+	 */
+	public static void main(String... args) {
+		Vector3f q = new Vector3f(1, 2, 10);
+		Vector3f p = new Vector3f(0, 0, 0);
+		Vector3f a = new Vector3f(0, 10, 0);
+		Vector3f b = new Vector3f(10, 0, 0);
+		Vector3f n = new Vector3f();
+		n.cross(a, b);
+		System.err.println("n:= " + n);
+		System.err.println("p:= " + p);
+		System.err.println("q:= " + q);
+		
+		System.err.println("q':= " + projectToPlane(q, n, p));
 	}
 }
