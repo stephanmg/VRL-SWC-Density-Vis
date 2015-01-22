@@ -132,7 +132,34 @@ public class SWCDensityVisualization implements java.io.Serializable {
 		  /**
 		   * @todo add coordinate system - easy as we just need to create some lines and text with java3d ...
 		   */
- 	 }
+		  
+		  LineArray axisXLines=new LineArray(2,LineArray.COORDINATES);
+    		axisXLines.setCoordinate(0,new Point3f(-1.0f,0.0f,0.0f));
+   		 axisXLines.setCoordinate(1,new Point3f(1.0f,0.0f,0.0f));        
+    
+    		LineArray axisYLines=new LineArray(2,LineArray.COORDINATES|LineArray.COLOR_3);
+      
+ 		   axisYLines.setCoordinate(0,new Point3f(0.0f,-1.0f,0.0f));
+ 		   axisYLines.setCoordinate(1,new Point3f(0.0f,1.0f,0.0f));
+      
+    		Point3f z1=new Point3f(0.0f,0.0f,-1.0f);
+    		Point3f z2=new Point3f(0.0f,0.0f,1.0f);
+    	LineArray axisZLines=new LineArray(10,LineArray.COORDINATES|LineArray.COLOR_3);
+      
+	    axisZLines.setCoordinate(0,z1);
+	    axisZLines.setCoordinate(1,z2);
+	    axisZLines.setCoordinate(2,z2);
+	    axisZLines.setCoordinate(3,new Point3f(0.1f,0.1f,0.9f));
+	    axisZLines.setCoordinate(4,z2);
+	    axisZLines.setCoordinate(5,new Point3f(-0.1f,0.1f,0.9f));
+	    axisZLines.setCoordinate(6,z2);
+	    axisZLines.setCoordinate(7,new Point3f(0.1f,-0.1f,0.9f));
+	    axisZLines.setCoordinate(8,z2);
+	    axisZLines.setCoordinate(9,new Point3f(-0.1f,-0.1f,0.9f));
+	    	result.add(new Shape3D(axisXLines));
+	    	result.add(new Shape3D(axisYLines));
+	    	result.add(new Shape3D(axisZLines));
+		 }
   }
     return result;
   }
