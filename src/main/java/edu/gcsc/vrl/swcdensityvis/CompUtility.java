@@ -13,10 +13,10 @@ import javax.vecmath.Vector3f;
  * @author stephan
  */
 public final class CompUtility {
-	private final static Vector3f ORIGO = new Vector3f(0, 0, 0);
-	private final static Vector3f X_UNIT_VECTOR = new Vector3f(1, 0, 0);
-	private final static Vector3f Y_UNIT_VECTOR = new Vector3f(0, 1, 0);
-	private final static Vector3f Z_UNIT_VECTOR = new Vector3f(0, 0, 1);
+	private final static Vector3f ORIGO_CARTESIAN_COORDINATES_SYSTEM = new Vector3f(0, 0, 0);
+	private final static Vector3f UNIT_VECTOR_X_DIRECTION = new Vector3f(1, 0, 0);
+	private final static Vector3f UNIT_VECTOR_Y_DIRECTION = new Vector3f(0, 1, 0);
+	private final static Vector3f UNIT_VECTOR_Z_DIRECTION = new Vector3f(0, 0, 1);
 
 	/**
 	 * @brief private ctor
@@ -76,7 +76,7 @@ public final class CompUtility {
 	 * @return 
 	 */
 	public static Vector3f projectToXYPlane(Vector3f q) {
-		return projectToPlane(q, Z_UNIT_VECTOR, ORIGO);
+		return projectToPlane(q, UNIT_VECTOR_Z_DIRECTION, ORIGO_CARTESIAN_COORDINATES_SYSTEM);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public final class CompUtility {
 	 * @return 
 	 */
 	public static Vector3f projectToXZPlane(Vector3f q) {
-		return projectToPlane(q, Y_UNIT_VECTOR, ORIGO);
+		return projectToPlane(q, UNIT_VECTOR_Y_DIRECTION, ORIGO_CARTESIAN_COORDINATES_SYSTEM);
 	}
 	
 	/**
@@ -94,25 +94,21 @@ public final class CompUtility {
 	 * @return 
 	 */
 	public static Vector3f projectToYZPlane(Vector3f q) {
-		return projectToPlane(q, X_UNIT_VECTOR, ORIGO);
+		return projectToPlane(q, UNIT_VECTOR_X_DIRECTION, ORIGO_CARTESIAN_COORDINATES_SYSTEM);
 	}
-	
 	
 	/**
-	 * @brief main for some tests
-	 * @param args 
+	 * @brief the uniform shrinkage of a quickhull
+	 * @param qhull
+	 * @param factor
+	 * @todo 
 	 */
-	public static void main(String... args) {
-		Vector3f q = new Vector3f(1, 2, 10);
-		Vector3f p = new Vector3f(0, 0, 0);
-		Vector3f a = new Vector3f(0, 10, 0);
-		Vector3f b = new Vector3f(10, 0, 0);
-		Vector3f n = new Vector3f();
-		n.cross(a, b);
-		System.err.println("n:= " + n);
-		System.err.println("p:= " + p);
-		System.err.println("q:= " + q);
-		
-		System.err.println("q':= " + projectToPlane(q, n, p));
+	public static QuickHull3D shrink_uniform(QuickHull3D qhull, double factor) {
+		/// 1. get quickhull
+		/// 2. calculate center out of vertices
+		/// 3. scale coordinates by factor (with respect to the densities in the 100 % qhull!)
+		/// 4. transform back to calculated center
+		return new QuickHull3D();
 	}
+	
 }

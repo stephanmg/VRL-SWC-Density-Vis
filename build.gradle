@@ -111,7 +111,8 @@ jacocoTestReport.doFirst {
 	                         base_dir+'/DensityImpl.class', base_dir+'/DensityUtil.class',
 				 base_dir+'/Edge.class', base_dir+'/EdgeUtility.class',
 				 base_dir+'/SWCCompartmentInformation.class', base_dir+'/SWCUtility.class',
-				 base_dir+'/SwappablePair.class', base_dir+'/SwappablePairUtility.class'
+				 base_dir+'/SwappablePair.class', base_dir+'/SwappablePairUtility.class',
+				 base_dir+'/CompUtility.class'
 	);
 }
 
