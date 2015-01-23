@@ -78,6 +78,15 @@ task installVRLPlugin(dependsOn: [clean,jar]) << {
     }
 }
 
+task copyVRLPlugin() << {
+    println(">> copying vrl plugin to: " + vrldir+"/plugin-updates")
+    copy {
+        from buildDir.getPath()+"/libs/"+rootProject.name + ".jar"
+        into vrldir+"/plugin-updates"
+        include '**/*.jar'
+    }
+}
+
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 

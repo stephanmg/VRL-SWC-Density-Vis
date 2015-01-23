@@ -54,11 +54,15 @@ public final class CompUtility {
 	}
 	
 	/**
-	 * @brief projects a point q to the plane defined by n and p
+	 * @brief orthogonally projects a point q to the plane defined by n and p (in 3d space)
+	 * @see for more complex projections, i. e. oblique, one could also use a
+	 * projection matrix as in the orthogonal projections one could also use it:
+	 * http://mathworld.wolfram.com/ProjectionMatrix.html
 	 * @param q - initial point
 	 * @param n - normal of the plane (can be non-normalized)
 	 * @param p - point within the plane
 	 * @return 
+	 * @see
 	 */
 	public static Vector3f projectToPlane(Vector3f q, Vector3f n, Vector3f p) {
 		n.normalize();
