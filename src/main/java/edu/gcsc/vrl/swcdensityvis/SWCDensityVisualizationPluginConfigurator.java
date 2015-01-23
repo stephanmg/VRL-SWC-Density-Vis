@@ -2,6 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.types.MatrixArrayComponent;
+import edu.gcsc.vrl.swcdensityvis.types.MatrixArrayType;
 import edu.gcsc.vrl.swcdensityvis.types.MatrixComponent;
 import edu.gcsc.vrl.swcdensityvis.types.MatrixType;
 import eu.mihosoft.vrl.io.IOUtil;
@@ -59,7 +61,9 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 			vapi.addComponent(ComputeSWCDistance.class);
 			vapi.addComponent(SWCDensityVisualization.class);
 			vapi.addComponent(MatrixComponent.class);
+			vapi.addComponent(MatrixArrayComponent.class);
 			vapi.addTypeRepresentation(MatrixType.class);
+			vapi.addTypeRepresentation(MatrixArrayType.class);
 		}
 	}
 
