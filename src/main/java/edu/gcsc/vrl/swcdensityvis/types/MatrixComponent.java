@@ -8,14 +8,14 @@ import java.io.Serializable;
 
 
 /**
- *
- * @author stephan
+ * @brief test matrix component for visual representation
+ * @author stephan grein
  */
 @ComponentInfo(name="MatrixComponent")
 public class MatrixComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * @todo for now we test only 3x3 matrices... 
+	 * @param matrix 
 	 */
 	public void dummy(
 	@ParamInfo(name = "Matrix", style="default", options="cols=3; rows=3")
