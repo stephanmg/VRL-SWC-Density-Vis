@@ -3,10 +3,8 @@ package edu.gcsc.vrl.swcdensityvis.types;
 
 /// imports
 import eu.mihosoft.vrl.annotation.ComponentInfo;
-import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import java.io.Serializable;
-import org.la4j.matrix.Matrix;
 import org.la4j.matrix.dense.Basic2DMatrix;
 
 
@@ -14,8 +12,8 @@ import org.la4j.matrix.dense.Basic2DMatrix;
  * @brief test matrix component for visual representation (defaults to 3x3)
  * @author stephan grein
  */
-@ComponentInfo(name="DenseMatrixComponent")
-public class DenseMatrixComponent implements Serializable {
+@ComponentInfo(name="DenseMatrixTestComponent")
+public class DenseMatrixTestComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * @brief add

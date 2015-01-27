@@ -245,7 +245,7 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	@Override
 	public void emptyView() {
 		for (VTextField tf : this.textfields) {
-			tf.setText("");
+			tf.setText("0");
 		}
 	}
 }

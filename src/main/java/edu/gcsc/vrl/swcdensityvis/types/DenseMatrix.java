@@ -3,7 +3,6 @@ package edu.gcsc.vrl.swcdensityvis.types;
 
 /// imports
 import java.io.Serializable;
-
 import org.la4j.matrix.dense.Basic2DMatrix;
 
 /**
