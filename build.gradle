@@ -41,14 +41,17 @@ dependencies {
     /// testing dependencies (from maven)
     testCompile group: 'junit', name: 'junit', version: '4.10'
     testCompile group: 'org.easymock', name: 'easymock', version: '2.5.2'
-    /// add mockito dependencies here if necessary
+    // add mockito dependencies here if necessary
     
-    /// VRL dependencies (local dependencies)
+    /// main dependencies (from maven)
+    compile group: 'org.la4j', name:'la4j', version: '0.4.9'
+    
+    /// local dependencies
+    // VRL dependencies (local dependencies)
     compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
     compile files(vrldir+'/plugins/Density-Vis.jar');
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
-    
-    /// project lombok and levy's kd tree implementation (local dependencies)
+    // project lombok and levy's kd tree implementation (local dependencies)
     compile fileTree(dir: "jars/", includes:['*.jar']);
     
 }

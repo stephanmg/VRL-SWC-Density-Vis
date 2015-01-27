@@ -11,15 +11,15 @@ import java.io.Serializable;
  * @brief test matrix component for visual representation
  * @author stephan grein
  */
-@ComponentInfo(name="MatrixComponent")
-public class MatrixComponent implements Serializable {
+@ComponentInfo(name="DenseMatrixArrayComponent")
+public class DenseMatrixArrayComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * @param matrix 
 	 */
 	public void dummy(
-	@ParamInfo(name = "Matrix", style="default", options="cols=3; rows=3")
-	Matrix matrix
+	@ParamInfo(name = "DenseMatrixArray", style="array", options="cols=3; rows=3")
+	DenseMatrix[] matrix
 	) {
 	}
 }

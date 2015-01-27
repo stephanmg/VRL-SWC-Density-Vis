@@ -2,10 +2,11 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
-import edu.gcsc.vrl.swcdensityvis.types.MatrixArrayComponent;
-import edu.gcsc.vrl.swcdensityvis.types.MatrixArrayType;
-import edu.gcsc.vrl.swcdensityvis.types.MatrixComponent;
-import edu.gcsc.vrl.swcdensityvis.types.MatrixType;
+import edu.gcsc.vrl.swcdensityvis.types.Dense2x2MatrixType;
+import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayComponent;
+import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayType;
+import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixComponent;
+import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixType;
 import eu.mihosoft.vrl.io.IOUtil;
 import eu.mihosoft.vrl.io.VJarUtil;
 import eu.mihosoft.vrl.io.VersionInfo;
@@ -60,10 +61,11 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 			vapi.addComponent(ComputeSWCDensity.class);
 			vapi.addComponent(ComputeSWCDistance.class);
 			vapi.addComponent(SWCDensityVisualization.class);
-			vapi.addComponent(MatrixComponent.class);
-			vapi.addComponent(MatrixArrayComponent.class);
-			vapi.addTypeRepresentation(MatrixType.class);
-			vapi.addTypeRepresentation(MatrixArrayType.class);
+			vapi.addComponent(DenseMatrixComponent.class);
+			vapi.addComponent(DenseMatrixArrayComponent.class);
+			vapi.addTypeRepresentation(DenseMatrixType.class);
+			vapi.addTypeRepresentation(Dense2x2MatrixType.class);
+			vapi.addTypeRepresentation(DenseMatrixArrayType.class);
 		}
 	}
 

@@ -9,11 +9,11 @@ import eu.mihosoft.vrl.types.ArrayBaseType;
  * @brief matrix array type
  * @author stephan grein
  */
-@TypeInfo(type = Matrix[].class, input = true, output = true, style = "array")
-public class MatrixArrayType extends ArrayBaseType {
+@TypeInfo(type = DenseMatrix[].class, input = true, output = true, style = "array")
+public class DenseMatrixArrayType extends ArrayBaseType {
 	private static final long serialVersionUID = 1L;
 
-	public MatrixArrayType() {
-        	setValueName("Matrix Array:");
+	public DenseMatrixArrayType() {
+        	setValueName("Dense Matrix Array:");
 	}
 }

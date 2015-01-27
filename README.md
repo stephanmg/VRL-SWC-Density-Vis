@@ -12,3 +12,6 @@ Waffle:
 [![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in In Progress](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=in progress&title=In Progress)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in Done](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=done&title=Done)](http://waffle.io/stephanmg/vrl-swc-density-vis)
+
+Things to do:
+* Filter out common components (types) for NeuroBox project.
