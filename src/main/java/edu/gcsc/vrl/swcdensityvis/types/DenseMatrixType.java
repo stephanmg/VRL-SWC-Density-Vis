@@ -14,6 +14,7 @@ import eu.mihosoft.vrl.visual.VTextField;
 import groovy.lang.Script;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.Box;
 
 /**
@@ -22,14 +23,18 @@ import javax.swing.Box;
  */
 @TypeInfo(type = DenseMatrix.class, input = true, output = true, style = "default")
 public class DenseMatrixType extends TypeRepresentationBase {
-	/// private members
+	/// private final members
 	private static final long serialVersionUID = 1L;
-	private DenseMatrix matrix;
 	private final ArrayList<VTextField> textfields = new ArrayList<VTextField>();
+	private final int columns = 5;
+	private final String emptyValue = "0";
+	private final String defaultValue = ""; 
+	
+	/// private user-supplied members
+	private final String defaultValueName = "DenseMatrix";
+	private DenseMatrix matrix;
 	private int rows = 3;
 	private int cols = 3;
-	private final int columns = 5;
-	private final String defaultValue = "0";
 
 	/**
 	 * @brief default ctor and hide ctor in visual representation
@@ -55,18 +60,17 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	 * @brief init
 	 */
 	public void init() {
-		eu.mihosoft.vrl.system.VMessage.info("DenseMatrixType", "Init has been called!");
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
 		setLayout(layout);
 		setLayoutType(LayoutType.STATIC);
 
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
-		nameLabel.setText("Matrix:");
+		nameLabel.setText(getValueName().isEmpty() ? getDefaultValueName() : getValueName());
 		add(nameLabel);
 
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				textfields.add(new VTextField(""));
+				textfields.add(new VTextField(getDefaultValue()));
 			}
 		}
 
@@ -77,6 +81,7 @@ public class DenseMatrixType extends TypeRepresentationBase {
 				tf.setAutoscrolls(true);
 			}
 			tf.setColumns(columns);
+			tf.setText(getDefaultValue());
 		}
 
 		int index = 0;
@@ -89,11 +94,6 @@ public class DenseMatrixType extends TypeRepresentationBase {
 			}
 			this.add(row);
 		}
-
-		for (VTextField tf : textfields) {
-			tf.setText(defaultValue);
-		}
-		
 	}
 
 	/**
@@ -143,7 +143,6 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	@Override
 	protected void evaluationRequest(Script script) {
 		Object property = null;
-
 		if (getValueOptions() != null) {
 
 			if (getValueOptions().contains("rows")) {
@@ -161,51 +160,9 @@ public class DenseMatrixType extends TypeRepresentationBase {
 			if (property != null) {
 				setColCount((Integer) property);
 			}
-
 		}
 	}
 
-	/**
-	 * @brief set number of rows
-	 * @param rows
-	 */
-	private void setRowCount(int rows) {
-		this.rows = rows;
-	}
-
-	/**
-	 * @brief set number of cols
-	 * @param cols
-	 */
-	private void setColCount(int cols) {
-		this.cols = cols;
-	}
-	
-	/**
-	 * @brief get number of rows
-	 * @return 
-	 */
-	private int getRowCount() {
-		return this.rows;
-	}
-
-	/**
-	 * @brief get number of cols
-	 * @return 
-	 */
-	private int getColCount() {
-		return this.cols;
-	}
-
-	/**
-	 * @todo implement
-	 * @return
-	 */
-	@Override
-	public String getValueAsCode() {
-		return "\""
-			+ VLangUtils.addEscapesToCode(getValue().toString()) + "\"";
-	}
 	
 	/**
 	 * @brief evaluates the contract (if you press the invoke button for instance) 
@@ -258,7 +215,74 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	@Override
 	public void emptyView() {
 		for (VTextField tf : this.textfields) {
-			tf.setText("0");
+			tf.setText(getEmptyValue());
 		}
 	}
+	
+	/**
+	 * @brief set number of rows
+	 * @param rows
+	 */
+	private void setRowCount(int rows) {
+		this.rows = rows;
+	}
+
+	/**
+	 * @brief set number of cols
+	 * @param cols
+	 */
+	private void setColCount(int cols) {
+		this.cols = cols;
+	}
+	
+	/**
+	 * @brief get number of rows
+	 * @return 
+	 */
+	private int getRowCount() {
+		return this.rows;
+	}
+
+	/**
+	 * @brief get number of cols
+	 * @return 
+	 */
+	private int getColCount() {
+		return this.cols;
+	}
+	
+	/**
+	 * @brief get the default value for textfields
+	 * @return 
+	 */
+	private String getDefaultValue() {
+		return this.defaultValue;
+	}
+	
+	/**
+	 * @brief get the name within the @ParamInfo and @OutputInfo annotation
+	 * @return 
+	 */
+	private String getDefaultValueName() {
+		return this.defaultValueName;
+	}
+	
+	/**
+	 * @brief returns the value if the view get's emptied
+	 * @return 
+	 */
+	private String getEmptyValue() {
+		return this.emptyValue;
+	}
+
+
+	/**
+	 * @return
+	 */
+	@Override
+	public String getValueAsCode() {
+		return "\""
+			+ VLangUtils.addEscapesToCode(getValue().toString()) + "\"";
+	}
+
 }
