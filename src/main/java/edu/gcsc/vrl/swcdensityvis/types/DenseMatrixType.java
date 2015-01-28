@@ -28,6 +28,8 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	private final ArrayList<VTextField> textfields = new ArrayList<VTextField>();
 	private int rows = 3;
 	private int cols = 3;
+	private final int columns = 5;
+	private final String defaultValue = "0";
 
 	/**
 	 * @brief default ctor and hide ctor in visual representation
@@ -49,6 +51,9 @@ public class DenseMatrixType extends TypeRepresentationBase {
 		matrix = new DenseMatrix(rows, cols);
 	}
 
+	/**
+	 * @brief init
+	 */
 	public void init() {
 		eu.mihosoft.vrl.system.VMessage.info("DenseMatrixType", "Init has been called!");
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
@@ -66,7 +71,6 @@ public class DenseMatrixType extends TypeRepresentationBase {
 		}
 
 		boolean bAutoScroll = true;
-		int columns = 5;
 
 		for (VTextField tf : textfields) {
 			if (bAutoScroll) {
@@ -85,10 +89,15 @@ public class DenseMatrixType extends TypeRepresentationBase {
 			}
 			this.add(row);
 		}
+
+		for (VTextField tf : textfields) {
+			tf.setText(defaultValue);
+		}
+		
 	}
 
 	/**
-	 * @brief add this representation
+	 * @brief add this representation (when created on Canvas!)
 	 */
 	@Override
 	public void addedToMethodRepresentation() {
@@ -242,6 +251,10 @@ public class DenseMatrixType extends TypeRepresentationBase {
 		}
 	}
 	
+	/**
+	 * @brief empties the view: when the method is invoked, the view is emptied,
+	 *        then the set and get view methods are called
+	 */
 	@Override
 	public void emptyView() {
 		for (VTextField tf : this.textfields) {
