@@ -12,7 +12,7 @@ import org.la4j.matrix.dense.Basic2DMatrix;
  * @brief DenseMatrixFactory
  * @author stephan grein
  */
-@ComponentInfo(name="DenseMatrixFactory")
+@ComponentInfo(name="DenseMatrixFactory", category="Neuro/Common/LA")
 public class DenseMatrixFactory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

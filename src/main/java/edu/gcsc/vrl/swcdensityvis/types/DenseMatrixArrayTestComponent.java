@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @brief test matrix component for visual representation
  * @author stephan grein
  */
-@ComponentInfo(name="DenseMatrixArrayTestComponent")
+@ComponentInfo(name="DenseMatrixArrayTestComponent", category="Neuro/Common/LA/Test")
 public class DenseMatrixArrayTestComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

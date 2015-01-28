@@ -14,7 +14,7 @@ import org.la4j.matrix.dense.Basic2DMatrix;
  *        (defaults to 3x3 matrices)
  * @author stephan grein
  */
-@ComponentInfo(name="DenseMatrixMatrixTestComponent")
+@ComponentInfo(name="DenseMatrixMatrixTestComponent", category="Neuro/Common/LA/Test")
 public class DenseMatrixMatrixTestComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
