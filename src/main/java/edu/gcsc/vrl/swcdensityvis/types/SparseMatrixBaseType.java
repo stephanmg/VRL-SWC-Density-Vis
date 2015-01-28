@@ -6,7 +6,7 @@ import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 
 /**
  * @brief factor out common components from sparse matrices crs and css type representations
- *  (if implemented the classes SparseCCSMatrix and SparseCRSMatrix!)
+ * -> then implement the type representations and classes respectively
  * @author stephan
  */
 public abstract class SparseMatrixBaseType extends TypeRepresentationBase {
