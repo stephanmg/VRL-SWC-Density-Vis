@@ -10,8 +10,8 @@ import java.io.Serializable;
  * @brief test matrix component for visual representation
  * @author stephan grein
  */
-@ComponentInfo(name="DenseMatrixArrayTestComponent")
-public class DenseMatrixArrayTestComponent implements Serializable {
+@ComponentInfo(name="DenseVectorArrayTestComponent")
+public class DenseVectorArrayTestComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -19,7 +19,7 @@ public class DenseMatrixArrayTestComponent implements Serializable {
 	 * @param matrix 
 	 */
 	public void test(
-	@ParamInfo(name = "DenseMatrixArray", style="array", options="cols=3; rows=3")
+	@ParamInfo(name = "DenseMatrixArray", style="array", options="cols=3; rows=1")
 	DenseMatrix[] matrix
 	) {
 	}
