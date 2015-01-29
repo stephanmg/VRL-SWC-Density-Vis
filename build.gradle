@@ -45,6 +45,7 @@ dependencies {
     
     /// main dependencies (from maven)
     compile group: 'org.la4j', name:'la4j', version: '0.4.9'
+    compile group: 'org.jdom', name:'jdom2', version: '2.0.5'
     
     /// local dependencies
     // VRL dependencies (local dependencies)
