@@ -1,0 +1,18 @@
+<foo>
+<contour name="Pia" color="#FFFF00" closed="false" shape="Contour">
+  <property name="FillDensity"><n>0</n></property>
+  <property name="GUID"><s>CB8F8D8C99794F3E90552953CC2372C4</s></property>
+  <resolution>1.850606</resolution>
+  <point x="-995.86" y="2037.73" z="-60.61" d="0.48"/>
+  <point x="-480.84" y="1891.43" z="-60.77" d="0.48"/>
+  <point x="-51.32" y="1734.96" z="-60.77" d="0.48"/>
+  <point x="-49.28" y="1734.96" z="-60.77" d="0.48"/>
+  <point x="370.07" y="1556.15" z="-60.92" d="0.48"/>
+  <point x="795.52" y="1367.17" z="-60.92" d="0.48"/>
+  <point x="799.59" y="1363.10" z="-60.92" d="0.48"/>
+  <point x="805.71" y="1357.00" z="-60.92" d="0.48"/>
+  <point x="1176.20" y="1204.61" z="-61.09" d="0.48"/>
+  <point x="1556.51" y="1001.05" z="-61.89" d="0.48"/>
+  <point x="1800.79" y="860.85" z="-61.89" d="0.48"/>
+</contour>
+</foo>

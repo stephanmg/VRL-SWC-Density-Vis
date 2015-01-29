@@ -26,6 +26,7 @@ public class SWCCompartmentInformation {
 	private Vector3f coordinates;
 	private Pair<Integer, Integer> connectivity;
 	private double thickness;
+	private String name;
 }
 
 
