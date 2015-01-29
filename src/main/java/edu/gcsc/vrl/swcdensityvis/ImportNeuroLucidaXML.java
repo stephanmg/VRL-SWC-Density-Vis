@@ -19,30 +19,30 @@ import org.jdom2.input.sax.XMLReaders;
  * @author stephan
  */
 public class ImportNeuroLucidaXML {
-
-	private String file;
+	private String inputFile;
+	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 
 	/**
 	 * @param file
 	 */
-	public ImportNeuroLucidaXML(String file) {
-		setFile(file);
+	public ImportNeuroLucidaXML(String inputFile) {
+		setInputFile(inputFile);
 	}
 
 	/**
 	 * @brief setFile
 	 * @param relativeFilePath
 	 */
-	private void setFile(String relativeFilePath) {
-		this.file = getClass().getResource(("/" + getClass().getPackage().toString().replaceAll("package", "").trim() + "/").replaceAll("\\.", "/") + "resources/" + relativeFilePath).getFile();
+	private void setInputFile(String relativeFilePath) {
+		this.inputFile = getClass().getResource(("/" + getClass().getPackage().toString().replaceAll("package", "").trim() + "/").replaceAll("\\.", "/") + "resources/" + relativeFilePath).getFile();
 	}
 
 	/**
 	 * @brief getFile
 	 * @return
 	 */
-	private String getFile() {
-		return this.file;
+	private String getInputFile() {
+		return this.inputFile;
 	}
 
 	/**
@@ -163,17 +163,24 @@ public class ImportNeuroLucidaXML {
 		return contours;
 	}
 
+	/**
+	 * @brief parse the document
+	 */
 	public void parse() {
-		final SAXBuilder builder = new SAXBuilder(XMLReaders.NONVALIDATING);
 		try {
 			System.out.print("Building DOM structure...");
-			Document document = builder.build(new File(getFile()));
+			Document document = saxBuilder.build(new File(getInputFile()));
 			Element rootNode = document.getRootElement();
 			System.out.println(" done!");
 			System.out.println("root node: " + rootNode.toString());
 
+			System.out.println("Processing Contours...");
 			process_contours(rootNode);
+			System.out.println(" done!");
+
+			System.out.println("Processing Trees...");
 			process_trees(rootNode);
+			System.out.println(" done!");
 
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
