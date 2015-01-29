@@ -5,6 +5,7 @@ package edu.gcsc.vrl.swcdensityvis;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.vecmath.Vector3d;
 import org.jdom2.Document;
@@ -18,7 +19,9 @@ import org.jdom2.input.sax.XMLReaders;
  * @author stephan
  */
 public class ImportNeuroLucidaXML {
+
 	private String file;
+
 	/**
 	 * @param file
 	 */
@@ -28,95 +31,162 @@ public class ImportNeuroLucidaXML {
 
 	/**
 	 * @brief setFile
-	 * @param relativeFilePath 
+	 * @param relativeFilePath
 	 */
 	private void setFile(String relativeFilePath) {
 		this.file = getClass().getResource(("/" + getClass().getPackage().toString().replaceAll("package", "").trim() + "/").replaceAll("\\.", "/") + "resources/" + relativeFilePath).getFile();
 	}
-	
+
 	/**
 	 * @brief getFile
-	 * @return 
+	 * @return
 	 */
 	private String getFile() {
 		return this.file;
 	}
-	
+
 	/**
-	 * @brief parse
+	 * @brief process_branches
 	 */
-	public void parse() {
-	  SAXBuilder builder = new SAXBuilder(XMLReaders.NONVALIDATING);
-	  ArrayList<Contour> contours = new ArrayList<Contour>();
-	  try {
-	  System.err.println("parsing: " + this.file);
-		Document document = builder.build(new File(getFile()));
-		Element rootNode = document.getRootElement();
-		System.err.println("rootNode: " + rootNode.toString());
- 
-		/// process contours
-		for (Element node : rootNode.getChildren("contour")) {
-		   Contour c = new Contour();
-		   c.setName(node.getAttributeValue("name"));
-		   ArrayList<Vector3d> points = new ArrayList<Vector3d>();
-		   for (Element point : node.getChildren("point")) {
-			   points.add(new Vector3d(Double.parseDouble(point.getAttributeValue("x")),
-				   		  Double.parseDouble(point.getAttributeValue("y")),
-				   		 Double.parseDouble(point.getAttributeValue("z"))));
-				   	           
-		   }
-		   c.setPoints(points);
-		   contours.add(c);
-		   for (Vector3d vec : points) {
-			   System.err.println(vec);
-		   }
-		}
-		
-		/**
-		 * @todo implement
-		 */
-		/// process trees
-		for (Element node : rootNode.getChildren("tree")) {
-			Tree t = new Tree();
-			t.setType(node.getAttributeValue("type"));
-			ArrayList<Edge<Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
-			ArrayList<Element> points = (ArrayList<Element>) node.getChildren("point");
-			for (int i = 0; i < points.size()-1; i+=2) {
-			     edges.add(new Edge<Vector3d>(
-				new Vector3d(Double.parseDouble(points.get(i).getAttributeValue("x")),
-			   		  Double.parseDouble(points.get(i).getAttributeValue("y")),
-			     		 Double.parseDouble(points.get(i).getAttributeValue("z"))),
-				new Vector3d(Double.parseDouble(points.get(i+1).getAttributeValue("x")),
-			   		  Double.parseDouble(points.get(i+1).getAttributeValue("y")),
-			     		 Double.parseDouble(points.get(i+1).getAttributeValue("z")))));
-			 }
+	private void process_branches(List<Element> branches, Tree t, Vector3d point_before_branch) {
+		ArrayList<Edge<Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
+
+		for (Element branch : branches) {
+			List<Element> points = branch.getChildren("point");
+			edges.add(new Edge<Vector3d>(
+				point_before_branch,
+				new Vector3d(Double.parseDouble(points.get(0).getAttributeValue("x")),
+					Double.parseDouble(points.get(0).getAttributeValue("y")),
+					Double.parseDouble(points.get(0).getAttributeValue("z")))));
+
+			for (int i = 0; i < points.size()-1; i++) {
+				edges.add(new Edge<Vector3d>(
+					new Vector3d(Double.parseDouble(points.get(i).getAttributeValue("x")),
+						Double.parseDouble(points.get(i).getAttributeValue("y")),
+						Double.parseDouble(points.get(i).getAttributeValue("z"))),
+					new Vector3d(Double.parseDouble(points.get(i + 1).getAttributeValue("x")),
+						Double.parseDouble(points.get(i + 1).getAttributeValue("y")),
+						Double.parseDouble(points.get(i + 1).getAttributeValue("z")))));
+			}
 			
-			Vector3d point_before_branch = edges.get(edges.size()-1).getTo();
-			if (!node.getChildren("branch").isEmpty()) {
-				/// call parse(node.getChildren("branch"); -> i. e. get points as above, then add them,  etc, cf: http://stackoverflow.com/questions/13295621/recursive-xml-parser
-				/**
-				 * @todo process iteratively (think about using JAXB maybe here!)
-				 * and make sure the data structure we must use, underlying the xml file
-				 */
+			// append edges
+			ArrayList<Edge<Vector3d>> edges_new = new ArrayList<Edge<Vector3d>>();
+			if (! (t.getEdges() == null)) {
+				edges_new.addAll(t.getEdges());
+			}
+			if (!edges.isEmpty()) {
+				edges_new.addAll(edges);
+			}
+			t.setEdges(edges_new);
+
+			Vector3d point_before_branch_new = edges.get(edges.size() - 1).getTo();
+			if (!branch.getChildren("branch").isEmpty()) {
+				System.err.println("Branch does contain a branch!");
+				process_branches(branch.getChildren("branch"), t, point_before_branch_new);
 			} else {
-				System.err.println("We don't have branches, finished!");
+				System.err.println("Branch does not contain a branch!");
 			}
 		}
- 
-	  } catch (IOException io) {
-		System.out.println(io.getMessage());
-	  } catch (JDOMException jdomex) {
-		System.out.println(jdomex.getMessage());
-	  }
 	}
-	
+
+	/**
+	 * @brief process tress
+	 */
+	private HashMap<String, Tree> process_trees(Element rootNode) {
+		ArrayList< Edge< Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
+		HashMap<String, Tree> trees = new HashMap<String, Tree>();
+
+		for (Element node : rootNode.getChildren("tree")) {
+			Tree t = new Tree();
+			String name = node.getAttributeValue("type");
+			t.setType(node.getAttributeValue("type"));
+			List<Element> points = node.getChildren("point");
+			for (int i = 0; i < points.size()-1; i++) {
+				edges.add(new Edge<Vector3d>(
+					new Vector3d(Double.parseDouble(points.get(i).getAttributeValue("x")),
+						Double.parseDouble(points.get(i).getAttributeValue("y")),
+						Double.parseDouble(points.get(i).getAttributeValue("z"))),
+					new Vector3d(Double.parseDouble(points.get(i + 1).getAttributeValue("x")),
+						Double.parseDouble(points.get(i + 1).getAttributeValue("y")),
+						Double.parseDouble(points.get(i + 1).getAttributeValue("z")))));
+			}
+			
+			// append edges
+			ArrayList<Edge<Vector3d>> edges_new = new ArrayList<Edge<Vector3d>>();
+			if (! (t.getEdges() == null)) {
+				edges_new.addAll(t.getEdges());
+			}
+			if (!edges.isEmpty()) {
+				edges_new.addAll(edges);
+			}
+			t.setEdges(edges_new);
+			
+			Vector3d point_before_branch = edges.get(edges.size() - 1).getTo();
+			if (!node.getChildren("branch").isEmpty()) {
+				System.err.println("Tree has branches!");
+				process_branches(node.getChildren("branch"), t, point_before_branch);
+			} else {
+				System.err.println("Tree has no branches!");
+			}
+			trees.put(name, t);
+			
+			for (Edge<Vector3d> edge : trees.get(name).getEdges()) {
+				System.err.println("from: " + edge.getFrom() + " to: " + edge.getTo());
+			}
+		}
+		return trees;
+	}
+
+	/**
+	 * @brief process contours
+	 * @param rootNode
+	 */
+	private HashMap<String, Contour> process_contours(Element rootNode) {
+		HashMap<String, Contour> contours = new HashMap<String, Contour>();
+		for (Element node : rootNode.getChildren("contour")) {
+			Contour c = new Contour();
+			String contourName = node.getAttributeValue("name");
+			c.setName(node.getAttributeValue("name"));
+			ArrayList<Vector3d> points = new ArrayList<Vector3d>();
+			for (Element point : node.getChildren("point")) {
+				points.add(new Vector3d(Double.parseDouble(point.getAttributeValue("x")),
+					Double.parseDouble(point.getAttributeValue("y")),
+					Double.parseDouble(point.getAttributeValue("z"))));
+
+			}
+			c.setPoints(points);
+			contours.put(contourName, c);
+			for (Vector3d vec : points) {
+				System.out.println(vec);
+			}
+		}
+		return contours;
+	}
+
+	public void parse() {
+		final SAXBuilder builder = new SAXBuilder(XMLReaders.NONVALIDATING);
+		try {
+			System.out.print("Building DOM structure...");
+			Document document = builder.build(new File(getFile()));
+			Element rootNode = document.getRootElement();
+			System.out.println(" done!");
+			System.out.println("root node: " + rootNode.toString());
+
+			process_contours(rootNode);
+			process_trees(rootNode);
+
+		} catch (IOException io) {
+			System.out.println(io.getMessage());
+		} catch (JDOMException jdomex) {
+			System.out.println(jdomex.getMessage());
+		}
+	}
+
 	/**
 	 * @brief main
-	 * @param args 
+	 * @param args
 	 */
 	public static void main(String... args) {
-		
 		new ImportNeuroLucidaXML("files/test.xml").parse();
-		new ImportNeuroLucidaXML("files/test2.xml").parse();
 	}
 }

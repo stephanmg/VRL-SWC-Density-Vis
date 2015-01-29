@@ -19,7 +19,7 @@ public class DenseMatrixArrayTestComponent implements Serializable {
 	 * @param matrix 
 	 */
 	public void test(
-	@ParamInfo(name = "DenseMatrixArray", style="matrix-array", options="cols=2; rows=2")
+	@ParamInfo(name = "My Dense Matrix Array", style="matrix-array", options="cols=2; rows=2")
 	DenseMatrix[] matrix
 	) {
 	}
