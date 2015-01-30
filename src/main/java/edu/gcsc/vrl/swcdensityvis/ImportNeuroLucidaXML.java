@@ -19,6 +19,7 @@ import org.jdom2.input.sax.XMLReaders;
  * @author stephan
  */
 public class ImportNeuroLucidaXML {
+
 	private String inputFile;
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 
@@ -53,13 +54,15 @@ public class ImportNeuroLucidaXML {
 
 		for (Element branch : branches) {
 			List<Element> points = branch.getChildren("point");
-			edges.add(new Edge<Vector3d>(
-				point_before_branch,
-				new Vector3d(Double.parseDouble(points.get(0).getAttributeValue("x")),
-					Double.parseDouble(points.get(0).getAttributeValue("y")),
-					Double.parseDouble(points.get(0).getAttributeValue("z")))));
+			if (points.size() >= 1) {
+				edges.add(new Edge<Vector3d>(
+					point_before_branch,
+					new Vector3d(Double.parseDouble(points.get(0).getAttributeValue("x")),
+						Double.parseDouble(points.get(0).getAttributeValue("y")),
+						Double.parseDouble(points.get(0).getAttributeValue("z")))));
+			}
 
-			for (int i = 0; i < points.size()-1; i++) {
+			for (int i = 0; i < points.size() - 1; i++) {
 				edges.add(new Edge<Vector3d>(
 					new Vector3d(Double.parseDouble(points.get(i).getAttributeValue("x")),
 						Double.parseDouble(points.get(i).getAttributeValue("y")),
@@ -68,10 +71,10 @@ public class ImportNeuroLucidaXML {
 						Double.parseDouble(points.get(i + 1).getAttributeValue("y")),
 						Double.parseDouble(points.get(i + 1).getAttributeValue("z")))));
 			}
-			
+
 			// append edges
 			ArrayList<Edge<Vector3d>> edges_new = new ArrayList<Edge<Vector3d>>();
-			if (! (t.getEdges() == null)) {
+			if (!(t.getEdges() == null)) {
 				edges_new.addAll(t.getEdges());
 			}
 			if (!edges.isEmpty()) {
@@ -79,7 +82,20 @@ public class ImportNeuroLucidaXML {
 			}
 			t.setEdges(edges_new);
 
-			Vector3d point_before_branch_new = edges.get(edges.size() - 1).getTo();
+			Vector3d point_before_branch_new;
+			/// if no point before next branch, then we must connect that point with a point after the next branch
+			if (points.isEmpty()) {
+				point_before_branch_new = point_before_branch;
+				/// if only one point is present, then this is the point we create an edge to the point in the next branch
+			} else if (points.size() == 1) {
+				point_before_branch_new = new Vector3d(Double.parseDouble(points.get(0).getAttributeValue("x")),
+					Double.parseDouble(points.get(0).getAttributeValue("y")),
+					Double.parseDouble(points.get(0).getAttributeValue("z")));
+			} else {
+				/// else the point which defines an edge with the next branch's point is the last point from the current branch
+				point_before_branch_new = edges.get(edges.size()-1).getTo();
+			}
+
 			if (!branch.getChildren("branch").isEmpty()) {
 				System.err.println("Branch does contain a branch!");
 				process_branches(branch.getChildren("branch"), t, point_before_branch_new);
@@ -101,7 +117,7 @@ public class ImportNeuroLucidaXML {
 			String name = node.getAttributeValue("type");
 			t.setType(node.getAttributeValue("type"));
 			List<Element> points = node.getChildren("point");
-			for (int i = 0; i < points.size()-1; i++) {
+			for (int i = 0; i < points.size() - 1; i++) {
 				edges.add(new Edge<Vector3d>(
 					new Vector3d(Double.parseDouble(points.get(i).getAttributeValue("x")),
 						Double.parseDouble(points.get(i).getAttributeValue("y")),
@@ -110,17 +126,18 @@ public class ImportNeuroLucidaXML {
 						Double.parseDouble(points.get(i + 1).getAttributeValue("y")),
 						Double.parseDouble(points.get(i + 1).getAttributeValue("z")))));
 			}
-			
+
 			// append edges
 			ArrayList<Edge<Vector3d>> edges_new = new ArrayList<Edge<Vector3d>>();
-			if (! (t.getEdges() == null)) {
+			if (!(t.getEdges() == null)) {
 				edges_new.addAll(t.getEdges());
 			}
 			if (!edges.isEmpty()) {
 				edges_new.addAll(edges);
 			}
 			t.setEdges(edges_new);
-			
+
+			/// at least one point must be present before branching obvious
 			Vector3d point_before_branch = edges.get(edges.size() - 1).getTo();
 			if (!node.getChildren("branch").isEmpty()) {
 				System.err.println("Tree has branches!");
@@ -129,7 +146,7 @@ public class ImportNeuroLucidaXML {
 				System.err.println("Tree has no branches!");
 			}
 			trees.put(name, t);
-			
+
 			for (Edge<Vector3d> edge : trees.get(name).getEdges()) {
 				System.err.println("from: " + edge.getFrom() + " to: " + edge.getTo());
 			}
@@ -186,7 +203,6 @@ public class ImportNeuroLucidaXML {
 			System.out.println(io.getMessage());
 		} catch (JDOMException jdomex) {
 			System.out.println(jdomex.getMessage());
-		}
 	}
 
 	/**
