@@ -203,6 +203,7 @@ public class ImportNeuroLucidaXML {
 			System.out.println(io.getMessage());
 		} catch (JDOMException jdomex) {
 			System.out.println(jdomex.getMessage());
+		}
 	}
 
 	/**
