@@ -9,6 +9,8 @@ import org.la4j.matrix.dense.Basic2DMatrix;
 /**
  * @brief the matrix class (defaults to 3x3 also when we write groovy code for now!)
  * @author stephan grein
+ * @note one can also use the AbstractDenseMatrix interface,
+ *       then we can plug in here all implementations we want easily
  */
 @ComponentInfo(name="DenseMatrix", category="Neuro/Common/LA")
 public class DenseMatrix extends Basic2DMatrix implements Serializable {
