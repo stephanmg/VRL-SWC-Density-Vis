@@ -12,12 +12,12 @@ import java.lang.annotation.Annotation;
  * @brief matrix array type
  * @author stephan grein
  */
-@TypeInfo(type = DenseMatrix[].class, input = true, output = true, style = "matrix-array")
-public class DenseMatrixArrayType extends DenseMatrixArrayBaseType {
+@TypeInfo(type = DenseMatrix[].class, input = true, output = true, style = "matrix-array-silent")
+public class DenseMatrixArraySilentType extends ArrayBaseType {
 
 	private static final long serialVersionUID = 1L;
 
-	public DenseMatrixArrayType() {
+	public DenseMatrixArraySilentType() {
 		setValueName("Dense Matrix Array:");
 		setElementInputInfo(null);
 	}

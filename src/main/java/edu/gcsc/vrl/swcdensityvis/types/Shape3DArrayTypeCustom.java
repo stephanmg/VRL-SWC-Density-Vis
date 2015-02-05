@@ -7,6 +7,7 @@ import eu.mihosoft.vrl.types.VCanvas3D;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -36,6 +37,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Toggle rotate");
+					System.err.println(Arrays.toString(getOrientationFromUniverse()));
 				}});
 			menu.addSeparator();
 			menu.add(rotate);
