@@ -8,6 +8,8 @@ import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.reflection.Pair;
+import eu.mihosoft.vrl.types.MethodRequest;
+import eu.mihosoft.vrl.types.VCanvas3D;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
@@ -33,11 +35,7 @@ import javax.vecmath.Vector3f;
 public class SWCDensityVisualization implements java.io.Serializable {
   private static final long serialVersionUID=1L;
 
-  @OutputInfo(style="vcanvas3d")
-  @MethodInfo(
-		valueName = " ",
-		valueTypeName = " "
-	)
+  @OutputInfo(style="shaped3darraycustom")
   public Shape3DArray visualizeDensity(
     @ParamGroupInfo(group="Visualization|false|no description") 
     @ParamInfo(name="Density") DensityResult density,

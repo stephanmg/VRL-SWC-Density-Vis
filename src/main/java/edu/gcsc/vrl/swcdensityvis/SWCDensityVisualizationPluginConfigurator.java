@@ -7,10 +7,12 @@ import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayTestComponent;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayType;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixFactory;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixMatrixTestComponent;
+import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixSilentType;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixType;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixVectorTestComponent;
 import edu.gcsc.vrl.swcdensityvis.types.DenseVectorArrayTestComponent;
 import edu.gcsc.vrl.swcdensityvis.types.DenseVectorFactory;
+import edu.gcsc.vrl.swcdensityvis.types.Shape3DArrayTypeCustom;
 import edu.gcsc.vrl.swcdensityvis.types.SparseCCSMatrix;
 import edu.gcsc.vrl.swcdensityvis.types.SparseCCSMatrixType;
 import edu.gcsc.vrl.swcdensityvis.types.SparseCRSMatrix;
@@ -86,9 +88,11 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 			vapi.addComponent(SparseVectorFactory.class);
 			vapi.addComponent(SparseVector.class);
 			vapi.addTypeRepresentation(DenseMatrixType.class);
+			vapi.addTypeRepresentation(DenseMatrixSilentType.class);
 			vapi.addTypeRepresentation(DenseMatrixArrayType.class);
 			vapi.addTypeRepresentation(SparseCCSMatrixType.class);
 			vapi.addTypeRepresentation(SparseCRSMatrixType.class);
+			vapi.addTypeRepresentation(Shape3DArrayTypeCustom.class);
 		}
 	}
 
