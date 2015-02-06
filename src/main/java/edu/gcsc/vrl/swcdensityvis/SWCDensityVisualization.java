@@ -131,7 +131,7 @@ public class SWCDensityVisualization implements java.io.Serializable {
 		   * @todo add coordinate system - easy as we just need to create some lines and text with java3d ...
 		   */
 		  
-		  LineArray axisXLines=new LineArray(2,LineArray.COORDINATES);
+		/*  LineArray axisXLines=new LineArray(2,LineArray.COORDINATES);
     		axisXLines.setCoordinate(0,new Point3f(-1.0f,0.0f,0.0f));
    		 axisXLines.setCoordinate(1,new Point3f(1.0f,0.0f,0.0f));        
     
@@ -157,7 +157,9 @@ public class SWCDensityVisualization implements java.io.Serializable {
 	    	result.add(new Shape3D(axisXLines));
 	    	result.add(new Shape3D(axisYLines));
 	    	result.add(new Shape3D(axisZLines));
+		  */
 		 }
+		  
   }
     return result;
   }

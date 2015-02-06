@@ -10,7 +10,7 @@ import groovy.lang.Script;
  * @brief dense matrix type for VRL (defaults to 3x3)
  * @author stephan grein
  */
-@TypeInfo(type = DenseMatrix.class, input = true, output = true, style = "silent")
+@TypeInfo(type = DenseMatrix.class, input = true, output = true, style = "matrix-silent")
 public final class DenseMatrixSilentType extends TypeRepresentationBase {
 	private static final long serialVersionUID = 1L;
 	
