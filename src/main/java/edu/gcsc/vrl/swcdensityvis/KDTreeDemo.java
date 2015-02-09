@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.vecmath.Vector3f;
-import static org.junit.Assert.assertEquals;
 /**
  *
  * @author stephan
@@ -38,7 +37,6 @@ public class KDTreeDemo {
 			}*/
 		}
 		KDTree<ArrayList<Vector3f>> tree = SWCUtility.buildKDTree(incidents);
-		assertEquals("Tree size is required to be: 1514, but was: " + tree.size(), tree.size(), 1514);
 		double[] elem = {2.14, 14.34, -0.15};
 		try {
 			tree.search(elem);

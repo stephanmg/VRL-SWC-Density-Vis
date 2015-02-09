@@ -52,6 +52,7 @@ dependencies {
     compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
     compile files(vrldir+'/plugins/Density-Vis.jar');
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
+    
     // project lombok and levy's kd tree implementation (local dependencies)
     compile fileTree(dir: "jars/", includes:['*.jar']);
     

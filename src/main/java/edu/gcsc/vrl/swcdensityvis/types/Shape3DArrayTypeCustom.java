@@ -6,9 +6,7 @@ import eu.mihosoft.vrl.types.UniverseCreator;
 import eu.mihosoft.vrl.types.VCanvas3D;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,8 +14,6 @@ import javax.media.j3d.LineArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.vecmath.Color3f;
@@ -25,6 +21,7 @@ import javax.vecmath.Point3f;
 
 @TypeInfo(type = Shape3DArray.class, input = false, output = true, style = "shaped3darraycustom")
 public class Shape3DArrayTypeCustom extends Shape3DArrayType {
+
 	private final class ToggleButtonAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -145,65 +142,10 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 
 		JPopupMenu menu = getCanvas().getMenu();
 		if (menu != null) {
-	//		JMenuItem rotate = new JMenuItem("Toggle rotate");
-			JMenuItem rotate = new JMenuItem(new ToggleButtonAction("Toggle rotate", KeyEvent.VK_R));
-			/*rotate.addActionListener(new ActionListener() {
-				private boolean bToggleRotate = false;
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (bToggleRotate == true) {
-						bToggleRotate = false;
-					} else {
-						eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Toggle rotate");
-						bToggleRotate = true;
-					}
-
-					new Thread() {
-						private final double rotStep = 10;
-						private final double rotStepRad = rotStep * Math.PI / 180;
-						private final double rotRadMax = 2 * Math.PI;
-						private final double fps = 5;
-						private double rotInitRad = 2 * Math.PI / 180;
-
-						@Override
-						public void run() {
-							while (bToggleRotate) {
-								rotInitRad += rotStepRad;
-								rotInitRad %= rotRadMax;
-								double vals[] = {1, 0, 0, 0,
-									0, Math.cos(rotInitRad), Math.sin(rotInitRad), 0,
-									0, -Math.sin(rotInitRad), Math.cos(rotInitRad), 0,
-									10, 10, 10, 1};
-
-								double vals2[] = {
-									1, 0, 0, 0,
-									0, Math.cos(rotInitRad), -Math.sin(rotInitRad), 0,
-									0, Math.sin(rotInitRad), Math.cos(rotInitRad), 0,
-									0, 0, 0, 1
-								};
-								//setOrientationFromValues(vals);
-								Transform3D t3d = new Transform3D();
-								t3d.set(vals2);
-								getUniverseCreator().getRootGroup().setTransform(t3d);
-								try {
-									Thread.sleep((long) (1000 / fps));
-
-								} catch (InterruptedException ex) {
-									Logger.getLogger(Shape3DArrayTypeCustom.class
-										.getName()).log(Level.SEVERE, null, ex);
-								}
-
-							}
-						}
-					}.start();
-
-					System.err.println(Arrays.toString(getOrientationFromUniverse()));
-				}
-			});*/
+			ToggleButtonAction toggleBA = new ToggleButtonAction("Toggle rotate", KeyEvent.VK_R);
+			JMenuItem rotate = new JMenuItem(toggleBA);
 			menu.addSeparator();
 			menu.add(rotate);
 		}
-
 	}
 }
