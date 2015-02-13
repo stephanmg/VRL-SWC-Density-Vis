@@ -16,13 +16,12 @@ import java.util.HashMap;
 /**
  *
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
- * @brief imports the SWC file (TODO needs probably to be split into more components)
  */
-@ComponentInfo(name = "SWCLoadStack", category = "Neuro/SWC-Density-Vis")
-public class SWCLoadStackComponent implements Serializable {
+@ComponentInfo(name = "XMLLoadStack", category = "Neuro/SWC-Density-Vis")
+public class XMLLoadStackComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private File m_file;
-	private HashMap<String, ArrayList<SWCCompartmentInformation>> m_compartments;
+	private HashMap<String, ArrayList<XMLCompartmentInformation>> m_compartments;
 
 	/**
 	 * @brief set filename
@@ -54,7 +53,7 @@ public class SWCLoadStackComponent implements Serializable {
 		{
     		@Override
  		 public boolean accept(File dir, String name) {
-        	 return name.endsWith(".swc");
+        	 return name.endsWith(".xml");
 		}});
 		
 		for (File f : swcFiles) {
@@ -65,9 +64,9 @@ public class SWCLoadStackComponent implements Serializable {
 		private void parse(
 		@ParamInfo(name = "File") File file
 	) {
-		ArrayList<SWCCompartmentInformation> temp;
+		ArrayList<XMLCompartmentInformation> temp;
 		try {
-		   temp = SWCUtility.parse(file);
+		   temp = XMLUtility.parse(file);
 		} catch (FileNotFoundException e) {
 			eu.mihosoft.vrl.system.VMessage.exception("File was not found: ", e.toString());
 			return;
@@ -79,4 +78,5 @@ public class SWCLoadStackComponent implements Serializable {
 		eu.mihosoft.vrl.system.VMessage.info("Successfully parsed the SWC file.", "");
 	}
 }
+
 

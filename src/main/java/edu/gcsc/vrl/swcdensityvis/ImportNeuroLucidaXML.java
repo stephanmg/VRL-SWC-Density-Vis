@@ -24,7 +24,7 @@ public class ImportNeuroLucidaXML {
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 
 	/**
-	 * @param file
+	 * @param inputFile
 	 */
 	public ImportNeuroLucidaXML(String inputFile) {
 		setInputFile(inputFile);
