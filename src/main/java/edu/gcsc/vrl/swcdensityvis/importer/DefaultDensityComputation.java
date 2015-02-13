@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 /**
- *
+ * @brief in case of increasing complexity, one can introduce the DensityComputationStrategyFactory as an abstract Factory, i . e. a Factory EdgeDensityComputationStrategy and TreeDensityComputationStrategy as well as a DefaultDensityComputationStrategy factory
  * @author stephan
  */
 public class DefaultDensityComputation implements DensityComputationStrategy {

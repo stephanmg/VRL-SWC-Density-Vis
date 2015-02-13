@@ -29,5 +29,9 @@ public final class DensityComputationStrategyFactory {
 			return new DefaultDensityComputation();
 		}
 	}
+
+	public DensityComputationStrategy getDefaultDensityComputation() {
+		return new DefaultDensityComputation();
+	}
 }
 	

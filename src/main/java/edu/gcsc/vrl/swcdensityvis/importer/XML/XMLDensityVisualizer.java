@@ -8,6 +8,7 @@ import edu.gcsc.vrl.swcdensityvis.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.DefaultDensityComputation;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
@@ -40,7 +41,8 @@ import org.jdom2.input.sax.XMLReaders;
  */
 public class XMLDensityVisualizer implements DensityVisualizable {
 
-	private DensityComputationContext context = new DensityComputationContext(new DefaultDensityComputation());
+	private final DensityComputationStrategyFactory strategy = new DensityComputationStrategyFactory();
+	private DensityComputationContext context = new DensityComputationContext(strategy.getDefaultDensityComputation());
 	private ArrayList<File> inputFiles;
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 	
