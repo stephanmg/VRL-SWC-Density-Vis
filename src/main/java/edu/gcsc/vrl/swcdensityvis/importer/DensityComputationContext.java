@@ -7,21 +7,38 @@ package edu.gcsc.vrl.swcdensityvis.importer;
  */
 public class DensityComputationContext {
 
-	private final DensityComputationStrategy densityComputation;
-	
+	private DensityComputationStrategy densityComputationStrategy;
+
 	/**
-	 * 
-	 * @param strategy 
+	 *
+	 * @param strategy
 	 */
 	public DensityComputationContext(DensityComputationStrategy strategy) {
-		this.densityComputation = strategy;
+		this.densityComputationStrategy = strategy;
 	}
 
 	public DensityComputationContext() {
-		this.densityComputation = new DefaultDensityComputation();
+		this.densityComputationStrategy = new DefaultDensityComputation();
 	}
 
 	public void executeDensityComputation() {
-		this.densityComputation.computeDensity();
+		this.densityComputationStrategy.computeDensity();
 	}
+
+	/**
+	 *
+	 * @param strategy
+	 */
+	public void setDensityComputationStrategy(DensityComputationStrategy strategy) {
+		this.densityComputationStrategy = strategy;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public DensityComputationStrategy getDensityComputationStrategy() {
+		return this.densityComputationStrategy;
+	}
+
 }
