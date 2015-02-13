@@ -1,13 +1,17 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.importer;
+package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
+/// imports
 import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.swcdensityvis.importer.TreeDensityComputationStrategy;
+
 
 /**
  *
  * @author stephan
  */
-public class TreeDensityComputation implements DensityComputationStrategy {
+public class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
+
 	@Override
 	public DensityResult computeDensity() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

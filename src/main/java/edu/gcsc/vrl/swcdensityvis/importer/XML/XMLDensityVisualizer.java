@@ -6,10 +6,12 @@ import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
 import edu.gcsc.vrl.swcdensityvis.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
+import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.DefaultDensityComputation;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactory;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
 import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
@@ -41,8 +43,9 @@ import org.jdom2.input.sax.XMLReaders;
  */
 public class XMLDensityVisualizer implements DensityVisualizable {
 
-	private final DensityComputationStrategyFactory strategy = new DensityComputationStrategyFactory();
-	private DensityComputationContext context = new DensityComputationContext(strategy.getDefaultDensityComputation());
+	private final AbstractDensityComputationStrategyFactory strategyFactory = new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory(); /// edge factory 
+
+	private DensityComputationContext context = new DensityComputationContext(strategyFactory.getDefaultComputationStrategy("XML")); /// get xml implementation of that strategy
 	private ArrayList<File> inputFiles;
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 	

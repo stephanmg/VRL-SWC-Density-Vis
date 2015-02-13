@@ -8,34 +8,33 @@ import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
  * @author stephan
  */
 public final class DensityVisualizableFactory {
-
+	
 	public DensityVisualizable getDefaultDensityVisualizer() {
 		return new DefaultDensityVisualizer();
 	}
-
 	/**
-	 *
+	 * 
 	 * @param visualizerType
-	 * @return
+	 * @return 
 	 */
 	public DensityVisualizable getDensityVisualizer(String visualizerType) {
 		return create(visualizerType);
 	}
-
+	
 	/**
-	 *
+	 * 
 	 * @param visualizerType
 	 * @param strategy
-	 * @return
+	 * @return 
 	 */
 	public DensityVisualizable getDensityVisualizer(String visualizerType, DensityComputationStrategy strategy) {
 		return create(visualizerType, strategy);
 	}
 
 	/**
-	 *
+	 * 
 	 * @param visualizerType
-	 * @return
+	 * @return 
 	 */
 	private DensityVisualizable create(String visualizerType) {
 		if (visualizerType.equalsIgnoreCase("SWC")) {
@@ -48,12 +47,12 @@ public final class DensityVisualizableFactory {
 			return new DefaultDensityVisualizer();
 		}
 	}
-
+	
 	/**
-	 *
+	 * 
 	 * @param visualizerType
 	 * @param strategy
-	 * @return
+	 * @return 
 	 */
 	private DensityVisualizable create(String visualizerType, DensityComputationStrategy strategy) {
 		DensityVisualizable densityVisualizable = create(visualizerType);
