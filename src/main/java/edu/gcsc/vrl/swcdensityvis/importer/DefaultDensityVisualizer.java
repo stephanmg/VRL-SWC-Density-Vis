@@ -1,13 +1,15 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.new_interface;
+package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
- *
+ * @brief provide default density vizualizer implementation
+ *        other classes can make use of this and delegate to this implementation
+ *        (see for instance XMLDensityVisualizer)
  * @author stephan
  */
-public class SWCDensityVisualizer implements DensityVisualizable {
+public class DefaultDensityVisualizer implements DensityVisualizable {
 	private DensityComputationContext context = new DensityComputationContext(new DefaultDensityComputation());
-	
+
 	@Override
 	public void parse() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -43,9 +45,10 @@ public class SWCDensityVisualizer implements DensityVisualizable {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
+
 	@Override
-	public void setContext(DensityComputationContext densityComputationContext) {
-		context = densityComputationContext;
+	public void setContext(DensityComputationContext context) {
+		this.context = context;
 	}
 
 }

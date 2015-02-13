@@ -1,12 +1,13 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.new_interface;
+package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
  *
  * @author stephan
  */
-public class ASCDensityVisualizer implements DensityVisualizable {
-
+public class SWCDensityVisualizer implements DensityVisualizable {
+	private DensityComputationContext context = new DensityComputationContext(new DefaultDensityComputation());
+	
 	@Override
 	public void parse() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -29,7 +30,7 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public void computeDensity() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		context.executeDensityComputation();
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public void setContext(DensityComputationContext densityComputationContext) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		context = densityComputationContext;
 	}
 
 }

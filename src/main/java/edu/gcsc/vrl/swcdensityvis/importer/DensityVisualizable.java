@@ -1,5 +1,5 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.new_interface;
+package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
  * @brief density visualizable interface

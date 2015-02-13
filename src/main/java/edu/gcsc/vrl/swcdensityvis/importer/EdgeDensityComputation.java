@@ -1,14 +1,14 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.new_interface;
+package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
  *
  * @author stephan
  */
-public class DefaultDensityComputation implements DensityComputationStrategy {
-
+public class EdgeDensityComputation implements DensityComputationStrategy {
 	@Override
 	public void computeDensity() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
+
 }
