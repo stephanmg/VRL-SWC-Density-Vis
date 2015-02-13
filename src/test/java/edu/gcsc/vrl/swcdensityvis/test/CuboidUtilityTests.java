@@ -5,8 +5,8 @@ package edu.gcsc.vrl.swcdensityvis.test;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import edu.gcsc.vrl.swcdensityvis.Cuboid;
-import edu.gcsc.vrl.swcdensityvis.CuboidUtility;
+import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
+import edu.gcsc.vrl.swcdensityvis.util.CuboidUtility;
 import eu.mihosoft.vrl.reflection.Pair;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -1,6 +1,8 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
+
 /**
  * @brief factory (can be called from an VRL-Studio Component!)
  * @author stephan
@@ -32,11 +34,11 @@ public final class DensityVisualizableFactory {
 	 */
 	private DensityVisualizable create(String visualizerType) {
 		if (visualizerType.equalsIgnoreCase("SWC")) {
-			return new SWCDensityVisualizer();
+			return new XMLDensityVisualizer();
 		} else if (visualizerType.equalsIgnoreCase("ASC")) {
 			return new ASCDensityVisualizer();
 		} else if (visualizerType.equalsIgnoreCase("XML")) {
-			return new XMLDensityVisualizer();
+			return new SWCDensityVisualizer();
 		} else {
 			return new DefaultDensityVisualizer();
 		}

@@ -1,6 +1,9 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+/// imports
+import eu.mihosoft.vrl.v3d.Shape3DArray;
+
 /**
  * @brief density visualizable interface
  * @author stephan
@@ -15,7 +18,7 @@ public interface DensityVisualizable extends DensityComputationStrategy {
 	void getDimension();
 	void getBoundingBox();
 	void getDensity();
-	void getLineGraphGeometry();
+	Shape3DArray getLineGraphGeometry();
 	void setContext(DensityComputationContext context);
 	//void getGeometry(); /** @note geometry is a shape object, we can just pass this to VisUtil then to be flexible!*/
 }

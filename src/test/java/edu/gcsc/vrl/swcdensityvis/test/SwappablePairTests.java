@@ -1,6 +1,6 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.SwappablePair;
+import edu.gcsc.vrl.swcdensityvis.data.SwappablePair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

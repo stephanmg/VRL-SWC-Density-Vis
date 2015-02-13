@@ -2,6 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.VoxelSet;
 import edu.gcsc.vrl.densityvis.VoxelImpl;

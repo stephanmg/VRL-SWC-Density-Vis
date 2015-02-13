@@ -1,7 +1,10 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.demo;
 
 /// importsimport java.io.File;
+import edu.gcsc.vrl.swcdensityvis.data.Edge;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.Contour;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.Tree;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -211,6 +214,6 @@ public class ImportNeuroLucidaXML {
 	 * @param args
 	 */
 	public static void main(String... args) {
-		new ImportNeuroLucidaXML("files/test.xml").parse();
+		new ImportNeuroLucidaXML("files/test2.xml").parse();
 	}
 }

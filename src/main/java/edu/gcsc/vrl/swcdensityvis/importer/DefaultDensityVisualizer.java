@@ -1,6 +1,9 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+import edu.gcsc.vrl.densityvis.DensityResult;
+import eu.mihosoft.vrl.v3d.Shape3DArray;
+
 /**
  * @brief provide default density vizualizer implementation
  *        other classes can make use of this and delegate to this implementation
@@ -31,8 +34,8 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void computeDensity() {
-		context.executeDensityComputation();
+	public DensityResult computeDensity() {
+		return context.executeDensityComputation();
 	}
 
 	@Override
@@ -41,7 +44,7 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void getLineGraphGeometry() {
+	public Shape3DArray getLineGraphGeometry() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

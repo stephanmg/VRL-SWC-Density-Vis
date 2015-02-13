@@ -5,8 +5,8 @@
  */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.Edge;
-import edu.gcsc.vrl.swcdensityvis.EdgeUtility;
+import edu.gcsc.vrl.swcdensityvis.data.Edge;
+import edu.gcsc.vrl.swcdensityvis.util.EdgeUtility;
 import eu.mihosoft.vrl.reflection.Pair;
 import javax.vecmath.Vector3f;
 import org.junit.After;

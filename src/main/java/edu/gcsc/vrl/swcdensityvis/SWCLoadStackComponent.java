@@ -2,6 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;

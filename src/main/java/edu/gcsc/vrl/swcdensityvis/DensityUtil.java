@@ -2,6 +2,7 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.densityvis.Density;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,11 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.util;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
+import edu.gcsc.vrl.swcdensityvis.data.Edge;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentType;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeyDuplicateException;
 import edu.wlu.cs.levy.CG.KeySizeException;

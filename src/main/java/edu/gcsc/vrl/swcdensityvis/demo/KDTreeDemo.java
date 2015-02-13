@@ -1,7 +1,9 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.demo;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeySizeException;
 import java.io.File;

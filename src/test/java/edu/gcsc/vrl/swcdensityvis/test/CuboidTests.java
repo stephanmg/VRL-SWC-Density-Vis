@@ -5,7 +5,7 @@
  */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.Cuboid;
+import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

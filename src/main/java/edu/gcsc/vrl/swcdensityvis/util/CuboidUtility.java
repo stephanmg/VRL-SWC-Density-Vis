@@ -1,7 +1,8 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.util;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import eu.mihosoft.vrl.reflection.Pair;
 
 /**

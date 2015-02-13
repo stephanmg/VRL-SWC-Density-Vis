@@ -1,6 +1,8 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+import edu.gcsc.vrl.densityvis.DensityResult;
+
 /**
  *
  * @author stephan
@@ -21,8 +23,8 @@ public class DensityComputationContext {
 		this.densityComputationStrategy = new DefaultDensityComputation();
 	}
 
-	public void executeDensityComputation() {
-		this.densityComputationStrategy.computeDensity();
+	public DensityResult executeDensityComputation() {
+		return this.densityComputationStrategy.computeDensity();
 	}
 
 	/**

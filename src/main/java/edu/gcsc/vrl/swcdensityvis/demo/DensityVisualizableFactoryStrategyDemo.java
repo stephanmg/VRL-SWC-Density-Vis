@@ -1,5 +1,9 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.importer;
+package edu.gcsc.vrl.swcdensityvis.demo;
+
+import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
+import edu.gcsc.vrl.swcdensityvis.importer.TreeDensityComputation;
 
 /**
  *

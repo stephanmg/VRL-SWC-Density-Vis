@@ -4,8 +4,8 @@ package edu.gcsc.vrl.swcdensityvis.test;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.DensityUtil;
-import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
-import edu.gcsc.vrl.swcdensityvis.SWCUtility;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.io.File;
 import java.io.IOException;

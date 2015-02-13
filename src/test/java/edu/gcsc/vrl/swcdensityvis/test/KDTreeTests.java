@@ -2,6 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import edu.gcsc.vrl.swcdensityvis.*;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeySizeException;

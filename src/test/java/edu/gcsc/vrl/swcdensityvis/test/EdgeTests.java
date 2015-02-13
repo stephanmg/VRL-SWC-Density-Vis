@@ -1,6 +1,6 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.Edge;
+import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;

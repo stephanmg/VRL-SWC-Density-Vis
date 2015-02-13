@@ -1,6 +1,9 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+import edu.gcsc.vrl.densityvis.DensityResult;
+import eu.mihosoft.vrl.v3d.Shape3DArray;
+
 /**
  *
  * @author stephan
@@ -28,7 +31,7 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void computeDensity() {
+	public DensityResult computeDensity() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
@@ -38,7 +41,7 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void getLineGraphGeometry() {
+	public Shape3DArray getLineGraphGeometry() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

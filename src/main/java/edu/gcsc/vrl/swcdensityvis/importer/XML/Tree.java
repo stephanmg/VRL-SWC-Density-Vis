@@ -1,7 +1,8 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import java.util.ArrayList;
 import javax.vecmath.Vector3d;
 import lombok.Getter;

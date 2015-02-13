@@ -1,5 +1,7 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.util;
+
+import edu.gcsc.vrl.swcdensityvis.data.SwappablePair;
 
 /**
  * @brief utilities

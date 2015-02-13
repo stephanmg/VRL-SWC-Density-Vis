@@ -1,6 +1,6 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.CompUtility;
+import edu.gcsc.vrl.swcdensityvis.util.CompUtility;
 import javax.vecmath.Vector3f;
 import org.junit.After;
 import org.junit.AfterClass;

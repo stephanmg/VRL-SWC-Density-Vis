@@ -1,8 +1,9 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.util;
 
 /// imports
 
+import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.util.Arrays;
 import java.util.Collections;

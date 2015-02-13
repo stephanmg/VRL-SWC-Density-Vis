@@ -1,5 +1,5 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
 import java.util.ArrayList;

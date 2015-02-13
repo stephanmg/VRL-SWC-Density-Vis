@@ -5,7 +5,7 @@
  */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.SWCCompartmentInformation;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

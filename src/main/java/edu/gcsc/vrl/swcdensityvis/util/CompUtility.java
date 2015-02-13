@@ -1,5 +1,6 @@
-package edu.gcsc.vrl.swcdensityvis;
+package edu.gcsc.vrl.swcdensityvis.util;
 
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.ext.quickhull3d.Point3d;
 import edu.gcsc.vrl.swcdensityvis.ext.quickhull3d.QuickHull3D;
 import java.util.ArrayList;

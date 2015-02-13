@@ -1,51 +1,53 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+import edu.gcsc.vrl.densityvis.DensityResult;
+import eu.mihosoft.vrl.v3d.Shape3DArray;
+
 /**
  *
  * @author stephan
  */
 public class SWCDensityVisualizer implements DensityVisualizable {
-	private DensityComputationContext context = new DensityComputationContext(new DefaultDensityComputation());
-	
+	private final DefaultDensityVisualizer defaultDensityVisualizer = new DefaultDensityVisualizer();
+
 	@Override
 	public void parse() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		defaultDensityVisualizer.parse();
 	}
 
 	@Override
 	public void parseStack() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		defaultDensityVisualizer.parseStack();
 	}
 
 	@Override
 	public void getDimension() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		defaultDensityVisualizer.getDensity();
 	}
 
 	@Override
 	public void getBoundingBox() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		defaultDensityVisualizer.getBoundingBox();
 	}
 
 	@Override
-	public void computeDensity() {
-		context.executeDensityComputation();
+	public DensityResult computeDensity() {
+		return defaultDensityVisualizer.computeDensity();
 	}
 
 	@Override
 	public void getDensity() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		defaultDensityVisualizer.getDensity();
 	}
 
 	@Override
-	public void getLineGraphGeometry() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public Shape3DArray getLineGraphGeometry() {
+		return defaultDensityVisualizer.getLineGraphGeometry();
 	}
 
 	@Override
 	public void setContext(DensityComputationContext densityComputationContext) {
-		context = densityComputationContext;
+		defaultDensityVisualizer.setContext(densityComputationContext);
 	}
-
 }
