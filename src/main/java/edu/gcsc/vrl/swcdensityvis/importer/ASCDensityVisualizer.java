@@ -36,12 +36,7 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void getDensity() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public Shape3DArray getLineGraphGeometry() {
+	public Shape3DArray calculateGeometry() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

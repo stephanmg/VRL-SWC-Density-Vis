@@ -59,21 +59,14 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 		this.impl.getBoundingBox();
 	}
 
-	/**
-	 * 
-	 */
-	@Override
-	public void getDensity() {
-		this.impl.getDensity();
-	}
 
 	/**
 	 * 
 	 * @return 
 	 */
 	@Override
-	public Shape3DArray getLineGraphGeometry() {
-		return this.impl.getLineGraphGeometry();
+	public Shape3DArray calculateGeometry() {
+		return this.impl.calculateGeometry();
 	}
 
 	/**

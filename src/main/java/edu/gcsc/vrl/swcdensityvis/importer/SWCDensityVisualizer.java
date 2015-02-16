@@ -23,7 +23,7 @@ public class SWCDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public void getDimension() {
-		defaultDensityVisualizer.getDensity();
+		defaultDensityVisualizer.getDimension();
 	}
 
 	@Override
@@ -37,13 +37,8 @@ public class SWCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void getDensity() {
-		defaultDensityVisualizer.getDensity();
-	}
-
-	@Override
-	public Shape3DArray getLineGraphGeometry() {
-		return defaultDensityVisualizer.getLineGraphGeometry();
+	public Shape3DArray calculateGeometry() {
+		return defaultDensityVisualizer.calculateGeometry();
 	}
 
 	@Override

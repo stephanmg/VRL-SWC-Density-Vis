@@ -240,13 +240,8 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable {
 	}
 
 	@Override
-	public void getDensity() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
-	public Shape3DArray getLineGraphGeometry() {
+	public Shape3DArray calculateGeometry() {
 		if (this.lineGraphGeometry == null || isGeometryModified) {
 			this.lineGraphGeometry = new Shape3DArray();
 			for (HashMap<String, Tree> ts : trees.values()) {
