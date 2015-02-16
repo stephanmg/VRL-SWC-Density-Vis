@@ -5,7 +5,6 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
 import edu.gcsc.vrl.densityvis.DensityResult;
 import edu.gcsc.vrl.swcdensityvis.importer.TreeDensityComputationStrategy;
 
-
 /**
  *
  * @author stephan
