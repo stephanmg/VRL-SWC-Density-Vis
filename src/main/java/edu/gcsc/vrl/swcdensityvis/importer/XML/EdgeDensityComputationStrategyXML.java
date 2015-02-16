@@ -11,9 +11,16 @@ import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
  */
 public class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 
+	/**
+	 * 
+	 */
 	public EdgeDensityComputationStrategyXML() {
 	}
 
+	/**
+	 * 
+	 * @return 
+	 */
 	@Override
 	public DensityResult computeDensity() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

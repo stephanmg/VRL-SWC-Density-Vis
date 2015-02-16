@@ -2,30 +2,18 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
-import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
-import edu.gcsc.vrl.swcdensityvis.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFactory;
-import edu.gcsc.vrl.swcdensityvis.importer.DefaultDensityComputation;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategy;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
-import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
-import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
-import eu.mihosoft.vrl.v3d.VTriangleArray;
-import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import static javax.media.j3d.GeometryArray.COLOR_4;
 import static javax.media.j3d.GeometryArray.COORDINATES;
 import javax.media.j3d.LineArray;
@@ -43,14 +31,15 @@ import org.jdom2.input.sax.XMLReaders;
  * @author stephan
  */
 public class XMLDensityVisualizerImpl implements DensityVisualizable {
-	private AbstractDensityComputationStrategyFactory strategyFactory = new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory(); /// edge factory 
+
+	private final AbstractDensityComputationStrategyFactory strategyFactory = new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory(); /// edge factory 
 
 	private DensityComputationContext context = new DensityComputationContext(strategyFactory.getDefaultComputationStrategy("XML")); /// get xml implementation of that strategy
 
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 	private HashMap<String, HashMap<String, Contour>> contours;
 	private HashMap<String, HashMap<String, Tree>> trees;
-	
+
 	/// proxy members
 	private Shape3DArray lineGraphGeometry;
 	private DensityResult density;
@@ -76,7 +65,7 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable {
 			System.out.println("Processing Trees...");
 			this.trees.put(this.inputFiles.get(0).getName(), process_trees(rootNode));
 			System.out.println(" done!");
-			
+
 			this.inputFiles.remove(0);
 			isGeometryModified = true;
 
@@ -246,7 +235,7 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable {
 		if (density == null || isGeometryModified) {
 			this.density = context.executeDensityComputation();
 		}
-		
+
 		return this.density;
 	}
 
@@ -260,10 +249,10 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable {
 	public Shape3DArray getLineGraphGeometry() {
 		if (this.lineGraphGeometry == null || isGeometryModified) {
 			this.lineGraphGeometry = new Shape3DArray();
-				for (HashMap<String, Tree> ts : trees.values()) {
-					for (Tree t : ts.values()) {
-						for (Edge<Vector3d> e : t.getEdges()) {
-						LineArray la = new LineArray(2, COORDINATES|COLOR_4);
+			for (HashMap<String, Tree> ts : trees.values()) {
+				for (Tree t : ts.values()) {
+					for (Edge<Vector3d> e : t.getEdges()) {
+						LineArray la = new LineArray(2, COORDINATES | COLOR_4);
 						la.setCoordinates(0, new Point3f[]{new Point3f(e.getFrom()), new Point3f(e.getTo())});
 						this.lineGraphGeometry.add(new Shape3D(la));
 					}

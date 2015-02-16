@@ -12,49 +12,81 @@ import eu.mihosoft.vrl.v3d.Shape3DArray;
  */
 public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 
+	/**
+	 * 
+	 * @param impl 
+	 */
 	public XMLDensityVisualizer(XMLDensityVisualizerImpl impl) {
 		super(impl);
 	}
 
+	/**
+	 * 
+	 */
 	public XMLDensityVisualizer() {
 		super(XMLDensityUtil.getDefaultImpl());
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void parse() {
 		this.impl.parse();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void parseStack() {
 		this.impl.parseStack();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void getDimension() {
 		this.impl.getDimension();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void getBoundingBox() {
 		this.impl.getBoundingBox();
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public void getDensity() {
 		this.impl.getDensity();
 	}
 
+	/**
+	 * 
+	 * @return 
+	 */
 	@Override
 	public Shape3DArray getLineGraphGeometry() {
 		return this.impl.getLineGraphGeometry();
 	}
 
+	/**
+	 * @return
+	 */
 	@Override
 	public DensityResult computeDensity() {
 		return this.impl.computeDensity();
 	}
 
+	/**
+	 * @param context
+	 */
 	@Override
 	public void setContext(DensityComputationContext context) {
 		this.impl.setContext(context);
