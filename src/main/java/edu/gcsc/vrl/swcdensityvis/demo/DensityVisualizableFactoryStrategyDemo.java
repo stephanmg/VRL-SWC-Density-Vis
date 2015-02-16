@@ -5,6 +5,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 
 /**
@@ -33,7 +34,8 @@ public class DensityVisualizableFactoryStrategyDemo {
 		System.err.println("Main...");
 
 		/// another example
-		XMLDensityVisualizer xmlDensityVisualizer = new XMLDensityVisualizer();
+		XMLDensityVisualizer xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultImpl());
+		xmlDensityVisualizer.setContext(densityComputationContext);
 		///xmlDensityVisualizer.computeDensity();
 
 		/// or maybe that way? (get the default density visualizer)

@@ -6,7 +6,7 @@ import edu.gcsc.vrl.densityvis.DensityResult;
 import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
 
 /**
- *
+ * @brief implement the strategy here ... 
  * @author stephan
  */
 public class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
