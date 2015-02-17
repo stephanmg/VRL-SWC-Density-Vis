@@ -19,20 +19,14 @@ import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import static javax.media.j3d.GeometryArray.COORDINATES;
-import javax.media.j3d.LineArray;
-import javax.vecmath.Vector3f;
 
 /**
  * @brief computes the density
@@ -61,9 +55,8 @@ public class ComputeDensity implements java.io.Serializable {
 		@ParamGroupInfo(group = "Advanced options|true|Compute the density for the image (stack); Compartment|true|Compartment")
 		@ParamInfo(name = "Type", typeName = "Compartment", style = "selection", options = "value=[\"all\", \"undefined\", \"axon\", \"(basal) dendrite\", \"apical dendrite\", \"fork point\", \"end point\", \"custom\"]") String choice
 	) {
-		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
-		try {
-			File[] swcFiles = folder.listFiles(new FilenameFilter() {
+		File[] swcFiles = null;
+		swcFiles = folder.listFiles(new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String name) {
 					return name.endsWith(".swc") ||
@@ -83,25 +76,20 @@ public class ComputeDensity implements java.io.Serializable {
 		
 		XMLDensityVisualizer xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultImpl());
 		xmlDensityVisualizer.setContext(densityComputationContext);
-		
+		xmlDensityVisualizer.setFiles((ArrayList<File>)Arrays.asList(swcFiles)); 
 		/**
-		 * @todo make operations with the xmldensityVisualizer
+		 * @todo setFiles could be also moved to the interface!
 		 */
-
-			
-			for (File f : swcFiles) {
-				eu.mihosoft.vrl.system.VMessage.info("Parsing SWC file", f.toString());
-				cells.put(f.getName(), SWCUtility.parse(f));
-			}
-			eu.mihosoft.vrl.system.VMessage.info("Computing density", "Total number of files for density computation: " + swcFiles.length);
-
-		} catch (IOException e) {
-			eu.mihosoft.vrl.system.VMessage.exception("File not found", e.toString());
-		}
-
+		
+		Density density = xmlDensityVisualizer.computeDensity();
+		Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();
+		double dim = 0;
+		xmlDensityVisualizer.getDimension();
+		xmlDensityVisualizer.getBoundingBox();
+		
 		/// density must respect new rescaled geometry and therefore fit in cuboid
-		Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
-		double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
+		//Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
+		//double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
 		/* @todo the vta is way to big, since the geometry/density get's rescaled with the VisUtil.
 		         we could however rescale the cube too, or we just omit the cube for rendering,
 			since it isn't necessary in fact...
@@ -109,7 +97,7 @@ public class ComputeDensity implements java.io.Serializable {
 		*/
 		
 		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
+		return new Object[]{new DensityResult(density, vta), geometry};
 		// we could also fill the line graph geometry in the VTA array!!!
-		return new Object[]{new DensityResult(density, vta), cells};
 	}
 }

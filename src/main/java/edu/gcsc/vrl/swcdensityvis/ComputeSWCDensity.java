@@ -2,11 +2,9 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
-import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
-import edu.gcsc.vrl.swcdensityvis.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
@@ -22,11 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import static javax.media.j3d.GeometryArray.COORDINATES;
-import javax.media.j3d.LineArray;
-import javax.vecmath.Vector3f;
 
 /**
  * @brief computes the density

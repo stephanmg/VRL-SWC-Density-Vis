@@ -2,9 +2,11 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
-import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  *
@@ -73,7 +75,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	 * @return
 	 */
 	@Override
-	public DensityResult computeDensity() {
+	public Density computeDensity() {
 		return this.impl.computeDensity();
 	}
 
@@ -83,6 +85,14 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	@Override
 	public void setContext(DensityComputationContext context) {
 		this.impl.setContext(context);
+	}
+	
+	/**
+	 * 
+	 * @param files 
+	 */
+	public void setFiles(ArrayList<File> files) {
+		this.impl.setFiles(files);
 	}
 
 }

@@ -2,12 +2,12 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
-import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.densityvis.Density;
 
 /**
  *
  * @author stephan
  */
 public interface DensityComputationStrategy {
-	DensityResult computeDensity();
+	Density computeDensity();
 }

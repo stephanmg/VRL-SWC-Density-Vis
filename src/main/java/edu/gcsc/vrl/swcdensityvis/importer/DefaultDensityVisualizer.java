@@ -1,7 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
-import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.densityvis.Density;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 
 /**
@@ -34,7 +34,7 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public DensityResult computeDensity() {
+	public Density computeDensity() {
 		return context.executeDensityComputation();
 	}
 

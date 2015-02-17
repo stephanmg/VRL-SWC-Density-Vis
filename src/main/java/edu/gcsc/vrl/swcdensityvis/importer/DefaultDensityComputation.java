@@ -21,7 +21,7 @@ import java.util.HashMap;
 public class DefaultDensityComputation implements DensityComputationStrategy {
 
 	@Override
-	public DensityResult computeDensity() {
+	public Density computeDensity() {
 		/// combine here DensityUtil and DensityImpl!
 		int width = 10;
 		int height = 10;
@@ -30,7 +30,6 @@ public class DefaultDensityComputation implements DensityComputationStrategy {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>();
 		Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
 		double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
-		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
-		return new DensityResult(density, vta);
+		return density;
 	}
 }

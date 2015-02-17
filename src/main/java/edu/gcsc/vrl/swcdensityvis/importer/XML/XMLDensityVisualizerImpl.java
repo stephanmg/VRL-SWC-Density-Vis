@@ -2,7 +2,7 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
-import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
@@ -42,10 +42,18 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable {
 
 	/// proxy members
 	private Shape3DArray lineGraphGeometry;
-	private DensityResult density;
+	private Density density;
 	private boolean isGeometryModified;
 	private ArrayList<File> inputFiles;
 
+	/**
+	 * 
+	 * @param files 
+	 */
+	public void setFiles(ArrayList<File> files) {
+		this.inputFiles.addAll(files);
+	}
+	
 	/**
 	 * @brief only the first file of the list is parsed and processed
 	 */
@@ -231,7 +239,7 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable {
 	}
 
 	@Override
-	public DensityResult computeDensity() {
+	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
 			this.density = context.executeDensityComputation();
 		}

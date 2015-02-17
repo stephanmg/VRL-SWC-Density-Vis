@@ -2,7 +2,7 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
-import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.TreeDensityComputationStrategy;
 
 /**
@@ -22,7 +22,7 @@ public class TreeDensityComputationStrategyXML implements TreeDensityComputation
 	 * @return 
 	 */
 	@Override
-	public DensityResult computeDensity() {
+	public Density computeDensity() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

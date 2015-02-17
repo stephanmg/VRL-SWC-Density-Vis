@@ -2,7 +2,7 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
-import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
 
 /**
@@ -22,7 +22,7 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 	 * @return 
 	 */
 	@Override
-	public DensityResult computeDensity() {
+	public Density computeDensity() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
