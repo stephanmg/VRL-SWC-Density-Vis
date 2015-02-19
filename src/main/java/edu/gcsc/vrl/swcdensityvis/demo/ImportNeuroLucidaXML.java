@@ -1,7 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.demo;
 
-/// importsimport java.io.File;
+/// imports
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.Contour;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.Tree;

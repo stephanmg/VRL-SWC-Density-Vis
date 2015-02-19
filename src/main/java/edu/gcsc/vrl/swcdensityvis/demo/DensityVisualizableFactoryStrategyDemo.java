@@ -1,6 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.demo;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;

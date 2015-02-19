@@ -1,5 +1,7 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.util;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.ext.quickhull3d.Point3d;
 import edu.gcsc.vrl.swcdensityvis.ext.quickhull3d.QuickHull3D;
@@ -14,6 +16,7 @@ import javax.vecmath.Vector3f;
  * @author stephan
  */
 public final class CompUtility {
+
 	private final static Vector3f ORIGO_CARTESIAN_COORDINATES_SYSTEM = new Vector3f(0, 0, 0);
 	private final static Vector3f UNIT_VECTOR_X_DIRECTION = new Vector3f(1, 0, 0);
 	private final static Vector3f UNIT_VECTOR_Y_DIRECTION = new Vector3f(0, 1, 0);
@@ -53,16 +56,17 @@ public final class CompUtility {
 		}
 		return hulls;
 	}
-	
+
 	/**
-	 * @brief orthogonally projects a point q to the plane defined by n and p (in 3d space)
-	 * @see for more complex projections, i. e. oblique, one could also use a
-	 * projection matrix as in the orthogonal projections one could also use it:
-	 * http://mathworld.wolfram.com/ProjectionMatrix.html
+	 * @brief orthogonally projects a point q to the plane defined by n and
+	 * p (in 3d space)
+	 * @see for more complex projections, i. e. oblique, one could also use
+	 * a projection matrix as in the orthogonal projections one could also
+	 * use it: http://mathworld.wolfram.com/ProjectionMatrix.html
 	 * @param q - initial point
 	 * @param n - normal of the plane (can be non-normalized)
 	 * @param p - point within the plane
-	 * @return 
+	 * @return
 	 * @see
 	 */
 	public static Vector3f projectToPlane(Vector3f q, Vector3f n, Vector3f p) {
@@ -74,11 +78,11 @@ public final class CompUtility {
 		qPrime.sub(n);
 		return qPrime;
 	}
-	
+
 	/**
 	 * @brief projects to xy-plane
 	 * @param q
-	 * @return 
+	 * @return
 	 */
 	public static Vector3f projectToXYPlane(Vector3f q) {
 		return projectToPlane(q, UNIT_VECTOR_Z_DIRECTION, ORIGO_CARTESIAN_COORDINATES_SYSTEM);
@@ -87,26 +91,26 @@ public final class CompUtility {
 	/**
 	 * @brief projects to xz-plane
 	 * @param q
-	 * @return 
+	 * @return
 	 */
 	public static Vector3f projectToXZPlane(Vector3f q) {
 		return projectToPlane(q, UNIT_VECTOR_Y_DIRECTION, ORIGO_CARTESIAN_COORDINATES_SYSTEM);
 	}
-	
+
 	/**
 	 * @brief proejcts to yz-plane
 	 * @param q
-	 * @return 
+	 * @return
 	 */
 	public static Vector3f projectToYZPlane(Vector3f q) {
 		return projectToPlane(q, UNIT_VECTOR_X_DIRECTION, ORIGO_CARTESIAN_COORDINATES_SYSTEM);
 	}
-	
+
 	/**
 	 * @brief the uniform shrinkage of a quickhull
 	 * @param qhull
 	 * @param factor
-	 * @todo 
+	 * @todo
 	 */
 	public static QuickHull3D shrink_uniform(QuickHull3D qhull, double factor) {
 		/// 1. get quickhull
@@ -115,5 +119,5 @@ public final class CompUtility {
 		/// 4. transform back to calculated center
 		return new QuickHull3D();
 	}
-	
+
 }

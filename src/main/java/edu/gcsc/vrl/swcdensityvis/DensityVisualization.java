@@ -1,7 +1,7 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
-import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
-import edu.gcsc.vrl.densityvis.VisUtil;
+/// importsa
 import edu.gcsc.vrl.densityvis.*;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
@@ -10,31 +10,14 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
-import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import eu.mihosoft.vrl.reflection.Pair;
-import eu.mihosoft.vrl.types.MethodRequest;
-import eu.mihosoft.vrl.types.VCanvas3D;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
-import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import static javax.media.j3d.GeometryArray.COLOR_3;
-import static javax.media.j3d.GeometryArray.COLOR_4;
-import static javax.media.j3d.GeometryArray.COORDINATES;
-import javax.media.j3d.LineArray;
-import javax.media.j3d.Shape3D;
-import javax.vecmath.Color3f;
-import javax.vecmath.Color4f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
 
 /**
  *

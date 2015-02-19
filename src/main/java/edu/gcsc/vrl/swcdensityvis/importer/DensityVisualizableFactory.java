@@ -1,6 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 
 /**

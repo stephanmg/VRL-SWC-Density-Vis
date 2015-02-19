@@ -1,6 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
+/// imports
 import edu.gcsc.vrl.densityvis.Density;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 

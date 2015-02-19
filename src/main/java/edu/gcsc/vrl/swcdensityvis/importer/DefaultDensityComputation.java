@@ -3,12 +3,9 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
-import edu.gcsc.vrl.densityvis.DensityResult;
 import edu.gcsc.vrl.swcdensityvis.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
-import eu.mihosoft.vrl.v3d.VTriangleArray;
-import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

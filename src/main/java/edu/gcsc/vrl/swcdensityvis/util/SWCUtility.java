@@ -323,7 +323,7 @@ public final class SWCUtility {
 	public static HashMap<Integer, Float> computeDensity(HashMap<String, ArrayList<SWCCompartmentInformation>> cells, String type) {
 		return computeDensity(cells, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_DEPTH, type);
 	}
-	
+
 	/**
 	 * @brief scales and transform the geometry
 	 * @param cells
@@ -345,7 +345,7 @@ public final class SWCUtility {
 					// scale with suppplied scaling factor
 					coords.scale(scaling_factor);
 				}
-				
+
 				// transform to new origin
 				Vector3f min = SWCUtility.getBoundingBox(cells).getSecond();
 				Vector3f direction = new Vector3f(min);
@@ -355,11 +355,12 @@ public final class SWCUtility {
 			}
 		}
 	}
+
 	/**
 	 * @brief scales automatically
 	 * @param cells_
 	 * @param new_origin
-	 * @param new_dim 
+	 * @param new_dim
 	 */
 	public static void scaleAndTransformGeometry(HashMap<String, ArrayList<SWCCompartmentInformation>> cells_, Vector3f new_origin, Vector3f new_dim) {
 		scaleAndTransformGeometry(cells_, new_origin, new_dim, 0);

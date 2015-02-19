@@ -1,15 +1,13 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.densityvis.VisUtil;
-import edu.gcsc.vrl.densityvis.*;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
-import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import eu.mihosoft.vrl.reflection.Pair;
-import eu.mihosoft.vrl.types.MethodRequest;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
