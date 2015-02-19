@@ -29,7 +29,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	 *
 	 * @param impl
 	 */
-	public XMLDensityVisualizer(XMLDensityVisualizerImpl impl) {
+	public XMLDensityVisualizer(XMLDensityVisualizerImplementable impl) {
 		super(impl);
 	}
 

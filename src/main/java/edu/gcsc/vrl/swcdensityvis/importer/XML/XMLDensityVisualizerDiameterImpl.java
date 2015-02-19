@@ -10,18 +10,16 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProd
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import edu.gcsc.vrl.swcdensityvis.util.ColorUtil;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import eu.mihosoft.vrl.v3d.VGeometry3D;
+import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
+import eu.mihosoft.vrl.v3d.jcsg.Vector3d;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import static javax.media.j3d.GeometryArray.COLOR_3;
-import static javax.media.j3d.GeometryArray.COORDINATES;
-import javax.media.j3d.LineArray;
-import javax.media.j3d.Shape3D;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3d;
+import javax.vecmath.Vector4d;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -32,15 +30,15 @@ import org.jdom2.input.sax.XMLReaders;
  *
  * @author stephan
  */
-public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensityVisualizerImplementable {
+public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XMLDensityVisualizerImplementable {
 
 	private final AbstractDensityComputationStrategyFactory strategyFactory = new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory(); /// edge factory 
 
 	private DensityComputationContext context = new DensityComputationContext(strategyFactory.getDefaultComputationStrategy("XML")); /// get xml implementation of that strategy
 
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
-	private final HashMap<String, HashMap<String, Contour<Vector3d>>> contours = new HashMap<String, HashMap<String, Contour<Vector3d>>>();
-	private final HashMap<String, HashMap<String, Tree<Vector3d>>> trees = new HashMap<String, HashMap<String, Tree<Vector3d>>>();
+	private final HashMap<String, HashMap<String, Contour<Vector4d>>> contours = new HashMap<String, HashMap<String, Contour<Vector4d>>>();
+	private final HashMap<String, HashMap<String, Tree<Vector4d>>> trees = new HashMap<String, HashMap<String, Tree<Vector4d>>>();
 
 	/// proxy members
 	private Shape3DArray lineGraphGeometry;
@@ -54,7 +52,6 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	 *
 	 * @param scalingFactor
 	 */
-	@Override
 	public void setScalingFactor(double scalingFactor) {
 		SF = scalingFactor;
 	}
@@ -63,7 +60,6 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	 *
 	 * @param files
 	 */
-	@Override
 	public void setFiles(ArrayList<File> files) {
 		this.inputFiles.addAll(files);
 	}
@@ -104,31 +100,34 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	/**
 	 * @brief process_branches
 	 */
-	private void process_branches(List<Element> branches, Tree<Vector3d> t, Vector3d point_before_branch) {
-		ArrayList<Edge<Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
+	private void process_branches(List<Element> branches, Tree<Vector4d> t, Vector4d point_before_branch) {
+		ArrayList<Edge<Vector4d>> edges = new ArrayList<Edge<Vector4d>>();
 
 		for (Element branch : branches) {
 			List<Element> points = branch.getChildren("point");
 			if (points.size() >= 1) {
-				edges.add(new Edge<Vector3d>(
+				edges.add(new Edge<Vector4d>(
 					point_before_branch,
-					new Vector3d(SF * Double.parseDouble(points.get(0).getAttributeValue("x")),
+					new Vector4d(SF * Double.parseDouble(points.get(0).getAttributeValue("x")),
 						SF * Double.parseDouble(points.get(0).getAttributeValue("y")),
-						SF * Double.parseDouble(points.get(0).getAttributeValue("z")))));
+						SF * Double.parseDouble(points.get(0).getAttributeValue("z")),
+					        SF * Double.parseDouble(points.get(0).getAttributeValue("d")))));
 			}
 
 			for (int i = 0; i < points.size() - 1; i++) {
-				edges.add(new Edge<Vector3d>(
-					new Vector3d(SF * Double.parseDouble(points.get(i).getAttributeValue("x")),
+				edges.add(new Edge<Vector4d>(
+					new Vector4d(SF * Double.parseDouble(points.get(i).getAttributeValue("x")),
 						SF * Double.parseDouble(points.get(i).getAttributeValue("y")),
-						SF * Double.parseDouble(points.get(i).getAttributeValue("z"))),
-					new Vector3d(SF * Double.parseDouble(points.get(i + 1).getAttributeValue("x")),
+						SF * Double.parseDouble(points.get(i).getAttributeValue("z")),
+					        SF * Double.parseDouble(points.get(i).getAttributeValue("d"))),
+					new Vector4d(SF * Double.parseDouble(points.get(i + 1).getAttributeValue("x")),
 						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("y")),
-						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("z")))));
+						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("z")),
+					        SF * Double.parseDouble(points.get(i + 1).getAttributeValue("d")))));
 			}
 
 			// append edges
-			ArrayList<Edge<Vector3d>> edges_new = new ArrayList<Edge<Vector3d>>();
+			ArrayList<Edge<Vector4d>> edges_new = new ArrayList<Edge<Vector4d>>();
 			if (!(t.getEdges() == null)) {
 				edges_new.addAll(t.getEdges());
 			}
@@ -137,15 +136,16 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			}
 			t.setEdges(edges_new);
 
-			Vector3d point_before_branch_new;
+			Vector4d point_before_branch_new;
 			/// if no point before next branch, then we must connect that point with a point after the next branch
 			if (points.isEmpty()) {
 				point_before_branch_new = point_before_branch;
 				/// if only one point is present, then this is the point we create an edge to the point in the next branch
 			} else if (points.size() == 1) {
-				point_before_branch_new = new Vector3d(SF * Double.parseDouble(points.get(0).getAttributeValue("x")),
+				point_before_branch_new = new Vector4d(SF * Double.parseDouble(points.get(0).getAttributeValue("x")),
 					SF * Double.parseDouble(points.get(0).getAttributeValue("y")),
-					SF * Double.parseDouble(points.get(0).getAttributeValue("z")));
+					SF * Double.parseDouble(points.get(0).getAttributeValue("z")),
+					SF * Double.parseDouble(points.get(0).getAttributeValue("d")));
 			} else {
 				/// else the point which defines an edge with the next branch's point is the last point from the current branch
 				point_before_branch_new = edges.get(edges.size() - 1).getTo();
@@ -163,27 +163,29 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	/**
 	 * @brief process tress
 	 */
-	private HashMap<String, Tree<Vector3d>> process_trees(Element rootNode) {
-		ArrayList< Edge< Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
-		HashMap<String, Tree<Vector3d>> trees = new HashMap<String, Tree<Vector3d>>();
+	private HashMap<String, Tree<Vector4d>> process_trees(Element rootNode) {
+		ArrayList< Edge< Vector4d>> edges = new ArrayList<Edge<Vector4d>>();
+		HashMap<String, Tree<Vector4d>> trees = new HashMap<String, Tree<Vector4d>>();
 
 		for (Element node : rootNode.getChildren("tree")) {
-			Tree<Vector3d> t = new Tree<Vector3d>();
+			Tree<Vector4d> t = new Tree<Vector4d>();
 			String name = node.getAttributeValue("type");
 			t.setType(node.getAttributeValue("type"));
 			List<Element> points = node.getChildren("point");
 			for (int i = 0; i < points.size() - 1; i++) {
-				edges.add(new Edge<Vector3d>(
-					new Vector3d(SF * Double.parseDouble(points.get(i).getAttributeValue("x")),
+				edges.add(new Edge<Vector4d>(
+					new Vector4d(SF * Double.parseDouble(points.get(i).getAttributeValue("x")),
 						SF * Double.parseDouble(points.get(i).getAttributeValue("y")),
-						SF * Double.parseDouble(points.get(i).getAttributeValue("z"))),
-					new Vector3d(SF * Double.parseDouble(points.get(i + 1).getAttributeValue("x")),
+						SF * Double.parseDouble(points.get(i).getAttributeValue("z")),
+						SF * Double.parseDouble(points.get(i).getAttributeValue("d"))),
+					new Vector4d(SF * Double.parseDouble(points.get(i + 1).getAttributeValue("x")),
 						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("y")),
-						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("z")))));
+						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("z")),
+						SF * Double.parseDouble(points.get(i + 1).getAttributeValue("d")))));
 			}
 
 			// append edges
-			ArrayList<Edge<Vector3d>> edges_new = new ArrayList<Edge<Vector3d>>();
+			ArrayList<Edge<Vector4d>> edges_new = new ArrayList<Edge<Vector4d>>();
 			if (!(t.getEdges() == null)) {
 				edges_new.addAll(t.getEdges());
 			}
@@ -193,7 +195,7 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			t.setEdges(edges_new);
 
 			/// at least one point must be present before branching obvious
-			Vector3d point_before_branch = edges.get(edges.size() - 1).getTo();
+			Vector4d point_before_branch = edges.get(edges.size() - 1).getTo();
 			if (!node.getChildren("branch").isEmpty()) {
 				System.err.println("Tree has branches!");
 				process_branches(node.getChildren("branch"), t, point_before_branch);
@@ -202,7 +204,7 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			}
 			trees.put(name, t);
 
-			for (Edge<Vector3d> edge : trees.get(name).getEdges()) {
+			for (Edge<Vector4d> edge : trees.get(name).getEdges()) {
 				System.err.println("from: " + edge.getFrom() + " to: " + edge.getTo());
 			}
 		}
@@ -213,22 +215,23 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	 * @brief process contours
 	 * @param rootNode
 	 */
-	private HashMap<String, Contour<Vector3d>> process_contours(Element rootNode) {
-		HashMap<String, Contour<Vector3d>> contours = new HashMap<String, Contour<Vector3d>>();
+	private HashMap<String, Contour<Vector4d>> process_contours(Element rootNode) {
+		HashMap<String, Contour<Vector4d>> contours = new HashMap<String, Contour<Vector4d>>();
 		for (Element node : rootNode.getChildren("contour")) {
-			Contour<Vector3d> c = new Contour<Vector3d>();
+			Contour<Vector4d> c = new Contour<Vector4d>();
 			String contourName = node.getAttributeValue("name");
 			c.setName(node.getAttributeValue("name"));
-			ArrayList<Vector3d> points = new ArrayList<Vector3d>();
+			ArrayList<Vector4d> points = new ArrayList<Vector4d>();
 			for (Element point : node.getChildren("point")) {
-				points.add(new Vector3d(SF * Double.parseDouble(point.getAttributeValue("x")),
+				points.add(new Vector4d(SF * Double.parseDouble(point.getAttributeValue("x")),
 					SF * Double.parseDouble(point.getAttributeValue("y")),
-					SF * Double.parseDouble(point.getAttributeValue("z"))));
+					SF * Double.parseDouble(point.getAttributeValue("z")),
+					SF * Double.parseDouble(point.getAttributeValue("d"))));
 
 			}
 			c.setPoints(points);
 			contours.put(contourName, c);
-			for (Vector3d vec : points) {
+			for (Vector4d vec : points) {
 				System.out.println(vec);
 			}
 		}
@@ -292,15 +295,12 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	public Shape3DArray calculateGeometry() {
 		if (this.lineGraphGeometry == null || isGeometryModified) {
 			this.lineGraphGeometry = new Shape3DArray();
-			for (HashMap<String, Tree<Vector3d>> ts : trees.values()) {
-				for (Tree<Vector3d> t : ts.values()) {
-					for (Edge<Vector3d> e : t.getEdges()) {
-						LineArray la = new LineArray(2, COORDINATES | COLOR_3);
-						la.setColor(0, ColorUtil.color2Color3f(gColor));
-						la.setColor(1, ColorUtil.color2Color3f(gColor));
-						la.setCoordinates(0, new Point3f[]{new Point3f(e.getFrom()), new Point3f(e.getTo())});
-						this.lineGraphGeometry.add(new Shape3D(la));
-						///System.err.println("***adding one shape3d!***");
+			for (HashMap<String, Tree<Vector4d>> ts : trees.values()) {
+				for (Tree<Vector4d> t : ts.values()) {
+					for (Edge<Vector4d> e : t.getEdges()) {
+						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 2);
+						
+						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()),null, 1F, false, false, false).generateShape3DArray());
 					}
 				}
 			}

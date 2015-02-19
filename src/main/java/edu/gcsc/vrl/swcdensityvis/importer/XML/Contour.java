@@ -3,7 +3,6 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
 import java.util.ArrayList;
-import javax.vecmath.Vector3d;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,9 +10,10 @@ import lombok.ToString;
 /**
  *
  * @author stephan
+ * @param <T>
  */
 @Getter @Setter @ToString
-public class Contour {
+public class Contour<T> {
 	private String name;
-	private ArrayList<Vector3d> points;
+	private ArrayList<T> points;
 }

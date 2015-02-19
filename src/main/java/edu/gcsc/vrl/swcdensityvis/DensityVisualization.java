@@ -28,7 +28,8 @@ public class DensityVisualization implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@OutputInfo(style = "shaped3darraycustom")
+	@OutputInfo(style = "shaped3darraycustom",
+	            typeName = " ")
 	public Shape3DArray visualizeDensity(
 		@ParamGroupInfo(group = "Visualization|false|no description")
 		@ParamInfo(name = "Density") DensityResult density,
@@ -42,6 +43,8 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") boolean dTransparency,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry") File[] swcFiles,
+		@ParamGroupInfo(group = "Geometry|false|no description")
+		@ParamInfo(name = "Representation", style="selection", options="value=[\"cylinder\", \"schematic\"]") String representation,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry Color", style = "color-chooser", options = "value=java.awt.Color.magenta") Color gColor,
 		@ParamGroupInfo(group = "Geometry|false|no description")
@@ -82,7 +85,14 @@ public class DensityVisualization implements java.io.Serializable {
 		densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(selection));
 		visualizer.setContext(densityComputationContext);
 
-		XMLDensityVisualizer xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultImpl());
+		XMLDensityVisualizer xmlDensityVisualizer;
+		
+		if (representation.equalsIgnoreCase("CYLINDER")) {
+			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
+		} else {
+			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultImpl());
+		}
+		
 		xmlDensityVisualizer.setContext(densityComputationContext);
 		/**
 		 * @todo setFiles could also be moved in the interface

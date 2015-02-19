@@ -18,7 +18,7 @@ public class XMLDensityUtil {
 	 *
 	 * @return
 	 */
-	public static XMLDensityVisualizerImpl getImpl() {
+	public static XMLDensityVisualizerImplementable getImpl() {
 		return new XMLDensityVisualizerImpl();
 	}
 
@@ -27,7 +27,7 @@ public class XMLDensityUtil {
 	 * @param choice
 	 * @return
 	 */
-	public static XMLDensityVisualizerImpl getImpl(String choice) {
+	public static XMLDensityVisualizerImplementable getImpl(String choice) {
 		if (choice.equalsIgnoreCase("DEFAULT")) {
 			return new XMLDensityVisualizerImpl();
 		} else {
@@ -39,7 +39,15 @@ public class XMLDensityUtil {
 	 * 
 	 * @return 
 	 */
-	public static XMLDensityVisualizerImpl getDefaultImpl() {
+	public static XMLDensityVisualizerImplementable getDefaultImpl() {
 		return new XMLDensityVisualizerImpl();
+	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	public static XMLDensityVisualizerImplementable getDefaultDiameterImpl() {
+		return new XMLDensityVisualizerDiameterImpl();
 	}
 }

@@ -52,7 +52,7 @@ public class ImportNeuroLucidaXML {
 	/**
 	 * @brief process_branches
 	 */
-	private void process_branches(List<Element> branches, Tree t, Vector3d point_before_branch) {
+	private void process_branches(List<Element> branches, Tree<Vector3d> t, Vector3d point_before_branch) {
 		ArrayList<Edge<Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
 
 		for (Element branch : branches) {
@@ -111,12 +111,12 @@ public class ImportNeuroLucidaXML {
 	/**
 	 * @brief process tress
 	 */
-	private HashMap<String, Tree> process_trees(Element rootNode) {
+	private HashMap<String, Tree<Vector3d>> process_trees(Element rootNode) {
 		ArrayList< Edge< Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
-		HashMap<String, Tree> trees = new HashMap<String, Tree>();
+		HashMap<String, Tree<Vector3d>> trees = new HashMap<String, Tree<Vector3d>>();
 
 		for (Element node : rootNode.getChildren("tree")) {
-			Tree t = new Tree();
+			Tree<Vector3d> t = new Tree<Vector3d>();
 			String name = node.getAttributeValue("type");
 			t.setType(node.getAttributeValue("type"));
 			List<Element> points = node.getChildren("point");
@@ -161,10 +161,10 @@ public class ImportNeuroLucidaXML {
 	 * @brief process contours
 	 * @param rootNode
 	 */
-	private HashMap<String, Contour> process_contours(Element rootNode) {
-		HashMap<String, Contour> contours = new HashMap<String, Contour>();
+	private HashMap<String, Contour<Vector3d>> process_contours(Element rootNode) {
+		HashMap<String, Contour<Vector3d>> contours = new HashMap<String, Contour<Vector3d>>();
 		for (Element node : rootNode.getChildren("contour")) {
-			Contour c = new Contour();
+			Contour<Vector3d> c = new Contour<Vector3d>();
 			String contourName = node.getAttributeValue("name");
 			c.setName(node.getAttributeValue("name"));
 			ArrayList<Vector3d> points = new ArrayList<Vector3d>();

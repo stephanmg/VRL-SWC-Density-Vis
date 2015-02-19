@@ -11,13 +11,13 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
 
 	@SuppressWarnings("ProtectedField")
-	protected XMLDensityVisualizerImpl impl;
+	protected XMLDensityVisualizerImplementable impl;
 
 	/**
 	 *
 	 * @param impl
 	 */
-	public XMLDensityVisualizerBase(XMLDensityVisualizerImpl impl) {
+	public XMLDensityVisualizerBase(XMLDensityVisualizerImplementable impl) {
 		this.impl = impl;
 	}
 
@@ -25,7 +25,7 @@ public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
 	 *
 	 * @param impl
 	 */
-	public void setImpl(XMLDensityVisualizerImpl impl) {
+	public void setImpl(XMLDensityVisualizerImplementable impl) {
 		this.impl = impl;
 	}
 
@@ -33,7 +33,7 @@ public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
 	 *
 	 * @return
 	 */
-	public XMLDensityVisualizerImpl getImpl() {
+	public XMLDensityVisualizerImplementable getImpl() {
 		return this.impl;
 	}
 }
