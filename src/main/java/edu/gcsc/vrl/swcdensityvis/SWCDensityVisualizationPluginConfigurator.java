@@ -41,13 +41,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
  * @brief plugin configurator
  */
 public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurator {
-    private File templateProjectSrc;
-    private File templateProjectSrc2;
+
+	private File templateProjectSrc;
+	private File templateProjectSrc2;
+	private File templateProjectSrc3;
+
 	public SWCDensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
 		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.3"));
@@ -62,7 +65,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 
 		// specify dependencies
 		addDependency(new PluginDependency("VRL", "0.4.2.7", VersionInfo.UNDEFINED));
-        	addDependency(new PluginDependency("VRL-JFreeChart", "0.2.4", VersionInfo.UNDEFINED));
+		addDependency(new PluginDependency("VRL-JFreeChart", "0.2.4", VersionInfo.UNDEFINED));
 		addDependency(new PluginDependency("Density-Vis-Plugin", "0.2", VersionInfo.UNDEFINED));
 	}
 
@@ -103,109 +106,154 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 		// nothing to unregister
 	}
 
-	 @Override
-    public void install(InitPluginAPI iApi) {
-        // ensure template projects are updated
-        new File(iApi.getResourceFolder(), "template-01.vrlp").delete();
-	new File(iApi.getResourceFolder(), "template-02.vrlp").delete();
-    }
-	
+	@Override
+	public void install(InitPluginAPI iApi) {
+		// ensure template projects are updated
+		new File(iApi.getResourceFolder(), "template-01.vrlp").delete();
+		new File(iApi.getResourceFolder(), "template-02.vrlp").delete();
+		new File(iApi.getResourceFolder(), "template-03.vrlp").delete();
+	}
 
 	@Override
- 	   public void init(InitPluginAPI iApi) {
+	public void init(InitPluginAPI iApi) {
 
-        CompletionUtil.registerClassesFromJar(
-                VJarUtil.getClassLocation(SWCDensityVisualizationPluginConfigurator.class));
-        
-        initTemplateProject(iApi);
-    }
-    
-	
-	private void initTemplateProject(InitPluginAPI iApi) {
-        templateProjectSrc = new File(iApi.getResourceFolder(), "template-01.vrlp");
-        templateProjectSrc2 = new File(iApi.getResourceFolder(), "template-02.vrlp");
+		CompletionUtil.registerClassesFromJar(
+			VJarUtil.getClassLocation(SWCDensityVisualizationPluginConfigurator.class));
 
-        if (!templateProjectSrc.exists()) {
-            saveProjectTemplate();
-        }
-	
-
-        if (!templateProjectSrc2.exists()) {
-            saveProjectTemplate2();
-        }
-
-        iApi.addProjectTemplate(new ProjectTemplate() {
-
-            @Override
-            public String getName() {
-                return "SWC-Density-Vis - Template 1";
-            }
-
-            @Override
-            public File getSource() {
-                return templateProjectSrc;
-            }
-
-            @Override
-            public String getDescription() {
-                return "SWC-Density-Vis Template Project 1";
-            }
-
-            @Override
-            public BufferedImage getIcon() {
-                return null;
-            }
-        });
-	
-	iApi.addProjectTemplate(new ProjectTemplate() {
-	      @Override
-            public String getName() {
-                return "SWC-Density-Vis - Template 2";
-            }
-
-            @Override
-            public File getSource() {
-                return templateProjectSrc2;
-            }
-
-            @Override
-            public String getDescription() {
-                return "SWC-Density-Vis Template Project 2";
-            }
-
-            @Override
-            public BufferedImage getIcon() {
-                return null;
-            }
-        });
+		initTemplateProject(iApi);
 	}
-	
-	 private void saveProjectTemplate() {
-        InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
-                "/edu/gcsc/vrl/swcdensityvis/resources/projects/template-01.vrlp");
-        try {
-            IOUtil.saveStreamToFile(in, templateProjectSrc);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(VRLPlugin.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(VRLPlugin.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        }
-    }
 
-	 private void saveProjectTemplate2() {
-        InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
-                "/edu/gcsc/vrl/swcdensityvis/resources/projects/template-02.vrlp");
-        try {
-            IOUtil.saveStreamToFile(in, templateProjectSrc2);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(VRLPlugin.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(VRLPlugin.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        }
-    }
+	private void initTemplateProject(InitPluginAPI iApi) {
+		templateProjectSrc = new File(iApi.getResourceFolder(), "template-01.vrlp");
+		templateProjectSrc2 = new File(iApi.getResourceFolder(), "template-02.vrlp");
+		templateProjectSrc3 = new File(iApi.getResourceFolder(), "template-03.vrlp");
 
+		if (!templateProjectSrc.exists()) {
+			saveProjectTemplate();
+		}
+
+		if (!templateProjectSrc2.exists()) {
+			saveProjectTemplate2();
+		}
+
+		if (!templateProjectSrc3.exists()) {
+			saveProjectTemplate3();
+		}
+
+		iApi.addProjectTemplate(new ProjectTemplate() {
+
+			@Override
+			public String getName() {
+				return "SWC-Density-Vis - Template 1 (SWC)";
+			}
+
+			@Override
+			public File getSource() {
+				return templateProjectSrc;
+			}
+
+			@Override
+			public String getDescription() {
+				return "SWC-Density-Vis Template Project 1 - This"
+					+ "tests the basic SWC density visualization"
+					+ "as well as the line-graph geometry is visualized";
+			}
+
+			@Override
+			public BufferedImage getIcon() {
+				return null;
+			}
+		});
+
+		iApi.addProjectTemplate(new ProjectTemplate() {
+			@Override
+			public String getName() {
+				return "SWC-Density-Vis - Template 2 (Matrices)";
+			}
+
+			@Override
+			public File getSource() {
+				return templateProjectSrc2;
+			}
+
+			@Override
+			public String getDescription() {
+				return "SWC-Density-Vis Template Project 2 - This"
+					+ "tests the various matrix/matrix and "
+					+ "matrix/vector operations and visualization"
+					+ "of the previous";
+			}
+
+			@Override
+			public BufferedImage getIcon() {
+				return null;
+			}
+		});
+		iApi.addProjectTemplate(new ProjectTemplate() {
+			@Override
+			public String getName() {
+				return "SWC-Density-Vis - Template 3 (XML)";
+			}
+
+			@Override
+			public File getSource() {
+				return templateProjectSrc3;
+			}
+
+			@Override
+			public String getDescription() {
+				return "SWC-Density-Vis Template Project 3 - This"
+					+ " tests the XML geometry file import and"
+					+ " density visualization and visualization"
+					+ " of the neuronal topology/morphology";
+			}
+
+			@Override
+			public BufferedImage getIcon() {
+				return null;
+			}
+		});
+	}
+
+	private void saveProjectTemplate() {
+		InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
+			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-01.vrlp");
+		try {
+			IOUtil.saveStreamToFile(in, templateProjectSrc);
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(VRLPlugin.class.getName()).
+				log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(VRLPlugin.class.getName()).
+				log(Level.SEVERE, null, ex);
+		}
+	}
+
+	private void saveProjectTemplate2() {
+		InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
+			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-02.vrlp");
+		try {
+			IOUtil.saveStreamToFile(in, templateProjectSrc2);
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(VRLPlugin.class.getName()).
+				log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(VRLPlugin.class.getName()).
+				log(Level.SEVERE, null, ex);
+		}
+	}
+
+	private void saveProjectTemplate3() {
+		InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
+			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-03.vrlp");
+		try {
+			IOUtil.saveStreamToFile(in, templateProjectSrc3);
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(VRLPlugin.class.getName()).
+				log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(VRLPlugin.class.getName()).
+				log(Level.SEVERE, null, ex);
+		}
+	}
 }

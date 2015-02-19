@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 
 	/**
-	 * 
+	 *
 	 * @param color
 	 * @param scalingFactor
 	 */
@@ -24,23 +24,24 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 		impl.setLineGraphColor(color);
 		impl.setScalingFactor(scalingFactor);
 	}
+
 	/**
-	 * 
-	 * @param impl 
+	 *
+	 * @param impl
 	 */
 	public XMLDensityVisualizer(XMLDensityVisualizerImpl impl) {
 		super(impl);
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public XMLDensityVisualizer() {
 		super(XMLDensityUtil.getDefaultImpl());
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public void parse() {
@@ -48,7 +49,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public void parseStack() {
@@ -56,7 +57,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public void getDimension() {
@@ -64,17 +65,16 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
 	public void getBoundingBox() {
 		this.impl.getBoundingBox();
 	}
 
-
 	/**
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 */
 	@Override
 	public Shape3DArray calculateGeometry() {
@@ -96,13 +96,13 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	public void setContext(DensityComputationContext context) {
 		this.impl.setContext(context);
 	}
-	
+
 	/**
-	 * 
-	 * @param files 
+	 *
+	 * @param files
 	 */
 	public void setFiles(ArrayList<File> files) {
 		this.impl.setFiles(files);
 	}
-	
+
 }

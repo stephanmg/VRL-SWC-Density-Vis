@@ -4,12 +4,6 @@ package edu.gcsc.vrl.swcdensityvis;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
-import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
-import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
@@ -19,8 +13,6 @@ import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @brief computes the density
@@ -34,13 +26,13 @@ public class ComputeDensity implements java.io.Serializable {
 	@OutputInfo(
 		style = "multi-out",
 		elemNames = {"Density", "Geometry"},
-		elemTypes = { DensityResult.class, File[].class }
-		)
+		elemTypes = {DensityResult.class, File[].class}
+	)
 	public Object[] compute(
 		//[\"swc\"]; 
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Folder|true|Input folder")
 		@ParamInfo(name = "Input folder", typeName = "Location of SWC files", style = "load-folder-dialog", options = "endings=[\"swc\", \"xml\", \"asc\"]; description=\"SWC, XML or ASC files (.swc, .xml, .asc)\"") File folder,
-		@ParamInfo(name = "File type", typeName = "Filetype", style="selection", options="value=[\"SWC\", \"XML\", \"ASC\"]") String selection,
+		@ParamInfo(name = "File type", typeName = "Filetype", style = "selection", options = "value=[\"SWC\", \"XML\", \"ASC\"]") String selection,
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Dimensions|true|Dimensions")
 		@ParamInfo(name = "Width", typeName = "Width of sampling cube", style = "slider", options = "min=1;max=100") int width,
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Dimensions|true|Dimensions")
@@ -52,30 +44,30 @@ public class ComputeDensity implements java.io.Serializable {
 	) {
 		File[] swcFiles = null;
 		swcFiles = folder.listFiles(new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					return name.endsWith(".swc") ||
-				               name.endsWith(".xml") ||
-					       name.endsWith(".asc");
-				}
-			});
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".swc")
+					|| name.endsWith(".xml")
+					|| name.endsWith(".asc");
+			}
+		});
 
 		Density density = null; ///= xmlDensityVisualizer.computeDensity();
 		//Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();
 		double dim = 10;
 		//xmlDensityVisualizer.getDimension();
 		//xmlDensityVisualizer.getBoundingBox();
-		
+
 		/// density must respect new rescaled geometry and therefore fit in cuboid
 		//Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
 		//double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
 		/* @todo the vta is way to big, since the geometry/density get's rescaled with the VisUtil.
-		         we could however rescale the cube too, or we just omit the cube for rendering,
-			since it isn't necessary in fact...
+		 we could however rescale the cube too, or we just omit the cube for rendering,
+		 since it isn't necessary in fact...
 					
-		*/
-		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
+		 */
 		
+		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
 		return new Object[]{new DensityResult(density, vta), swcFiles};
 		// we could also fill the line graph geometry in the VTA array!!!
 	}
