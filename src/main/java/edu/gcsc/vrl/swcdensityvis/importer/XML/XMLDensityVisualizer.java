@@ -5,6 +5,7 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -14,6 +15,15 @@ import java.util.ArrayList;
  */
 public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 
+	/**
+	 * 
+	 * @param color
+	 * @param scalingFactor
+	 */
+	public void prepare(Color color, double scalingFactor) {
+		impl.setLineGraphColor(color);
+		impl.setScalingFactor(scalingFactor);
+	}
 	/**
 	 * 
 	 * @param impl 
@@ -94,5 +104,5 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	public void setFiles(ArrayList<File> files) {
 		this.impl.setFiles(files);
 	}
-
+	
 }

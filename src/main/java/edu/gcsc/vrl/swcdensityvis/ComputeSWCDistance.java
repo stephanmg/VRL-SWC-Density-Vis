@@ -22,7 +22,7 @@ public class ComputeSWCDistance implements java.io.Serializable {
 	)
 	
 	public Trajectory computeTraj(
-		@ParamInfo(name = "Density", typeName = "Density of the image (stack)", style = "default", options = "") DensityResult dens,
+		@ParamInfo(name = "Density", typeName = "Density of the image (stack)", style = "default", options = "") edu.gcsc.vrl.densityvis.DensityResult dens,
 		@ParamInfo(name = "Min Density", typeName = "Minimum density for visualization", style = "slider", options = "value=20;min=10;max=100;") int percentage) {
 
 		Iterable<Distance> distances
@@ -49,7 +49,7 @@ public class ComputeSWCDistance implements java.io.Serializable {
 		valueTypeName="Histogram"
 	)
 	public HistogramData computeHist(
-		@ParamInfo(name = "Density", style = "default", options = "") DensityResult dens,
+		@ParamInfo(name = "Density", style = "default", options = "") edu.gcsc.vrl.densityvis.DensityResult dens,
 		@ParamInfo(name = "Min Density", style = "slider", options = "value=10;min=1;max=100;") int percentage) {
 
 		Collection<Distance> distances

@@ -74,7 +74,9 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 			vapi.addComponent(SWCLoadStackComponent.class);
 			vapi.addComponent(ComputeSWCDensity.class);
 			vapi.addComponent(ComputeSWCDistance.class);
+			vapi.addComponent(ComputeDensity.class);
 			vapi.addComponent(SWCDensityVisualization.class);
+			vapi.addComponent(DensityVisualization.class);
 			vapi.addComponent(DenseMatrixMatrixTestComponent.class);
 			vapi.addComponent(DenseMatrixVectorTestComponent.class);
 			vapi.addComponent(DenseMatrixArrayTestComponent.class);
