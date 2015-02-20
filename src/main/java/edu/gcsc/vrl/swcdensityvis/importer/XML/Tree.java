@@ -19,4 +19,5 @@ public class Tree<T> {
 	private String type;
 	private ArrayList<Edge<T>> edges;
 	private Color color;
+	private String leaf;
 }

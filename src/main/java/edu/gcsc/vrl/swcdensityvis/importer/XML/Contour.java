@@ -18,4 +18,6 @@ public class Contour<T> {
 	private String name;
 	private ArrayList<T> points;
 	private Color color;
+	private boolean closed;
+	private String shape;
 }

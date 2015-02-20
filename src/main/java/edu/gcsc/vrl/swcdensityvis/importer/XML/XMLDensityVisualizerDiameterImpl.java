@@ -47,13 +47,14 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	private Density density;
 	private boolean isGeometryModified;
 	private final ArrayList<File> inputFiles = new ArrayList<File>();
-	private Color gColor = new Color(255, 255, 255);
+	private Color gColor = Color.WHITE;
 	private double SF = 1;
 
 	/**
 	 *
 	 * @param scalingFactor
 	 */
+	@Override
 	public void setScalingFactor(double scalingFactor) {
 		SF = scalingFactor;
 	}
@@ -62,6 +63,7 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	 *
 	 * @param files
 	 */
+	@Override
 	public void setFiles(ArrayList<File> files) {
 		this.inputFiles.addAll(files);
 	}
@@ -183,6 +185,8 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 			String color = node.getAttributeValue("color");
 			t.setColor(Color.decode(color));
 			t.setType(node.getAttributeValue("type"));
+			String leaf = node.getAttributeValue("leaf");
+			t.setLeaf(leaf);
 			List<Element> points = node.getChildren("point");
 			for (int i = 0; i < points.size() - 1; i++) {
 				edges.add(new Edge<Vector4d>(
@@ -227,20 +231,20 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	 * @todo respectively note: it seems to be the case that trees aren't nested!
 	 */
 	private HashMap<String, Tree<Vector4d>> process_trees(Element rootNode) {
-		HashMap<String, Tree<Vector4d>> trees = new HashMap<String, Tree<Vector4d>>();
+		HashMap<String, Tree<Vector4d>> trees_ = new HashMap<String, Tree<Vector4d>>();
 
 		int index = 0;
 		for (Element node : rootNode.getChildren("tree")) {
 			Tree<Vector4d> entry = process_tree(node);
-			trees.put(node.getAttributeValue("type") + " #" + index, entry) ;
+			trees_.put(node.getAttributeValue("type") + " #" + index, entry) ;
 			index++;
 		}
 		
-		for (Map.Entry<String, Tree<Vector4d>> entry : trees.entrySet()) {
+		for (Map.Entry<String, Tree<Vector4d>> entry : trees_.entrySet()) {
 			System.err.println("name of tree: " + entry.getKey());
 		}
 		
-		return trees;
+		return trees_;
 	}
 
 	/**
@@ -249,7 +253,7 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	 * @param rootNode
 	 */
 	private HashMap<String, Contour<Vector4d>> process_contours(Element rootNode) {
-		HashMap<String, Contour<Vector4d>> contours = new HashMap<String, Contour<Vector4d>>();
+		HashMap<String, Contour<Vector4d>> contours_ = new HashMap<String, Contour<Vector4d>>();
 		int index = 0;
 		for (Element node : rootNode.getChildren("contour")) {
 			Contour<Vector4d> c = new Contour<Vector4d>();
@@ -257,7 +261,11 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 			c.setColor(Color.decode(color));
 			String contourName = node.getAttributeValue("name");
 			c.setName(contourName);
-			c.setName(node.getAttributeValue("name"));
+			String shape = node.getAttributeValue("shape");
+			c.setName(shape);
+			String closed = node.getAttributeValue("closed");
+			c.setClosed(Boolean.valueOf(closed));
+			
 			ArrayList<Vector4d> points = new ArrayList<Vector4d>();
 			for (Element point : node.getChildren("point")) {
 				points.add(new Vector4d(SF * Double.parseDouble(point.getAttributeValue("x")),
@@ -267,14 +275,14 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 
 			}
 			c.setPoints(points);
-			contours.put(contourName + " # " + index, c);
+			contours_.put(contourName + " # " + index, c);
 			index++;
 			
 			for (Vector4d vec : points) {
 				System.out.println(vec);
 			}
 		}
-		return contours;
+		return contours_;
 	}
 
 	/**
