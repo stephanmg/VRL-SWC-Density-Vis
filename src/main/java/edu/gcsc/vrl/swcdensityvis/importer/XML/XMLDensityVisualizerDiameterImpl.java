@@ -8,7 +8,6 @@ import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFac
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
-import edu.gcsc.vrl.swcdensityvis.util.ColorUtil;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
@@ -19,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import javax.vecmath.Vector4d;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -39,6 +40,7 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
 	private final HashMap<String, HashMap<String, Contour<Vector4d>>> contours = new HashMap<String, HashMap<String, Contour<Vector4d>>>();
 	private final HashMap<String, HashMap<String, Tree<Vector4d>>> trees = new HashMap<String, HashMap<String, Tree<Vector4d>>>();
+	private final Random r = new Random(System.currentTimeMillis());
 
 	/// proxy members
 	private Shape3DArray lineGraphGeometry;
@@ -87,8 +89,15 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 			this.inputFiles.remove(0);
 			isGeometryModified = true;
 
-			System.err.println("Trees: " + this.trees.size());
-			System.err.println("Contours: " + this.contours.size());
+			/// output trees
+			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> entry : trees.entrySet()) {
+				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
+			}
+			
+			/// output contours
+			for (Map.Entry<String, HashMap<String, Contour<Vector4d>>> entry : contours.entrySet()) {
+				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+			}
 
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
@@ -160,16 +169,19 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 		}
 	}
 
-	/**
-	 * @brief process tress
-	 */
-	private HashMap<String, Tree<Vector4d>> process_trees(Element rootNode) {
-		ArrayList< Edge< Vector4d>> edges = new ArrayList<Edge<Vector4d>>();
-		HashMap<String, Tree<Vector4d>> trees = new HashMap<String, Tree<Vector4d>>();
 
-		for (Element node : rootNode.getChildren("tree")) {
+	/**
+	 * @brief process one tree
+	 * @param node
+	 * @return 
+	 */
+	private Tree<Vector4d> process_tree(Element node) {
+			ArrayList< Edge< Vector4d>> edges = new ArrayList<Edge<Vector4d>>();
 			Tree<Vector4d> t = new Tree<Vector4d>();
 			String name = node.getAttributeValue("type");
+			t.setType(name);
+			String color = node.getAttributeValue("color");
+			t.setColor(Color.decode(color));
 			t.setType(node.getAttributeValue("type"));
 			List<Element> points = node.getChildren("point");
 			for (int i = 0; i < points.size() - 1; i++) {
@@ -202,24 +214,49 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 			} else {
 				System.err.println("Tree has no branches!");
 			}
-			trees.put(name, t);
-
-			for (Edge<Vector4d> edge : trees.get(name).getEdges()) {
+			System.err.println("Name: " + name);
+			
+			/*for (Edge<Vector4d> edge : trees.get(name).getEdges()) {
 				System.err.println("from: " + edge.getFrom() + " to: " + edge.getTo());
-			}
+			}*/
+		return t;
+	}
+
+	/**
+	 * @brief process trees
+	 * @todo respectively note: it seems to be the case that trees aren't nested!
+	 */
+	private HashMap<String, Tree<Vector4d>> process_trees(Element rootNode) {
+		HashMap<String, Tree<Vector4d>> trees = new HashMap<String, Tree<Vector4d>>();
+
+		int index = 0;
+		for (Element node : rootNode.getChildren("tree")) {
+			Tree<Vector4d> entry = process_tree(node);
+			trees.put(node.getAttributeValue("type") + " #" + index, entry) ;
+			index++;
 		}
+		
+		for (Map.Entry<String, Tree<Vector4d>> entry : trees.entrySet()) {
+			System.err.println("name of tree: " + entry.getKey());
+		}
+		
 		return trees;
 	}
 
 	/**
 	 * @brief process contours
+	 * @todo respectively note: contours seem not to be allowed to be nested!
 	 * @param rootNode
 	 */
 	private HashMap<String, Contour<Vector4d>> process_contours(Element rootNode) {
 		HashMap<String, Contour<Vector4d>> contours = new HashMap<String, Contour<Vector4d>>();
+		int index = 0;
 		for (Element node : rootNode.getChildren("contour")) {
 			Contour<Vector4d> c = new Contour<Vector4d>();
+			String color = node.getAttributeValue("color");
+			c.setColor(Color.decode(color));
 			String contourName = node.getAttributeValue("name");
+			c.setName(contourName);
 			c.setName(node.getAttributeValue("name"));
 			ArrayList<Vector4d> points = new ArrayList<Vector4d>();
 			for (Element point : node.getChildren("point")) {
@@ -230,7 +267,9 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 
 			}
 			c.setPoints(points);
-			contours.put(contourName, c);
+			contours.put(contourName + " # " + index, c);
+			index++;
+			
 			for (Vector4d vec : points) {
 				System.out.println(vec);
 			}
@@ -295,15 +334,48 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	public Shape3DArray calculateGeometry() {
 		if (this.lineGraphGeometry == null || isGeometryModified) {
 			this.lineGraphGeometry = new Shape3DArray();
+			/// visualize trees!
 			for (HashMap<String, Tree<Vector4d>> ts : trees.values()) {
 				for (Tree<Vector4d> t : ts.values()) {
+					/// if more than one tree, assign random color for this tree!
+					/**
+					 * @todo probably we want a fixed color scheme for the compartments
+					 * @todo now we set the colors by xml file!
+					 */
+					/*if (ts.values().size() != 1) {
+						gColor = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
+					}*/
+					gColor = t.getColor();
+					
 					for (Edge<Vector4d> e : t.getEdges()) {
-						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 2);
+						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 8);
 						
 						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()),null, 1F, false, false, false).generateShape3DArray());
 					}
 				}
 			}
+			
+			/// visualize contours!
+			/**
+			 * @todo
+			 */
+			for (HashMap<String, Contour<Vector4d>> cs : contours.values()) {
+				for (Contour<Vector4d> con : cs.values()) {
+					gColor = con.getColor();
+					ArrayList<Vector4d> points = con.getPoints();
+					/**
+					 * @todo refactor to use edge instead of points
+					 */
+					for (int i = 0; i < points.size() - 1; i++) {
+						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i+1).x, points.get(i+1).y, points.get(i+1).z), points.get(i).w, points.get(i+1).w, 8);
+						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()),null, 1F, false, false, false).generateShape3DArray());
+						
+					}
+					
+				}
+				
+			}
+			
 		}
 		isGeometryModified = false;
 		return this.lineGraphGeometry;

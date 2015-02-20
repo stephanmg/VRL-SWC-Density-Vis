@@ -2,6 +2,7 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
+import java.awt.Color;
 import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,4 +17,5 @@ import lombok.ToString;
 public class Contour<T> {
 	private String name;
 	private ArrayList<T> points;
+	private Color color;
 }
