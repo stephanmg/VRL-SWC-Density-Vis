@@ -318,6 +318,10 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	@Override
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
+			/**
+			 * @todo the executeDensityComputation is required a data structure to be given,
+			 * i .e. in the case of edge density computation all edges
+			 */
 			this.density = context.executeDensityComputation();
 		}
 

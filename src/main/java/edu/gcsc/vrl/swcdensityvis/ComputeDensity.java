@@ -4,6 +4,10 @@ package edu.gcsc.vrl.swcdensityvis;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
@@ -52,6 +56,13 @@ public class ComputeDensity implements java.io.Serializable {
 			}
 		});
 
+		/*DensityVisualizableFactory factory = new DensityVisualizableFactory();
+		DensityVisualizable visualizer = factory.getDensityVisualizer(selection);
+		DensityComputationContext densityComputationContext = new DensityComputationContext();
+		densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(selection));
+		visualizer.setContext(densityComputationContext);
+		Density density = visualizer.computeDensity();*/
+		
 		Density density = null; ///= xmlDensityVisualizer.computeDensity();
 		//Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();
 		double dim = 10;
