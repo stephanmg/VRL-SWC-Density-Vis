@@ -323,11 +323,6 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
 			HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
-			local_data.put("foo", new ArrayList<Edge<Vector3f>>(Arrays.asList(new Edge<Vector3f>(new Vector3f(0, 0, 0), new Vector3f(2, 2, 2)))));
-			
-			//local_data.put("bar", new ArrayList<Edge<Vector3f>>(Arrays.asList(new Edge<Vector3f>(new Vector3f(0, 0, 0), new Vector3f(100, 100, 100)))));
-			//local_data.put("baz", new ArrayList<Edge<Vector3f>>(Arrays.asList(new Edge<Vector3f>(new Vector3f(30, 30, 30), new Vector3f(1, 1, 1)))));
-			/*
 			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
 				for (Map.Entry<String, Tree<Vector4d>> tree : cell.getValue().entrySet()) {
 					ArrayList<Edge<Vector3f>> points = new ArrayList<Edge<Vector3f>>();
@@ -341,7 +336,7 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 					local_data.put(tree.getKey(), points);
 				}
 				
-			}*/
+			}
 			XMLDensityData data = new XMLDensityData(local_data);
 			this.context.setDensityData(data);
 			this.density = context.executeDensityComputation();

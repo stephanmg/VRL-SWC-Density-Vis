@@ -26,11 +26,19 @@ public final class CuboidUtility {
 	 * @param step_z
 	 * @return 
 	 */
-	public static int[] getCuboidId(Cuboid bounding, Cuboid sample, float step_x, float step_y, float step_z) {
+	public static int[] getCuboidId(Cuboid bounding, Cuboid sample) {
+		if ( 
+			(sample.getX() + sample.getWidth()  > bounding.getX() + bounding.getWidth()) ||
+			(sample.getY() + sample.getHeight() > bounding.getY() + bounding.getHeight()) ||
+			(sample.getZ() + sample.getDepth()  > bounding.getZ() + bounding.getDepth())
+		) {
+			System.err.println("Sample box out of bounding box!");
+			return new int[] {0, 0, 0};
+		}
 		return new int[]{
-			(int) Math.abs((bounding.getX() + sample.getX() * step_x)),
-			(int) Math.abs((bounding.getY() + sample.getY() * step_y)),
-			(int) Math.abs((bounding.getZ() + sample.getZ() * step_z))
+			(int) Math.abs( (bounding.getX() + sample.getX())),
+			(int) Math.abs( (bounding.getY() + sample.getY())),
+			(int) Math.abs( (bounding.getZ() + sample.getZ()))
 		};
 
 	}
@@ -53,18 +61,20 @@ public final class CuboidUtility {
 	/**
 	 * @brief get bounding indices of of sample cube; with this indices we
 	 * can iterate over the whole geometry bounding in a sparse sense...
+	 * 
+	 * @note we don't allow for non-integer cube width, height or depth for now!
 	 *
-	 * @param bounding
-	 * @param min
-	 * @param max
-	 * @param step_x
-	 * @param step_y
-	 * @param step_z
+	 * @param bounding the bounding box of the geometry
+	 * @param min the minimum coordinates of the sampling cube
+	 * @param max the maximum coordinates of the sampling cube
+	 * @param step_x only necessary if we allow non-integer cube width
+	 * @param step_y only necessary if we allow non-integer cube height
+	 * @param step_z only necessary if we allow non-integer cube depth
 	 * @return
 	 */
-	public static Pair<int[], int[]> getSampleCuboidBounding(Cuboid bounding, Cuboid min, Cuboid max, float step_x, float step_y, float step_z) {
-		int[] lo = getCuboidId(bounding, new Cuboid(min.getX() - step_x, min.getY() - step_y, min.getZ() - step_z, min.getWidth() - step_x, min.getY() - step_y, min.getZ() - step_z), step_x, step_y, step_z);
-		int[] hi = getCuboidId(bounding, new Cuboid(max.getX() + step_x, max.getY() + step_y, max.getZ() + step_z, max.getWidth() + step_x, max.getY() + step_y, max.getZ() + step_z), step_x, step_y, step_z);
+	public static Pair<int[], int[]> getSampleCuboidBoundingIndices(Cuboid bounding, Cuboid min, Cuboid max, float step_x, float step_y, float step_z) {
+		int[] lo = getCuboidId(bounding, new Cuboid(min.getX(), min.getY(), min.getZ(), min.getWidth(), min.getY(), min.getZ()));
+		int[] hi = getCuboidId(bounding, new Cuboid(max.getX(), max.getY(), max.getZ(), max.getWidth(), max.getHeight(), max.getDepth()));
 		return new Pair<int[], int[]>(lo, hi);
 	}
 }

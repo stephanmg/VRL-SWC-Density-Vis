@@ -220,7 +220,7 @@ public final class SWCUtility {
 						Cuboid bounding_ee = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z);
 						Cuboid min = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, width, depth, height);
 						Cuboid max = new Cuboid(bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z, width, depth, height);
-						Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBounding(bounding_ee, min, max, width, depth, height);
+						Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBoundingIndices(bounding_ee, min, max, width, depth, height);
 
 						for (int i = bounding_ss.getFirst()[0]; i < bounding_ss.getSecond()[0]; i++) {
 							for (int j = bounding_ss.getFirst()[1]; j < bounding_ss.getSecond()[1]; j++) {

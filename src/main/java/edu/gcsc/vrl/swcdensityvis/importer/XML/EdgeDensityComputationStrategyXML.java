@@ -132,10 +132,11 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 			public HashMap<Integer, Float> call() {
 				for (Edge<Vector3f> edge : this.cell) {
 						Pair<Vector3f, Vector3f> bounding_e = EdgeUtility.getBounding(new Edge<Vector3f>(edge.getFrom(), edge.getTo()));
+						System.err.println("Bounding_edge: " + bounding_e.getFirst() + "; " + bounding_e.getSecond());
 						Cuboid bounding_ee = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z);
 						Cuboid min = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, width, depth, height);
 						Cuboid max = new Cuboid(bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z, width, depth, height);
-						Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBounding(bounding_ee, min, max, width, depth, height);
+						Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBoundingIndices(bounding_ee, min, max, width, depth, height);
 
 						for (int i = bounding_ss.getFirst()[0]; i < bounding_ss.getSecond()[0]; i++) {
 							for (int j = bounding_ss.getFirst()[1]; j < bounding_ss.getSecond()[1]; j++) {
@@ -145,7 +146,7 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 									float z = bounding_e.getFirst().z;
 
 									Integer real_index = i * j * k;
-									System.err.println("real_index: " + real_index);
+									///System.err.println("real_index: " + real_index);
 									float len = EdgeSegmentWithinCuboid(x, y, z, width, height, depth, edge.getFrom(), new ArrayList<Vector3f>(Arrays.asList(edge.getTo())));
 									if (len != 0) {
 										if (lengths.containsKey(real_index)) {

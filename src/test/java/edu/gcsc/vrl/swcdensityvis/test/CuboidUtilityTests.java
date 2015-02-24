@@ -8,6 +8,7 @@ package edu.gcsc.vrl.swcdensityvis.test;
 import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import edu.gcsc.vrl.swcdensityvis.util.CuboidUtility;
 import eu.mihosoft.vrl.reflection.Pair;
+import java.util.Arrays;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,10 +43,8 @@ public class CuboidUtilityTests {
 	
 	@Test
 	public void getSampleCuboidBounding() {
-		Pair<int[], int[]> res = CuboidUtility.getSampleCuboidBounding(new Cuboid(0f, 0f, 0f, 1.0f, 1.0f, 1.0f), new Cuboid(0f, 0f, 0f, 0.25f, 0.25f, 0.25f), new Cuboid(0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f), 0.25f, 0.25f, 0.25f);
-		/**
-		 * @todo implement
-		 */
+		Pair<int[], int[]> res = CuboidUtility.getSampleCuboidBoundingIndices(new Cuboid(0f, 0f, 0f, 10f, 10f, 10f), new Cuboid(2f, 2f, 2f, 0f, 0f, 0f), new Cuboid(5f, 5f, 5f, 0.2f, 0.2f, 0.2f), 0.2f, 0.2f, 0.2f);
+		System.err.println("res: " + Arrays.toString(res.getFirst()) + "; " + Arrays.toString(res.getSecond()));
 	}
 	
 	@Test
@@ -58,7 +57,7 @@ public class CuboidUtilityTests {
 	
 	@Test
 	public void getCuboidId() {
-		CuboidUtility.getCuboidId(new Cuboid(0f, 0f, 0f, 1.0f, 1.0f, 1.0f), new Cuboid(0f, 0f, 0f, 0.25f, 0.25f, 0.25f), 0.1f, 0.1f, 0.1f);
+	//	CuboidUtility.getCuboidId(new Cuboid(0f, 0f, 0f, 1.0f, 1.0f, 1.0f), new Cuboid(0f, 0f, 0f, 0.25f, 0.25f, 0.25f), 0.1f, 0.1f, 0.1f);
 		/**
 		 * @todo implement
 		 */

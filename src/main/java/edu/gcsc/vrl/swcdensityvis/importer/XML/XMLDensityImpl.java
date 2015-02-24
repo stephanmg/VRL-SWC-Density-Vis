@@ -54,7 +54,8 @@ final class XMLDensityImpl implements Density {
 		for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x += this.voxelWidth) {
 			for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y += this.voxelHeight) {
 				for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z += this.voxelDepth) {
-					System.err.println("xyz: " +  x * y * z);
+					index = (int) x * (int) y * (int) z;
+					///System.err.println("xyz: " + index);
 					if (density.containsKey(index)) {
 						/// note: density.get(index) in interval [0, 1] -> thus we multiply by 100, for making in the graphical representation available the density in percentage 0 to 100 %
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 1000));  /// note however, multiplication with 100 is not required!

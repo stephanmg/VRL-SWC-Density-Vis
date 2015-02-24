@@ -75,7 +75,8 @@ public class ComputeDensity implements java.io.Serializable {
 		 * @todo setFiles could also be moved in the interface
 		 */
 		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(swcFiles)));
-		xmlDensityVisualizer.prepare(Color.yellow, 0.01);
+		/// don't scale the geometry in the first place! only afterwards teh density vis and the geometry (line-graph) is rescaled for java3d vis!
+		xmlDensityVisualizer.prepare(Color.yellow, 1);
 
 		/**
 		 * @todo if we calculate geometry in the ComputeDensity it will
@@ -85,7 +86,8 @@ public class ComputeDensity implements java.io.Serializable {
 		 */
 		/// parse the files
 		xmlDensityVisualizer.parseStack();
-		Density density = xmlDensityVisualizer.computeDensity();
+	//	Density density = xmlDensityVisualizer.computeDensity();
+		Density density = null;
 		
 		//Density density = null; ///= xmlDensityVisualizer.computeDensity();
 		//Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();
