@@ -112,9 +112,9 @@ public class DensityVisualization implements java.io.Serializable {
 		result.addAll(xmlDensityVisualizer.calculateGeometry());
 
 		/// add the density
-    		result.addAll(VisUtil.density2Java3D(
+    		/*result.addAll(VisUtil.density2Java3D(
 		 density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, true));
-		 result.addAll( geom3d.generateShape3DArray() );
+		 result.addAll( geom3d.generateShape3DArray() );*/
 		/**
 		 * @todo geometry must also be scaled!!! (consistent to the density description!)
 		 */

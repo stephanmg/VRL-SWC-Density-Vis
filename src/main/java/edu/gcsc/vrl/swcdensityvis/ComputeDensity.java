@@ -85,7 +85,7 @@ public class ComputeDensity implements java.io.Serializable {
 		 * java3d!)
 		 */
 		/// parse the files
-		xmlDensityVisualizer.parseStack();
+		//xmlDensityVisualizer.parseStack();
 	//	Density density = xmlDensityVisualizer.computeDensity();
 		Density density = null;
 		
