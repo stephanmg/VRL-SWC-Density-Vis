@@ -27,6 +27,10 @@ public class DensityComputationContext {
 	public Density executeDensityComputation() {
 		return this.densityComputationStrategy.computeDensity();
 	}
+	
+	public void setDensityData(DensityData data) {
+		this.densityComputationStrategy.setDensityData(data);
+	}
 
 	/**
 	 *

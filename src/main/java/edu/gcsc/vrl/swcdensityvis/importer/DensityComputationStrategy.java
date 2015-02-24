@@ -10,4 +10,5 @@ import edu.gcsc.vrl.densityvis.Density;
  */
 public interface DensityComputationStrategy {
 	Density computeDensity();
+	void setDensityData(DensityData data);
 }

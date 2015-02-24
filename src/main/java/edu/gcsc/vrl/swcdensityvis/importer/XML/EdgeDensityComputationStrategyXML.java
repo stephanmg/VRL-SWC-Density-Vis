@@ -6,6 +6,7 @@ import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.VoxelSet;
 import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.util.CuboidUtility;
@@ -144,6 +145,7 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 									float z = bounding_e.getFirst().z;
 
 									Integer real_index = i * j * k;
+									System.err.println("real_index: " + real_index);
 									float len = EdgeSegmentWithinCuboid(x, y, z, width, height, depth, edge.getFrom(), new ArrayList<Vector3f>(Arrays.asList(edge.getTo())));
 									if (len != 0) {
 										if (lengths.containsKey(real_index)) {
@@ -221,5 +223,11 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 			System.err.println(e);
 		}
 		return new XMLDensityImpl(vals, bounding, (int) width, (int) height, (int) depth);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void setDensityData(DensityData data) {
+		this.cells = (HashMap<String, ArrayList<Edge<Vector3f>>>) data.getDensityData();
 	}
 }

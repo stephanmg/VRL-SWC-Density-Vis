@@ -4,6 +4,7 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.Color;
 import java.io.File;
@@ -103,6 +104,11 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	 */
 	public void setFiles(ArrayList<File> files) {
 		this.impl.setFiles(files);
+	}
+
+	@Override
+	public void setDensityData(DensityData data) {
+		this.impl.setDensityData(data);
 	}
 
 }

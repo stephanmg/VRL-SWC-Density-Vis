@@ -3,6 +3,7 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 
 import edu.gcsc.vrl.densityvis.Density;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.util.ArrayList;
 
 /**
  * @brief provide default density vizualizer implementation
@@ -35,6 +36,8 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public Density computeDensity() {
+		DefaultDensityData data = new DefaultDensityData();
+		this.context.setDensityData(data);
 		return context.executeDensityComputation();
 	}
 
@@ -47,6 +50,11 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 	@Override
 	public void setContext(DensityComputationContext context) {
 		this.context = context;
+	}
+
+	@Override
+	public void setDensityData(DensityData data) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 }

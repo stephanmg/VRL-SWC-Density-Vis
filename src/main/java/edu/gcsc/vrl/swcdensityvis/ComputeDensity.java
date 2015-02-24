@@ -8,6 +8,8 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
@@ -15,8 +17,11 @@ import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
+import java.awt.Color;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @brief computes the density
@@ -56,14 +61,33 @@ public class ComputeDensity implements java.io.Serializable {
 			}
 		});
 
-		/*DensityVisualizableFactory factory = new DensityVisualizableFactory();
+		DensityVisualizableFactory factory = new DensityVisualizableFactory();
 		DensityVisualizable visualizer = factory.getDensityVisualizer(selection);
 		DensityComputationContext densityComputationContext = new DensityComputationContext();
 		densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(selection));
 		visualizer.setContext(densityComputationContext);
-		Density density = visualizer.computeDensity();*/
+
+		XMLDensityVisualizer xmlDensityVisualizer;
+		xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 		
-		Density density = null; ///= xmlDensityVisualizer.computeDensity();
+		xmlDensityVisualizer.setContext(densityComputationContext);
+		/**
+		 * @todo setFiles could also be moved in the interface
+		 */
+		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(swcFiles)));
+		xmlDensityVisualizer.prepare(Color.yellow, 0.01);
+
+		/**
+		 * @todo if we calculate geometry in the ComputeDensity it will
+		 * get cached somehow! (this is by our implementation as this is
+		 * expensive, but then leads here to multiple parent branch in
+		 * java3d!)
+		 */
+		/// parse the files
+		xmlDensityVisualizer.parseStack();
+		Density density = xmlDensityVisualizer.computeDensity();
+		
+		//Density density = null; ///= xmlDensityVisualizer.computeDensity();
 		//Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();
 		double dim = 10;
 		//xmlDensityVisualizer.getDimension();

@@ -29,4 +29,10 @@ public class DefaultDensityComputation implements DensityComputationStrategy {
 		double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
 		return density;
 	}
+
+	@Override
+	public void setDensityData(DensityData data) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
 }

@@ -14,6 +14,7 @@ import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
@@ -58,12 +59,11 @@ public class DensityVisualization implements java.io.Serializable {
 		/// the Shape3DArray to visualize
 		Shape3DArray result = new Shape3DArray();
 
-		/*
 		 VGeometry3D geom3d = new VGeometry3D(
 		 density.getGeometry(),
 		 new Color( mColor.getRed(), mColor.getGreen(), mColor.getBlue(), 255 - mTransparency),
 		 null,1F,false, false, mTransparency > 0);
-		*/
+		 
 		int transparencyVal = 254;
 
 		if (dTransparency) {
@@ -112,9 +112,9 @@ public class DensityVisualization implements java.io.Serializable {
 		result.addAll(xmlDensityVisualizer.calculateGeometry());
 
 		/// add the density
-    		//result.addAll(VisUtil.density2Java3D(
-		// density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, true));
-		// result.addAll( geom3d.generateShape3DArray() );
+    		result.addAll(VisUtil.density2Java3D(
+		 density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, true));
+		 result.addAll( geom3d.generateShape3DArray() );
 		/**
 		 * @todo geometry must also be scaled!!! (consistent to the density description!)
 		 */

@@ -53,11 +53,11 @@ public final class DensityVisualizableFactory {
 	 */
 	private DensityVisualizable create(String visualizerType) {
 		if (visualizerType.equalsIgnoreCase("SWC")) {
-			return new XMLDensityVisualizer();
+			return new SWCDensityVisualizer();
 		} else if (visualizerType.equalsIgnoreCase("ASC")) {
 			return new ASCDensityVisualizer();
 		} else if (visualizerType.equalsIgnoreCase("XML")) {
-			return new SWCDensityVisualizer();
+			return new XMLDensityVisualizer();
 		} else {
 			return new DefaultDensityVisualizer();
 		}

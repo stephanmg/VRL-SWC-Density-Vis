@@ -7,7 +7,9 @@ import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.importer.XMLDensityData;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
@@ -16,10 +18,12 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4d;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -318,10 +322,28 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	@Override
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
-			/**
-			 * @todo the executeDensityComputation is required a data structure to be given,
-			 * i .e. in the case of edge density computation all edges
-			 */
+			HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
+			local_data.put("foo", new ArrayList<Edge<Vector3f>>(Arrays.asList(new Edge<Vector3f>(new Vector3f(0, 0, 0), new Vector3f(2, 2, 2)))));
+			
+			//local_data.put("bar", new ArrayList<Edge<Vector3f>>(Arrays.asList(new Edge<Vector3f>(new Vector3f(0, 0, 0), new Vector3f(100, 100, 100)))));
+			//local_data.put("baz", new ArrayList<Edge<Vector3f>>(Arrays.asList(new Edge<Vector3f>(new Vector3f(30, 30, 30), new Vector3f(1, 1, 1)))));
+			/*
+			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
+				for (Map.Entry<String, Tree<Vector4d>> tree : cell.getValue().entrySet()) {
+					ArrayList<Edge<Vector3f>> points = new ArrayList<Edge<Vector3f>>();
+					for (Edge<Vector4d> vec : tree.getValue().getEdges()) {
+						Vector4d from = vec.getFrom();
+						Vector4d to = vec.getTo();
+						points.add(new Edge<Vector3f>(
+							new Vector3f( (float) from.x, (float) from.y, (float) from.z),
+							new Vector3f( (float) to.x, (float) to.y, (float) to.z)));
+					}
+					local_data.put(tree.getKey(), points);
+				}
+				
+			}*/
+			XMLDensityData data = new XMLDensityData(local_data);
+			this.context.setDensityData(data);
 			this.density = context.executeDensityComputation();
 		}
 
@@ -400,6 +422,11 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	@Override
 	public void setContext(DensityComputationContext densityComputationContext) {
 		context = densityComputationContext;
+	}
+
+	@Override
+	public void setDensityData(DensityData data) {
+		this.context.setDensityData(data);
 	}
 
 }

@@ -7,7 +7,9 @@ import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.importer.XMLDensityData;
 import edu.gcsc.vrl.swcdensityvis.util.ColorUtil;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.Color;
@@ -22,6 +24,7 @@ import javax.media.j3d.LineArray;
 import javax.media.j3d.Shape3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -268,6 +271,8 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	@Override
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
+			XMLDensityData data = new XMLDensityData(new HashMap<String, ArrayList<Edge<Vector3f>>>());
+			this.context.setDensityData(data);
 			this.density = context.executeDensityComputation();
 		}
 
@@ -316,6 +321,11 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	@Override
 	public void setContext(DensityComputationContext densityComputationContext) {
 		context = densityComputationContext;
+	}
+
+	@Override
+	public void setDensityData(DensityData data) {
+		this.context.setDensityData(data);
 	}
 
 }

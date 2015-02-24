@@ -4,6 +4,7 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.util.ArrayList;
 
 /**
  *
@@ -46,4 +47,10 @@ public class SWCDensityVisualizer implements DensityVisualizable {
 	public void setContext(DensityComputationContext densityComputationContext) {
 		defaultDensityVisualizer.setContext(densityComputationContext);
 	}
+
+	@Override
+	public void setDensityData(DensityData data) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
 }
