@@ -10,6 +10,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
+import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
@@ -42,6 +43,10 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "Density Color 1", style = "color-chooser", options = "value=java.awt.Color.red") Color dColorOne,
 		@ParamGroupInfo(group = "Visualization")
 		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") boolean dTransparency,
+
+		@ParamGroupInfo(group = "Visualization")
+		@ParamInfo(name = "Visible", style="default", options="value=true") boolean bVisibleDensity,
+
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry") File[] swcFiles,
 		@ParamGroupInfo(group = "Geometry|false|no description")
@@ -53,7 +58,10 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") Color mColor,
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "") int mTransparency
+		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "") int mTransparency,
+
+		@ParamGroupInfo(group = "Geometry")
+		@ParamInfo(name = "Visible", style="default", options="value=true") boolean bVisibleGeometry
 	) {
 
 		/// the Shape3DArray to visualize
@@ -106,15 +114,22 @@ public class DensityVisualization implements java.io.Serializable {
 		 * expensive, but then leads here to multiple parent branch in
 		 * java3d!)
 		 */
-		/// parse the files
-		xmlDensityVisualizer.parseStack();
-		/// add line graph geometry 
-		result.addAll(xmlDensityVisualizer.calculateGeometry());
+		
+		/// add the geometry if we want to visualize
+		if (bVisibleGeometry) {
+			/// parse the files
+			xmlDensityVisualizer.parseStack();
+			/// add line graph geometry 
+			result.addAll(xmlDensityVisualizer.calculateGeometry());
+		}
 
-		/// add the density
-    		result.addAll(VisUtil.scaleDensity2Java3D(
-		 density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, 0.01));
-		 result.addAll( geom3d.generateShape3DArray() );
+		/// add the density if we want to visualize
+		if (bVisibleDensity) {
+    			result.addAll(VisUtil.scaleDensity2Java3D(
+			density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, 0.01));
+			result.addAll( geom3d.generateShape3DArray() );
+		}
+		
 		/**
 		 * @todo geometry must also be scaled!!! (consistent to the density description!)
 		 */
