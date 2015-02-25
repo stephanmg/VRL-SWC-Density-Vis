@@ -223,7 +223,7 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 		} catch (InterruptedException e) {
 			System.err.println(e);
 		}
-		return new XMLDensityImpl(vals, bounding, (int) width, (int) height, (int) depth);
+		return new XMLDensityEdgeImpl(vals, bounding, (int) width, (int) height, (int) depth);
 	}
 
 	@Override

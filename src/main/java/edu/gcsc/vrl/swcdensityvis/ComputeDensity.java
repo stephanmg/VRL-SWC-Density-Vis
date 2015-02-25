@@ -8,6 +8,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.TreeDensityComputationStrategyXML;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
@@ -70,7 +71,7 @@ public class ComputeDensity implements java.io.Serializable {
 		XMLDensityVisualizer xmlDensityVisualizer;
 		xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 		
-		xmlDensityVisualizer.setContext(densityComputationContext);
+		xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML()));
 		/**
 		 * @todo setFiles could also be moved in the interface
 		 */
@@ -85,9 +86,9 @@ public class ComputeDensity implements java.io.Serializable {
 		 * java3d!)
 		 */
 		/// parse the files
-		//xmlDensityVisualizer.parseStack();
-	//	Density density = xmlDensityVisualizer.computeDensity();
-		Density density = null;
+		xmlDensityVisualizer.parseStack();
+		Density density = xmlDensityVisualizer.computeDensity();
+		//Density density = null;
 		
 		//Density density = null; ///= xmlDensityVisualizer.computeDensity();
 		//Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();

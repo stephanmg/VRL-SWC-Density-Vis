@@ -19,7 +19,7 @@ import javax.vecmath.Vector3f;
  * @brief Density implementation for internal usage
  * @author stephan
  */
-final class XMLDensityImpl implements Density {
+final class XMLDensityEdgeImpl implements Density {
 	/// the output voxels
 	private final ArrayList<WritableVoxel> voxels = new ArrayList<WritableVoxel>();
 	private final int voxelWidth, voxelHeight, voxelDepth;
@@ -34,7 +34,7 @@ final class XMLDensityImpl implements Density {
 	 * @param depth
 	 * @param choice
 	 */
-	public XMLDensityImpl(HashMap<Integer, Float> density, Pair<Vector3f, Vector3f> bounding, int voxelWidth, int voxelHeight, int voxelDepth) {
+	public XMLDensityEdgeImpl(HashMap<Integer, Float> density, Pair<Vector3f, Vector3f> bounding, int voxelWidth, int voxelHeight, int voxelDepth) {
 		this.density = density;
 		this.bounding = bounding;
 		this.voxelWidth = voxelWidth;
@@ -54,6 +54,10 @@ final class XMLDensityImpl implements Density {
 		for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x += this.voxelWidth) {
 			for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y += this.voxelHeight) {
 				for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z += this.voxelDepth) {
+					/// is the index handling correct here?
+					/**
+					 * @todo see above
+					 */
 					index = (int) x * (int) y * (int) z;
 					///System.err.println("xyz: " + index);
 					if (density.containsKey(index)) {
