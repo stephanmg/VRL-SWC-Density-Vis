@@ -1,6 +1,6 @@
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.ComputeSWCDensity;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDensity;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

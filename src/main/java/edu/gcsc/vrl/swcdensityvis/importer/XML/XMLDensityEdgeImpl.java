@@ -6,14 +6,11 @@ import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.VoxelImpl;
 import edu.gcsc.vrl.densityvis.VoxelSet;
 import edu.gcsc.vrl.densityvis.WritableVoxel;
-import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
-import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.vecmath.Vector3f;
-
 
 /**
  * @brief Density implementation for internal usage
@@ -56,7 +53,7 @@ final class XMLDensityEdgeImpl implements Density {
 				for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z += this.voxelDepth) {
 					/// is the index handling correct here?
 					/**
-					 * @todo see above
+					 * @todo see above, this is not correct in the edge strategy! => wrong indices, thus many many indices to iterate over and thereby slow...
 					 */
 					index = (int) x * (int) y * (int) z;
 					///System.err.println("xyz: " + index);
@@ -74,6 +71,10 @@ final class XMLDensityEdgeImpl implements Density {
 		}
 	}
 
+	/**
+	 * 
+	 * @return 
+	 */
 	@Override
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
 	public List<? extends VoxelSet> getVoxels() {

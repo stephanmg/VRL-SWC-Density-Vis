@@ -2,6 +2,10 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCLoadStackComponent;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCDensityVisualization;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDistance;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDensity;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrix;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayTestComponent;
 import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayType;
@@ -45,17 +49,17 @@ import java.util.logging.Logger;
  * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
  * @brief plugin configurator
  */
-public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurator {
+public class DensityVisualizationPluginConfigurator extends VPluginConfigurator {
 
 	private File templateProjectSrc;
 	private File templateProjectSrc2;
 	private File templateProjectSrc3;
 
-	public SWCDensityVisualizationPluginConfigurator() {
+	public DensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
-		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.3"));
+		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.2"));
 
-		setDescription("Visualizes the density of a bunch of SWC files");
+		setDescription("Visualizes the density of a bunch of neuroanatomically-traced SWC/XML/ASC files");
 
 		setCopyrightInfo("SWCDensityVisualizationPlugin",
 			"(c) Stephan Grein", "www", "license", "license text");
@@ -117,8 +121,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 	@Override
 	public void init(InitPluginAPI iApi) {
 
-		CompletionUtil.registerClassesFromJar(
-			VJarUtil.getClassLocation(SWCDensityVisualizationPluginConfigurator.class));
+		CompletionUtil.registerClassesFromJar(VJarUtil.getClassLocation(DensityVisualizationPluginConfigurator.class));
 
 		initTemplateProject(iApi);
 	}
@@ -216,7 +219,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 	}
 
 	private void saveProjectTemplate() {
-		InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
+		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(
 			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-01.vrlp");
 		try {
 			IOUtil.saveStreamToFile(in, templateProjectSrc);
@@ -230,7 +233,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 	}
 
 	private void saveProjectTemplate2() {
-		InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
+		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(
 			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-02.vrlp");
 		try {
 			IOUtil.saveStreamToFile(in, templateProjectSrc2);
@@ -244,7 +247,7 @@ public class SWCDensityVisualizationPluginConfigurator extends VPluginConfigurat
 	}
 
 	private void saveProjectTemplate3() {
-		InputStream in = SWCDensityVisualizationPluginConfigurator.class.getResourceAsStream(
+		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(
 			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-03.vrlp");
 		try {
 			IOUtil.saveStreamToFile(in, templateProjectSrc3);

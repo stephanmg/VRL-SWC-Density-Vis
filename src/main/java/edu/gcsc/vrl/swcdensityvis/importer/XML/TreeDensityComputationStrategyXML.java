@@ -28,7 +28,7 @@ import javax.vecmath.Vector3f;
  *
  * @author stephan
  */
-public class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
+public final class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
 	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
 	private final float width_ = 10;
 	private final float depth_ = 10;
@@ -74,7 +74,8 @@ public class TreeDensityComputationStrategyXML implements TreeDensityComputation
 	 * 
 	 * @return 
 	 */
-	private Vector3f getDimensions() {
+	@Override
+	public Vector3f getDimension() {
 		Pair<Vector3f, Vector3f> bounding = getBoundingBox();
 			return new Vector3f(
 			Math.abs(bounding.getFirst().x - bounding.getSecond().x),
@@ -102,7 +103,7 @@ public class TreeDensityComputationStrategyXML implements TreeDensityComputation
 	@Override
 	public Density computeDensity() {
 		/// get dimensions and bounding box and report
-		final Vector3f dims = getDimensions();
+		final Vector3f dims = getDimension();
 		final Pair<Vector3f, Vector3f> bounding = getBoundingBox();
 		System.out.println("Dimensions of all cells: " + dims);
 		System.out.println("Bounding box Min: " + bounding.getSecond() + ", Max:" + bounding.getFirst());
@@ -298,10 +299,26 @@ public class TreeDensityComputationStrategyXML implements TreeDensityComputation
 		return new XMLDensityTreeImpl(vals, bounding, (int) width, (int) height, (int) depth);
 	}
 
+	/**
+	 * 
+	 * @param data 
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setDensityData(DensityData data) {
 		this.cells = (HashMap<String, ArrayList<Edge<Vector3f>>>) data.getDensityData();
+	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	@Override
+	public Object getCenter() {
+		Pair<Vector3f, Vector3f> minMax = getBoundingBox();
+		return new Vector3f( (minMax.getFirst().x + minMax.getSecond().x) / 2,
+				     (minMax.getFirst().y + minMax.getSecond().y) / 2,
+			             (minMax.getFirst().z + minMax.getSecond().z) / 2);
 	}
 
 }

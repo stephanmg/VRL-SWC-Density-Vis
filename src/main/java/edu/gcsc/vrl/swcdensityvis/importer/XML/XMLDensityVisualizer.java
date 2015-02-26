@@ -58,19 +58,11 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	}
 
 	/**
-	 *
+	 * @return
 	 */
 	@Override
-	public void getDimension() {
-		this.impl.getDimension();
-	}
-
-	/**
-	 *
-	 */
-	@Override
-	public void getBoundingBox() {
-		this.impl.getBoundingBox();
+	public Object getDimension() {
+		return this.impl.getDimension();
 	}
 
 	/**
@@ -106,9 +98,22 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 		this.impl.setFiles(files);
 	}
 
+	/**
+	 * 
+	 * @param data 
+	 */
 	@Override
 	public void setDensityData(DensityData data) {
 		this.impl.setDensityData(data);
+	}
+
+	/**
+	 * 
+	 * @return 
+	 */
+	@Override
+	public Object getCenter() {
+		return this.impl.getCenter();
 	}
 
 }

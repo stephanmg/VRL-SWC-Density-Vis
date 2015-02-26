@@ -6,14 +6,11 @@ import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.VoxelImpl;
 import edu.gcsc.vrl.densityvis.VoxelSet;
 import edu.gcsc.vrl.densityvis.WritableVoxel;
-import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
-import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.vecmath.Vector3f;
-
 
 /**
  * @brief Density implementation for internal usage
@@ -58,7 +55,10 @@ final class XMLDensityTreeImpl implements Density {
 						/// note: density.get(index) in interval [0, 1] -> thus we multiply by 100, for making in the graphical representation available the density in percentage 0 to 100 %
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 1000));  /// note however, multiplication with 100 is not required!
 						System.err.println("density: " + density.get(index) * 1000);
-						/** @todo we need to take the default voxel volume into account for a density */
+						/** @todo we need to take the default voxel volume into account for a density 
+						 *  this means: dividing by the morphological volume! (for now we allow for 1x1x1 volumes which corresponds to 1x1x1 in morphological units, i. e. um^3 here!)
+						 */
+						  
 					} else {
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, 0));
 					}
@@ -68,6 +68,10 @@ final class XMLDensityTreeImpl implements Density {
 		}
 	}
 
+	/**
+	 * 
+	 * @return 
+	 */
 	@Override
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
 	public List<? extends VoxelSet> getVoxels() {

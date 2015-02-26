@@ -3,23 +3,13 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
-import edu.gcsc.vrl.densityvis.VoxelSet;
 import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.EdgeDensityComputationStrategy;
-import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.util.CuboidUtility;
 import edu.gcsc.vrl.swcdensityvis.util.EdgeUtility;
-import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.DEFAULT_DEPTH;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.DEFAULT_HEIGHT;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.DEFAULT_SELECTION;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.DEFAULT_WIDTH;
 import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.EdgeSegmentWithinCuboid;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.computeDensity;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.getBoundingBox;
-import static edu.gcsc.vrl.swcdensityvis.util.SWCUtility.getIndicents;
 import eu.mihosoft.vrl.reflection.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,14 +22,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 /**
  * @brief implement the strategy here ... 
  * @author stephan
  */
-public class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
+public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
 
 	/**
@@ -90,7 +79,8 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 	 * 
 	 * @return 
 	 */
-	private Vector3f getDimensions() {
+	@Override
+	public Vector3f getDimension() {
 		Pair<Vector3f, Vector3f> bounding = getBoundingBox();
 			return new Vector3f(
 			Math.abs(bounding.getFirst().x - bounding.getSecond().x),
@@ -106,7 +96,7 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 	@Override
 	public Density computeDensity() {
 		final Pair<Vector3f, Vector3f> bounding = getBoundingBox();
-		System.out.println("Dimensions of all cells: " + getDimensions());
+		System.out.println("Dimensions of all cells: " + getDimension());
 		System.out.println("Bounding box Min: " + bounding.getSecond() + ", Max:" + bounding.getFirst());
 
 		/// sampling cube in geometry dimensions (i. e. µm!)
@@ -226,9 +216,25 @@ public class EdgeDensityComputationStrategyXML implements EdgeDensityComputation
 		return new XMLDensityEdgeImpl(vals, bounding, (int) width, (int) height, (int) depth);
 	}
 
+	/**
+	 * 
+	 * @param data 
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setDensityData(DensityData data) {
 		this.cells = (HashMap<String, ArrayList<Edge<Vector3f>>>) data.getDensityData();
+	}
+
+	/**
+	 * 
+	 * @return 
+	 */
+	@Override
+	public Object getCenter() {
+		Pair<Vector3f, Vector3f> minMax = getBoundingBox();
+		return new Vector3f( (minMax.getFirst().x + minMax.getSecond().x) / 2,
+				     (minMax.getFirst().y + minMax.getSecond().y) / 2,
+			             (minMax.getFirst().z + minMax.getSecond().z) / 2);
 	}
 }

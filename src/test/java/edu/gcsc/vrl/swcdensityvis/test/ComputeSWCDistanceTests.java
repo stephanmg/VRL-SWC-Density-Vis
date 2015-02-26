@@ -5,8 +5,8 @@
  */
 package edu.gcsc.vrl.swcdensityvis.test;
 
-import edu.gcsc.vrl.swcdensityvis.ComputeSWCDensity;
-import edu.gcsc.vrl.swcdensityvis.ComputeSWCDistance;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDensity;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDistance;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

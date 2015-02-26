@@ -3,7 +3,7 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
-import edu.gcsc.vrl.swcdensityvis.DensityUtil;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;
 import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import java.util.ArrayList;
@@ -32,6 +32,16 @@ public class DefaultDensityComputation implements DensityComputationStrategy {
 
 	@Override
 	public void setDensityData(DensityData data) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Object getDimension() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Object getCenter() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

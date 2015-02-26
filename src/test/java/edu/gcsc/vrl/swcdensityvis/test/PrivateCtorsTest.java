@@ -6,7 +6,7 @@ package edu.gcsc.vrl.swcdensityvis.test;
  * and open the template in the editor.
  */
 import edu.gcsc.vrl.swcdensityvis.util.CuboidUtility;
-import edu.gcsc.vrl.swcdensityvis.DensityUtil;
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.util.EdgeUtility;
 import edu.gcsc.vrl.swcdensityvis.util.SWCUtility;
 import edu.gcsc.vrl.swcdensityvis.util.SwappablePairUtility;

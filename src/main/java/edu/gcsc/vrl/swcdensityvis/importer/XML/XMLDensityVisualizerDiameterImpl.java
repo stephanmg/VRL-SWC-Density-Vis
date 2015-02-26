@@ -9,7 +9,6 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
-import edu.gcsc.vrl.swcdensityvis.importer.XMLDensityData;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
@@ -299,20 +298,14 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	}
 
 	/**
-	 * 
+	 *  @brief delegate to strategy 
+	 *  @return
 	 */
 	@Override
-	public void getDimension() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public Vector3f getDimension() {
+		return (Vector3f) this.context.getDensityComputationStrategy().getDimension();
 	}
 
-	/**
-	 * 
-	 */
-	@Override
-	public void getBoundingBox() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
 
 	/**
 	 * 
@@ -418,9 +411,22 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 		context = densityComputationContext;
 	}
 
+	/**
+	 * 
+	 * @param data 
+	 */
 	@Override
 	public void setDensityData(DensityData data) {
 		this.context.setDensityData(data);
+	}
+
+	/**
+	 * 
+	 * @return 
+	 */
+	@Override
+	public Object getCenter() {
+		return this.context.getDensityComputationStrategy().getCenter();
 	}
 
 }

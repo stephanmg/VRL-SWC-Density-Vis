@@ -1,10 +1,12 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.importer;
+package edu.gcsc.vrl.swcdensityvis.importer.asc;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
+import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
-import java.util.ArrayList;
 
 /**
  *
@@ -23,12 +25,7 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public void getDimension() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void getBoundingBox() {
+	public Object getDimension() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
@@ -49,6 +46,11 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public void setDensityData(DensityData data) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Object getCenter() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

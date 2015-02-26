@@ -3,7 +3,7 @@ package edu.gcsc.vrl.swcdensityvis.demo;
 
 /// imports
 import edu.gcsc.vrl.swcdensityvis.data.Edge;
-import edu.gcsc.vrl.swcdensityvis.importer.XMLDensityData;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.vecmath.Vector3f;

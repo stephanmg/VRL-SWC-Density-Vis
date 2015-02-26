@@ -10,7 +10,6 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
-import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
@@ -30,8 +29,7 @@ public class DensityVisualization implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@OutputInfo(style = "shaped3darraycustom",
-	            typeName = " ")
+	@OutputInfo(style = "shaped3darraycustom", name = " ", typeName = " ")
 	public Shape3DArray visualizeDensity(
 		@ParamGroupInfo(group = "Visualization|false|no description")
 		@ParamInfo(name = "Density") DensityResult density,
@@ -45,7 +43,7 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") boolean dTransparency,
 
 		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Visible", style="default", options="value=true") boolean bVisibleDensity,
+		@ParamInfo(name = "Density Visible?", style="default", options="value=true") boolean bVisibleDensity,
 
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry") File[] swcFiles,
@@ -58,10 +56,10 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") Color mColor,
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "") int mTransparency,
+		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "min=0;max=100;value=80") int mTransparency,
 
 		@ParamGroupInfo(group = "Geometry")
-		@ParamInfo(name = "Visible", style="default", options="value=true") boolean bVisibleGeometry
+		@ParamInfo(name = "Consensus Geometry Visible?", style="default", options="value=true") boolean bVisibleGeometry
 	) {
 
 		/// the Shape3DArray to visualize

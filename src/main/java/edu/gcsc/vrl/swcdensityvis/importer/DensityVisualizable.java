@@ -20,10 +20,6 @@ public interface DensityVisualizable extends DensityComputationStrategy {
 
 	void parseStack();
 
-	void getDimension();
-
-	void getBoundingBox();
-
 	Shape3DArray calculateGeometry();
 
 	void setContext(DensityComputationContext context);

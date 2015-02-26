@@ -2,6 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCDensityVisualizer;
+import edu.gcsc.vrl.swcdensityvis.importer.asc.ASCDensityVisualizer;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 
 /**

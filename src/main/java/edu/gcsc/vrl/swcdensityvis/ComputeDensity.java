@@ -18,11 +18,13 @@ import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
+import eu.mihosoft.vrl.v3d.jcsg.Vector3d;
 import java.awt.Color;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.vecmath.Vector3f;
 
 /**
  * @brief computes the density
@@ -85,28 +87,22 @@ public class ComputeDensity implements java.io.Serializable {
 		 * expensive, but then leads here to multiple parent branch in
 		 * java3d!)
 		 */
-		/// parse the files
+		/// parse the files and compute density
 		xmlDensityVisualizer.parseStack();
 		Density density = xmlDensityVisualizer.computeDensity();
-		//Density density = null;
 		
-		//Density density = null; ///= xmlDensityVisualizer.computeDensity();
-		//Shape3DArray geometry = xmlDensityVisualizer.calculateGeometry();
-		double dim = 10;
-		//xmlDensityVisualizer.getDimension();
-		//xmlDensityVisualizer.getBoundingBox();
+		/// get dim and center
+		Vector3f dim = (Vector3f) xmlDensityVisualizer.getDimension();
+		Vector3f center = (Vector3f) xmlDensityVisualizer.getCenter();
 
 		/// density must respect new rescaled geometry and therefore fit in cuboid
-		//Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
-		//double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
 		/* @todo the vta is way to big, since the geometry/density get's rescaled with the VisUtil.
 		 we could however rescale the cube too, or we just omit the cube for rendering,
 		 since it isn't necessary in fact...
-					
 		 */
 		
-		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
+		/// bounding box of line-graph geometry only!
+		VTriangleArray vta = new Cube(new Vector3d(center.x*0.01, center.y*0.01, center.z*0.01), new Vector3d(dim.x*0.01, dim.y*0.01, dim.z*0.01)).toCSG().toVTriangleArray();
 		return new Object[]{new DensityResult(density, vta), swcFiles};
-		// we could also fill the line graph geometry in the VTA array!!!
 	}
 }
