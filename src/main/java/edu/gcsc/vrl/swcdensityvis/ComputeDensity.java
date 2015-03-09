@@ -43,7 +43,8 @@ public class ComputeDensity implements java.io.Serializable {
 	public Object[] compute(
 		//[\"swc\"]; 
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Folder|true|Input folder")
-		@ParamInfo(name = "Input folder", typeName = "Location of SWC files", style = "load-folder-dialog", options = "endings=[\"swc\", \"xml\", \"asc\"]; description=\"SWC, XML or ASC files (.swc, .xml, .asc)\"") File folder,
+		@ParamInfo(name = "(Stack) Input folder", typeName = "Location of SWC files", style = "load-folder-dialog", options = "endings=[\"swc\", \"xml\", \"asc\"]; description=\"SWC, XML or ASC files (.swc, .xml, .asc)\"") File folder,
+		@ParamInfo(name = "(Single) Consensus Geometry File", typeName = "Consensus geometry", style = "load-dialog", options="endings=[\"swc\", \"xml\", \"asc\"]; description=\"SWC, XML or ASC files (.swc, .xml, .asc)\"") File consensus,
 		@ParamInfo(name = "File type", typeName = "Filetype", style = "selection", options = "value=[\"SWC\", \"XML\", \"ASC\"]") String selection,
 		@ParamGroupInfo(group = "Common options|true|Compute the density for the image (stack); Dimensions|true|Dimensions")
 		@ParamInfo(name = "Width", typeName = "Width of sampling cube", style = "slider", options = "min=1;max=100") int width,
@@ -63,6 +64,16 @@ public class ComputeDensity implements java.io.Serializable {
 					|| name.endsWith(".asc");
 			}
 		});
+		
+		ArrayList<File> files = new ArrayList<File>(Arrays.asList(swcFiles));
+		if (consensus != null) {
+			files.add(consensus);
+		}
+		
+		if (files.isEmpty()) {
+			eu.mihosoft.vrl.system.VMessage.error("ComputeDensity", "At least one input file must be specified (i. e. at least one geometry file in the stack folder or a consensus geometry!)");
+		} else {
+		
 
 		DensityVisualizableFactory factory = new DensityVisualizableFactory();
 		DensityVisualizable visualizer = factory.getDensityVisualizer(selection);
@@ -77,7 +88,11 @@ public class ComputeDensity implements java.io.Serializable {
 		/**
 		 * @todo setFiles could also be moved in the interface
 		 */
-		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(swcFiles)));
+		/**
+		 * @todo the consensus file should be the geometry, but should not be considered in the density vis of the stack
+		 */
+		
+		xmlDensityVisualizer.setFiles(files);
 		/// don't scale the geometry in the first place! only afterwards teh density vis and the geometry (line-graph) is rescaled for java3d vis!
 		xmlDensityVisualizer.prepare(Color.yellow, 1);
 
@@ -104,5 +119,7 @@ public class ComputeDensity implements java.io.Serializable {
 		/// bounding box of line-graph geometry only!
 		VTriangleArray vta = new Cube(new Vector3d(center.x*0.01, center.y*0.01, center.z*0.01), new Vector3d(dim.x*0.01, dim.y*0.01, dim.z*0.01)).toCSG().toVTriangleArray();
 		return new Object[]{new DensityResult(density, vta), swcFiles};
+		}
+		return new Object[]{new DensityResult(null, null), swcFiles};
 	}
 }

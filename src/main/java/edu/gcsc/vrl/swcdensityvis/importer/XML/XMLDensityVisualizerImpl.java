@@ -81,6 +81,10 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			Element rootNode = document.getRootElement();
 			System.out.println(" done!");
 			System.out.println("root node: " + rootNode.toString());
+			if (!rootNode.toString().equalsIgnoreCase("[Element: <mbf/>]")) {
+				eu.mihosoft.vrl.system.VMessage.warning("ComputeDensity", "XML in wrong format, trying to auto-correct XML file now!");
+				XMLFileUtil.fixXMLFile(this.inputFiles.get(0).getAbsolutePath());
+			}
 
 			System.out.println("Processing Contours...");
 			this.contours.put(this.inputFiles.get(0).getName(), process_contours(rootNode));
