@@ -20,6 +20,12 @@ public interface DensityVisualizable extends DensityComputationStrategy {
 
 	void parseStack();
 
+	/**
+	 * @todo for now we use ALL geometries in stack to 
+	 * calculate the consensus geometry! (maybe just use by conventions
+	 * the first in the list of xml/geometry files?!)
+	 * @return 
+	 */
 	Shape3DArray calculateGeometry();
 
 	void setContext(DensityComputationContext context);

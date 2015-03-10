@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,16 +14,27 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- *
+ * @brief XML file utilites
  * @author stephan
  */
 public final class XMLFileUtil {
+	private static final String NEWLINE = System.getProperty("line.separator");
 
+	/**
+	 * @brief 
+	 */
 	private XMLFileUtil() {
 
 	}
 
-	private static void copyFiles(File source, File dest) throws IOException {
+	/**
+	 * @brief copy files
+	 * @param source
+	 * @param dest
+	 * @throws IOException 
+	 */
+	@SuppressWarnings("NestedAssignment")
+	private static void copyFile(File source, File dest) throws IOException {
 		InputStream is = null;
 		OutputStream os = null;
 		try {
@@ -42,42 +52,43 @@ public final class XMLFileUtil {
 	}
 
 	/**
-	 * @brief checks for broken xml file, maybe not the best check
-	 *        since it relys on the line number, i. e. line 2 of xml file!
+	 * @brief checks for broken xml file, maybe not the best check since it
+	 * relys on the line number, i. e. line 2 of xml file!
 	 * @todo make the check better
 	 * @param filename
+	 * @throws IOException
 	 */
-	static void fixXMLFile(String filename) {
+	@SuppressWarnings("NestedAssignment")
+	public static void fixXMLFile(String filename) throws IOException {
+		FileWriter fw = null;
+		FileReader fr = null;
 		try {
-			final String newLine = System.getProperty("line.separator");
-			File xml = new File(filename);
-			FileReader fr = new FileReader(xml);
-			String line;
-			StringBuilder content_new = new StringBuilder();
-			String[] tokens = filename.split("\\.(?=[^\\.]+$)");
-			copyFiles(new File(filename), new File(tokens[0] + "_BAK_" + System.currentTimeMillis() + "." + tokens[1]));
+			fr = new FileReader(new File(filename));
 			BufferedReader br = new BufferedReader(fr);
+			
+			// backup input file
+			String[] tokens = filename.split("\\.(?=[^\\.]+$)");
+			copyFile(new File(filename), new File(tokens[0] + "_BAK_" + System.currentTimeMillis() + "." + tokens[1]));
+			
+			// read and correct the xml file
+			String line;
+			StringBuilder content = new StringBuilder();
 			int count = 1;
 			while ((line = br.readLine()) != null) {
 				if (count == 2) {
-					content_new.append("<mbf>");
+					content.append("<mbf>");
 				} else {
-					content_new.append(line);
+					content.append(line);
 				}
-				content_new.append(newLine);
+				content.append(NEWLINE);
 				count++;
 			}
-			fr.close();
-
-			FileWriter fw = new FileWriter(xml);
+			fw = new FileWriter(new File(filename));
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(content_new.toString());
-			bw.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("File not found: " + e);
-		} catch (IOException e) {
-			System.err.println("Unexpected IO Exception: " + e);
-
+			bw.write(content.toString());
+		} finally {
+			fr.close();
+			fw.close();
 		}
 	}
 }
