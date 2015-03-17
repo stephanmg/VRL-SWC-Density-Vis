@@ -2,28 +2,30 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.FileSelectionType;
+import edu.gcsc.vrl.swcdensityvis.data.LoadFolderFileType;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCLoadStackComponent;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCDensityVisualization;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDistance;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDensity;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrix;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixArrayType;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixFactory;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixMatrixTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixSilentType;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixType;
-import edu.gcsc.vrl.swcdensityvis.types.DenseMatrixVectorTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.DenseVectorArrayTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.DenseVectorFactory;
-import edu.gcsc.vrl.swcdensityvis.types.Shape3DArrayTypeCustom;
-import edu.gcsc.vrl.swcdensityvis.types.SparseCCSMatrix;
-import edu.gcsc.vrl.swcdensityvis.types.SparseCCSMatrixType;
-import edu.gcsc.vrl.swcdensityvis.types.SparseCRSMatrix;
-import edu.gcsc.vrl.swcdensityvis.types.SparseCRSMatrixType;
-import edu.gcsc.vrl.swcdensityvis.types.SparseMatrixFactory;
-import edu.gcsc.vrl.swcdensityvis.types.SparseVector;
-import edu.gcsc.vrl.swcdensityvis.types.SparseVectorFactory;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrix;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixArrayTestComponent;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixArrayType;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixFactory;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixMatrixTestComponent;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixSilentType;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixType;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixVectorTestComponent;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseVectorArrayTestComponent;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseVectorFactory;
+import edu.gcsc.vrl.swcdensityvis.types.LA.Shape3DArrayTypeCustom;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCCSMatrix;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCCSMatrixType;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCRSMatrix;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCRSMatrixType;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseMatrixFactory;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseVector;
+import edu.gcsc.vrl.swcdensityvis.types.LA.SparseVectorFactory;
 import eu.mihosoft.vrl.io.IOUtil;
 import eu.mihosoft.vrl.io.VJarUtil;
 import eu.mihosoft.vrl.io.VersionInfo;
@@ -102,6 +104,10 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 			vapi.addTypeRepresentation(SparseCCSMatrixType.class);
 			vapi.addTypeRepresentation(SparseCRSMatrixType.class);
 			vapi.addTypeRepresentation(Shape3DArrayTypeCustom.class);
+			
+			vapi.addComponent(TestComponent.class);
+			vapi.addTypeRepresentation(FileSelectionType.class);
+			vapi.addTypeRepresentation(LoadFolderFileType.class);
 		}
 	}
 

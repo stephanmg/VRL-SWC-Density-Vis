@@ -9,8 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @brief an (immutable) cuboid 
- * @author stephan
+ * @brief an (immutable) cuboid
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @ToString @EqualsAndHashCode @AllArgsConstructor @Getter @Setter 
 public class Cuboid {

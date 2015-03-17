@@ -5,7 +5,7 @@
  */
 
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.types;
+package edu.gcsc.vrl.swcdensityvis.types.LA;
 
 /// imports
 import org.la4j.matrix.dense.Basic2DMatrix;

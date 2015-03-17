@@ -1,4 +1,4 @@
-package edu.gcsc.vrl.swcdensityvis.types;
+package edu.gcsc.vrl.swcdensityvis.types.LA;
 
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.types.Shape3DArrayType;

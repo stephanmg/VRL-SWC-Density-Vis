@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
- * @author stephan
- * @param <T>
+ * @brief an Edge
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
+ * @param <T> 
  */
 @ToString @Getter @Setter @EqualsAndHashCode @AllArgsConstructor public class Edge<T> {
 	private T from;
