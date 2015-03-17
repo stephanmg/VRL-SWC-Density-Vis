@@ -13,7 +13,7 @@ public class FolderInfo {
 	private int m_noSections = 0;
 	
 	/**
-	 * @brief default ctor
+	 * @brief ctor
 	 */
 	public FolderInfo() {
 	}

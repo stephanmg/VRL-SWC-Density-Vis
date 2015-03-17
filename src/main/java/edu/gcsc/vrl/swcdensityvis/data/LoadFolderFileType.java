@@ -24,9 +24,8 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 /**
- *
- * @brief use this as SectionLoaderFromHocFile
- * @author stephan
+ * @brief load folder dialog
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @TypeInfo(type = File.class, input = true, output = false, style = "my-folder-load-dialog")
 public class LoadFolderFileType extends TypeRepresentationBase {

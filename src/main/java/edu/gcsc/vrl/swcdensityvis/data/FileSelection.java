@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.data;
 
@@ -11,7 +5,6 @@ package edu.gcsc.vrl.swcdensityvis.data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * @brief represent the selected files
@@ -26,7 +19,7 @@ public class FileSelection implements Serializable {
 	}
 	
 	/**
-	 * 
+	 * @brief ctor
 	 */
 	public FileSelection() {
 	}

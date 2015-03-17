@@ -5,20 +5,14 @@ package edu.gcsc.vrl.swcdensityvis.data;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
- * @todo how to handle the hoc interpreter? singleton instance for obversable?
- * also I_Transformator should or must be singleton instance, for safety and
- * consistency reasons also on the c++ counterpart
- *
- * @brief the hoc file observable
- * @author stephan grein <stephan.grein@gcsc.uni-frankfurt.de>
+ * @brief load folder observable
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class LoadFolderObservable {
 
