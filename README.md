@@ -10,6 +10,9 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 [![CI Build Status](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis.svg?branch=devel)](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis)
 [![CI Coverage Status](https://coveralls.io/repos/stephanmg/VRL-SWC-Density-Vis/badge.png)](https://coveralls.io/r/stephanmg/VRL-SWC-Density-Vis)
 
+### Buildhive
+* [![Build Status](https://buildhive.cloudbees.com/job/stephanmg/job/VRL-SWC-Density-Vis/badge/icon)](https://buildhive.cloudbees.com/job/stephanmg/job/VRL-SWC-Density-Vis/)
+
 ### Issues
 * [![Stories in Backlog](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=backlog&title=Backlog)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
