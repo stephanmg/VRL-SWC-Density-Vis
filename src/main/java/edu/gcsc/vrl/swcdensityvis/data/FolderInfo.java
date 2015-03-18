@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class FolderInfo {
 	private final ArrayList<String> m_sectionNames = new ArrayList<String>();
 	private int m_noSections = 0;
+	private String folderName = null;
 	
 	/**
 	 * @brief ctor
@@ -49,5 +50,13 @@ public class FolderInfo {
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
 	public synchronized ArrayList<String> get_names_sections() {
 		return m_sectionNames;
+	}
+
+	/**
+	 * @brief set the directory
+	 * @param folderName
+	 */
+	void set_path_to_files(String folderName) {
+		this.folderName = folderName;
 	}
 }

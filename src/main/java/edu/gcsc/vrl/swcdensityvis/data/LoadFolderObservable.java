@@ -291,7 +291,17 @@ public class LoadFolderObservable {
 	}
 
 
-	public synchronized String setSelectedFile(File file, String hoc_tag, Object object, int windowID, final String file_type) {
+	/**
+	 * @brief enhanced set selected file
+	 * @param file
+	 * @param hoc_tag
+	 * @param object
+	 * @param windowID
+	 * @param file_type
+	 * @param fullPath
+	 * @return 
+	 */
+	public synchronized String setSelectedFile(File file, String hoc_tag, Object object, int windowID, final String file_type, boolean fullPath) {
 			LoadFolderObservable.FolderTag hocTag = getTag(hoc_tag, object, windowID, true);
 
 		if (file.toString().isEmpty()) {
@@ -306,12 +316,23 @@ public class LoadFolderObservable {
 				return name.endsWith("." + file_type);
 			}
 		})) {
-			names.add(f.toString());
-			System.err.println(f.toString());
+			String temp = null;
+			
+			if (fullPath) {
+				temp = f.toString();
+			} else {
+				temp = f.getName();
+			}
+			
+			names.add(temp);
+			System.err.println(temp);
 		}
 
 		hocTag.data = new FolderInfo();
 		hocTag.data.set_names_sections(names);
+		if (!fullPath) {
+			hocTag.data.set_path_to_files(file.toString());
+		}
 		hocTag.data.set_num_sections(names.size());
 
 		// now we notify the obersver of this hoc_tag
@@ -343,8 +364,9 @@ public class LoadFolderObservable {
 
 		ArrayList<String> names = new ArrayList<String>();
 		for (File f : file.listFiles()) {
-			names.add(f.toString());
-			System.err.println(f.toString());
+			String temp = f.toString();
+			names.add(temp);
+			System.err.println(temp);
 		}
 		hocTag.data = new FolderInfo();
 		hocTag.data.set_names_sections(names);

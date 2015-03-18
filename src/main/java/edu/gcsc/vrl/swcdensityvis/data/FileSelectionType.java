@@ -22,6 +22,7 @@ import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -38,6 +39,11 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 	protected VTextField hocFileName = null;
 	private FileSelection section = new FileSelection();
 	private String hoc_tag = null;
+	private int maxElementsList = 10;
+	private final int preSelectedElementInList = 0;
+	private boolean setListScrollable = true;
+	private int maxCellWidth = 100;
+	private final double percentage = 0.5;
 
 	public void init() {
 		eu.mihosoft.vrl.system.VMessage.info("FileSelectionType", "init was called");
@@ -121,7 +127,16 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 				}
 			}
 		});
-		add(sectionList);
+		sectionList.setSelectedIndex(preSelectedElementInList);
+		sectionList.setVisibleRowCount(maxElementsList);
+		sectionList.setFixedCellWidth(maxCellWidth);
+		if (setListScrollable) {
+			JScrollPane pane = new JScrollPane(sectionList);
+			pane.setAlignmentX(Component.LEFT_ALIGNMENT);
+			add(pane);
+		} else {
+			add(sectionList);
+		}
 	}
 
 	/**
@@ -197,6 +212,7 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 				property = script.getProperty("hoc_tag");
 			}
 		}
+		
 		if (property != null) {
 			hoc_tag = (String) property;
 		}
@@ -206,6 +222,55 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 				"ParamInfo for hoc-subset-selection requires hoc_tag in options",
 				getConnector(), MessageType.ERROR);
 		}
+		
+		
+		property = null;
+
+		if (getValueOptions() != null) {
+			if (getValueOptions().contains("visibleElements")) {
+				property = script.getProperty("visibleElements");
+				
+				if (property != null) {
+					this.maxElementsList = (Integer) property;
+				}
+			}
+		}
+		
+		property = null;
+		
+		if (getValueOptions() != null) {
+			if (getValueOptions().contains("scrollable")) {
+				property = script.getProperty("scrollable");
+
+				if (property != null) {
+					String choice = (String) property;
+					if ("auto".equalsIgnoreCase(choice)) {
+						this.setListScrollable = true;
+						this.maxElementsList = (int) percentage * this.section.get_names().size();
+					} else if ("false".equalsIgnoreCase(choice)) {
+						this.setListScrollable = false;
+					} else if ("true".equalsIgnoreCase(choice)) {
+						this.setListScrollable = true;
+					} else {
+						this.setListScrollable = false;
+					}
+						
+				}
+			}
+		}
+		
+		if (getValueOptions() != null) {
+			if (getValueOptions().contains("maxCellWidth")) {
+				property = script.getProperty("maxCellWidth");
+				
+				if (property != null) {
+					this.maxCellWidth = (Integer) property;
+				}
+			}
+		}
+
+		property = null;
+		
 	}
 
 	/**

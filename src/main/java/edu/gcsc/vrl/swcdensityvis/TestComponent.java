@@ -36,8 +36,8 @@ public class TestComponent implements Serializable {
 	 * @param hoc_file
 	 */
 	public void selection(
-		@ParamInfo(name = "Sections", typeName="The compartment of the multi-compartmental model loaded", style = "default", options = "hoc_tag=\"gridFile\"") FileSelection selection,
-		@ParamInfo(name = "Load", typeName="Load any hoc geometry", style = "my-folder-load-dialog", options = "hoc_tag=\"gridFile\"; file_type=\"xml\"") File hoc_file
+		@ParamInfo(name = "Sections", typeName="The compartment of the multi-compartmental model loaded", style = "default", options = "hoc_tag=\"gridFile\"; visibleElements=3") FileSelection selection,
+		@ParamInfo(name = "Load", typeName="Load any hoc geometry", style = "my-folder-load-dialog", options = "hoc_tag=\"gridFile\"; file_type=\"xml\"; displayFullPath=false") File hoc_file
 	
 	) {
 		

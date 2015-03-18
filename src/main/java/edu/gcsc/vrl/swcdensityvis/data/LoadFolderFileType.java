@@ -4,7 +4,6 @@ package edu.gcsc.vrl.swcdensityvis.data;
 /// imports
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.FileDialogManager;
-import eu.mihosoft.vrl.io.VFileFilter;
 import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
@@ -38,6 +37,8 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 	private String hoc_tag = null;
 	/// the file type
 	private String file_type = null;
+	/// display full path or not?
+	private boolean fullPath = false;
 
 	/**
 	 * Constructor.
@@ -185,6 +186,20 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 				file_type = (String) property;
 			}
 		}
+		
+		property = null;
+		
+		if (getValueOptions() != null) {
+			if (getValueOptions().contains("displayFullPath")) {
+				property = script.getProperty("displayFullPath");
+			}
+			
+			if (property != null) {
+				this.fullPath = (Boolean) property;
+			}
+		}
+		
+		property = null;
 
 	}
 
@@ -197,7 +212,8 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 
 		//  Here we inform the Singleton, that the file has been scheduled
 		if (!file.getAbsolutePath().isEmpty() && file.isDirectory()) {
-			String msg = LoadFolderObservable.getInstance().setSelectedFile(file, hoc_tag, o, windowID, file_type);
+			String msg = LoadFolderObservable.getInstance().setSelectedFile(file, hoc_tag, o, windowID, this.file_type,
+				this.fullPath);
 			if (!msg.isEmpty() && !getMainCanvas().isLoadingSession()) {
 				getMainCanvas().getMessageBox().addMessage("Invalid hoc-File",
 					msg, getConnector(), MessageType.ERROR);
