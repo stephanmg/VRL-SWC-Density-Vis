@@ -44,7 +44,7 @@ dependencies {
     // add mockito dependencies here if necessary
     
     /// main dependencies (from maven)
-    compile group: 'org.la4j', name:'la4j', version: '0.5.5'
+    compile group: 'org.la4j', name:'la4j', version: '0.4.9'
     compile group: 'org.jdom', name:'jdom2', version: '2.0.6'
     
     /// local dependencies
