@@ -13,6 +13,9 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 ### Buildhive
 * [![Build Status](https://buildhive.cloudbees.com/job/stephanmg/job/VRL-SWC-Density-Vis/badge/icon)](https://buildhive.cloudbees.com/job/stephanmg/job/VRL-SWC-Density-Vis/)
 
+### VersionEye
+* [![Dependency Status](https://www.versioneye.com/user/projects/55095b964996ebdd3500002e/badge.svg?style=flat)](https://www.versioneye.com/user/projects/55095b964996ebdd3500002e)
+
 ### Issues
 * [![Stories in Backlog](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=backlog&title=Backlog)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
