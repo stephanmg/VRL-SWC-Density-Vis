@@ -68,7 +68,8 @@ public final class XMLFileUtil {
 			
 			// backup input file
 			String[] tokens = filename.split("\\.(?=[^\\.]+$)");
-			copyFile(new File(filename), new File(tokens[0] + "_BAK_" + System.currentTimeMillis() + "." + tokens[1]));
+	//		copyFile(new File(filename), new File(tokens[0] + "_BAK_" + System.currentTimeMillis() + "." + tokens[1]));
+			copyFile(new File(filename), new File(tokens[0] + "." + tokens[1] + "_" + System.currentTimeMillis() + ".BAK"));
 			
 			// read and correct the xml file
 			String line;
@@ -82,10 +83,12 @@ public final class XMLFileUtil {
 				}
 				content.append(NEWLINE);
 				count++;
+				System.out.println("line: " + line);
 			}
 			fw = new FileWriter(new File(filename));
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write(content.toString());
+			bw.flush();
 		} finally {
 			fr.close();
 			fw.close();

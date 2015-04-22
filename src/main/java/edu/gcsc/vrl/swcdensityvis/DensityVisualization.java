@@ -32,34 +32,52 @@ public class DensityVisualization implements java.io.Serializable {
 	@OutputInfo(style = "shaped3darraycustom", name = " ", typeName = " ")
 	public Shape3DArray visualizeDensity(
 		@ParamGroupInfo(group = "Visualization|false|no description")
-		@ParamInfo(name = "Density") DensityResult density,
+		@ParamInfo(name = "Density") 
+		DensityResult density,
+		
 		@ParamGroupInfo(group = "Visualization|false|no description")
-		@ParamInfo(name = "Min Density", style = "slider", options = "min=1;max=100;") int percentage,
+		@ParamInfo(name = "Min Density", style = "slider", options = "min=1;max=100;") 
+		int percentage,
+		
 		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Density Color 0", style = "color-chooser", options = "value=java.awt.Color.blue") Color dColorZero,
+		@ParamInfo(name = "Density Color 0", style = "color-chooser", options = "value=java.awt.Color.blue") 
+		Color dColorZero,
+		
 		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Density Color 1", style = "color-chooser", options = "value=java.awt.Color.red") Color dColorOne,
+		@ParamInfo(name = "Density Color 1", style = "color-chooser", options = "value=java.awt.Color.red") 
+		Color dColorOne,
+		
 		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") boolean dTransparency,
+		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") 
+		boolean dTransparency,
 
 		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Density Visible?", style="default", options="value=true") boolean bVisibleDensity,
+		@ParamInfo(name = "Density Visible?", style="default", options="value=true") 
+		boolean bVisibleDensity,
 
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Line-graph Geometry") File[] swcFiles,
+		@ParamInfo(name = "Line-graph Geometry") 
+		File[] swcFiles,
+		
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Representation", style="selection", options="value=[\"cylinder\", \"schematic\"]") String representation,
+		@ParamInfo(name = "Representation", style="selection", options="value=[\"cylinder\", \"schematic\"]") 
+		String representation,
+		
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry Color", style = "color-chooser", options = "value=java.awt.Color.magenta") Color gColor,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry Transparency", style = "slider", options = "min=0;max=100;") int gTransparency,
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") Color mColor,
+		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") 
+		Color mColor,
+		
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "min=0;max=100;value=80") int mTransparency,
+		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "min=0;max=100;value=80") 
+		int mTransparency,
 
 		@ParamGroupInfo(group = "Geometry")
-		@ParamInfo(name = "Consensus Geometry Visible?", style="default", options="value=true") boolean bVisibleGeometry
+		@ParamInfo(name = "Consensus Geometry Visible?", style="default", options="value=true") 
+		boolean bVisibleGeometry
 	) {
 
 		/// the Shape3DArray to visualize

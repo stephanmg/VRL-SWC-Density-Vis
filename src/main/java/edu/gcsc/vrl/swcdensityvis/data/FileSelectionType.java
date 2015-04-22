@@ -132,6 +132,7 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 		sectionList.setFixedCellWidth(maxCellWidth);
 		if (setListScrollable) {
 			JScrollPane pane = new JScrollPane(sectionList);
+			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			pane.setAlignmentX(Component.LEFT_ALIGNMENT);
 			add(pane);
 		} else {

@@ -108,7 +108,7 @@ public class ComputeDensity implements java.io.Serializable {
 		
 		/// get dim and center
 		Vector3f dim = (Vector3f) xmlDensityVisualizer.getDimension();
-		Vector3f center = (Vector3f) xmlDensityVisualizer.getCenter();
+		Vector3f center = (Vector3f) xmlDensityVisualizer.getCenter(); /* @todo this seems to be not correct */
 
 		/// density must respect new rescaled geometry and therefore fit in cuboid
 		/* @todo the vta is way to big, since the geometry/density get's rescaled with the VisUtil.

@@ -83,29 +83,30 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 			if (!rootNode.toString().equalsIgnoreCase("[Element: <mbf/>]")) {
 				eu.mihosoft.vrl.system.VMessage.warning("ComputeDensity", "XML in wrong format, trying to auto-correct XML file now!");
 				XMLFileUtil.fixXMLFile(this.inputFiles.get(0).getAbsolutePath());
-			}
+				/// re-parse on success
+				parse();
+			} else {
+				System.out.println("Processing Contours...");
+				this.contours.put(this.inputFiles.get(0).getName(), process_contours(rootNode));
+				System.out.println(" done!");
 
-			System.out.println("Processing Contours...");
-			this.contours.put(this.inputFiles.get(0).getName(), process_contours(rootNode));
-			System.out.println(" done!");
+				System.out.println("Processing Trees...");
+				this.trees.put(this.inputFiles.get(0).getName(), process_trees(rootNode));
+				System.out.println(" done!");
 
-			System.out.println("Processing Trees...");
-			this.trees.put(this.inputFiles.get(0).getName(), process_trees(rootNode));
-			System.out.println(" done!");
+				this.inputFiles.remove(0);
+				isGeometryModified = true;
 
-			this.inputFiles.remove(0);
-			isGeometryModified = true;
-
-			/// output trees
-			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> entry : trees.entrySet()) {
-				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
-			}
+				/// output trees
+				for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> entry : trees.entrySet()) {
+					System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
+				}
 			
-			/// output contours
-			for (Map.Entry<String, HashMap<String, Contour<Vector4d>>> entry : contours.entrySet()) {
-				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+				/// output contours
+				for (Map.Entry<String, HashMap<String, Contour<Vector4d>>> entry : contours.entrySet()) {
+					System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+				}
 			}
-
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
 		} catch (JDOMException jdomex) {
