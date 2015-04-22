@@ -84,7 +84,7 @@ public class ComputeDensity implements java.io.Serializable {
 		XMLDensityVisualizer xmlDensityVisualizer;
 		xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 		
-		xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML()));
+		xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(width, height, depth)));
 		/**
 		 * @todo setFiles could also be moved in the interface
 		 */

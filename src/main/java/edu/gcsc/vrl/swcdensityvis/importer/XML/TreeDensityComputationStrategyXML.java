@@ -30,14 +30,20 @@ import javax.vecmath.Vector3f;
  */
 public final class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
 	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
-	private final float width_ = 10;
-	private final float depth_ = 10;
-	private final float height_= 10;
+	private float width_ = 10;
+	private float depth_ = 10;
+	private float height_= 10;
 	/**
 	 * 
 	 */
 	public TreeDensityComputationStrategyXML() {
 		
+	}
+
+	public TreeDensityComputationStrategyXML(float width, float depth, float height) {
+		this.width_ = width;
+		this.height_ = height;
+		this.depth_ = depth;
 	}
 	
 	public TreeDensityComputationStrategyXML(HashMap<String, ArrayList<Edge<Vector3f>>> cells) {
