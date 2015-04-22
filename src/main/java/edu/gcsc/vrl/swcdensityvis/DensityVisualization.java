@@ -125,6 +125,10 @@ public class DensityVisualization implements java.io.Serializable {
 		xmlDensityVisualizer.prepare(gColor_real, 0.01);
 
 		/**
+		 * @todo normalize density per voxel to [0,1] not any number ... i. e. we need percentage
+		 */
+
+		/**
 		 * @todo if we calculate geometry in the ComputeDensity it will
 		 * get cached somehow! (this is by our implementation as this is
 		 * expensive, but then leads here to multiple parent branch in
