@@ -85,8 +85,8 @@ public class DensityVisualization implements java.io.Serializable {
 
 		 VGeometry3D geom3d = new VGeometry3D(
 		 density.getGeometry(),
-		 new Color( mColor.getRed(), mColor.getGreen(), mColor.getBlue(), 255 - mTransparency),
-		 null,1F,false, false, mTransparency > 0);
+		 new Color( mColor.getRed(), mColor.getGreen(), mColor.getBlue(), 255 - (int) ((255.0 / 100) * mTransparency)),
+		 null,1F,false, false, mTransparency > 0); 
 		 
 		int transparencyVal = 254;
 

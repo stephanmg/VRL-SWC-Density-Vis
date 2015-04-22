@@ -75,6 +75,9 @@ public class ComputeDensity implements java.io.Serializable {
 		} else {
 		
 
+		/**
+		 * @todo select density visualizer based on XML, ASC or SWC
+		 */
 		DensityVisualizableFactory factory = new DensityVisualizableFactory();
 		DensityVisualizable visualizer = factory.getDensityVisualizer(selection);
 		DensityComputationContext densityComputationContext = new DensityComputationContext();
