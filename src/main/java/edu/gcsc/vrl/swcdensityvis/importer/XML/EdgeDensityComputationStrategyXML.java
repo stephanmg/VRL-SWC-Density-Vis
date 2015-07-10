@@ -191,15 +191,23 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 				}
 			}
 
+			System.err.println("cells size:" + cells.size());
+			System.err.println("cells keyset: " + cells.keySet().toString());
 			/// total length
 			float total_length = 0;
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
-				total_length += entry.getValue() / cells.size();
+				total_length += entry.getValue() / 1; //cells.size(); /// TODO: cells contains the compartment, axon, dendrite and does not represent one file!
+				
 			}
 
 			/// densities
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
 				entry.setValue(entry.getValue() / total_length);
+				if ( (entry.getValue() / total_length) > 1) {
+					System.err.println("density violation!");
+					System.err.println(entry.getValue());
+					System.err.println(total_length);
+				}
 			}
 
 			System.out.println("Total dendritic length [\\mu m]: " + total_length);

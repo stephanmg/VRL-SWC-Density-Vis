@@ -9,6 +9,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.util.MemoryUtil;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
@@ -321,6 +322,7 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 			HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
 			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
 				for (Map.Entry<String, Tree<Vector4d>> tree : cell.getValue().entrySet()) {
+					System.err.println("Number of edges (computeDensity): " + tree.getValue().getEdges().size());
 					ArrayList<Edge<Vector3f>> points = new ArrayList<Edge<Vector3f>>();
 					for (Edge<Vector4d> vec : tree.getValue().getEdges()) {
 						Vector4d from = vec.getFrom();
@@ -372,13 +374,21 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 					}*/
 					gColor = t.getColor();
 					
+					System.err.println("Edges: " + t.getEdges().size());
 					for (Edge<Vector4d> e : t.getEdges()) {
-						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 8);
+						//System.err.println("Edge: " + e);
+						MemoryUtil.printHeapMemoryUsage();			
+						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 3);
 						
 						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()),null, 1F, false, false, false).generateShape3DArray());
+						MemoryUtil.printHeapMemoryUsage();
 					}
+					
+					System.err.println("next tree!");
 				}
 			}
+			
+			System.err.println("trees done!");
 			
 			/// visualize contours!
 			/**
@@ -391,17 +401,22 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 					/**
 					 * @todo refactor to use edge instead of points
 					 */
+					MemoryUtil.printHeapMemoryUsage();
 					for (int i = 0; i < points.size() - 1; i++) {
-						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i+1).x, points.get(i+1).y, points.get(i+1).z), points.get(i).w, points.get(i+1).w, 8);
+						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i+1).x, points.get(i+1).y, points.get(i+1).z), points.get(i).w, points.get(i+1).w, 3);
 						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()),null, 1F, false, false, false).generateShape3DArray());
 						
 					}
+					MemoryUtil.printHeapMemoryUsage();
 					
 				}
 				
 			}
 			
 		}
+
+		System.err.println("contours done!");
+		
 		isGeometryModified = false;
 		return this.lineGraphGeometry;
 	}

@@ -208,9 +208,9 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			}
 			trees.put(name, t);
 
-			for (Edge<Vector3d> edge : trees.get(name).getEdges()) {
+			/*for (Edge<Vector3d> edge : trees.get(name).getEdges()) {
 				System.err.println("from: " + edge.getFrom() + " to: " + edge.getTo());
-			}
+			}*/
 		}
 		return trees;
 	}

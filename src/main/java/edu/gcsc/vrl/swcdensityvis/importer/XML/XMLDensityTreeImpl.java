@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.vecmath.Vector3f;
+import sun.java2d.pipe.Region;
 
 /**
  * @brief Density implementation for internal usage
@@ -48,13 +49,15 @@ final class XMLDensityTreeImpl implements Density {
 		Pair<Vector3f, Vector3f> bounding = this.bounding;
 		/// compute the density
 		int index = 0;
+		int voxelDim = this.voxelDepth * this.voxelHeight * this.voxelHeight; 
+		float totalDim = Math.abs((bounding.getFirst().x - bounding.getSecond().x) * (bounding.getFirst().y - bounding.getSecond().y) * (bounding.getFirst().z - bounding.getSecond().z)); 
 		for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x += this.voxelWidth) {
 			for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y += this.voxelHeight) {
 				for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z += this.voxelDepth) {
 					if (density.containsKey(index)) {
 						/// note: density.get(index) in interval [0, 1] -> thus we multiply by 100, for making in the graphical representation available the density in percentage 0 to 100 %
-						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 1000));  /// note however, multiplication with 100 is not required!
-						System.err.println("density: " + density.get(index) * 1000);
+						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 100));  /// note however, multiplication with 100 is not required!
+						//System.err.println("density: " + density.get(index) * 100); 
 						/** @todo we need to take the default voxel volume into account for a density 
 						 *  this means: dividing by the morphological volume! (for now we allow for 1x1x1 volumes which corresponds to 1x1x1 in morphological units, i. e. um^3 here!)
 						 */
