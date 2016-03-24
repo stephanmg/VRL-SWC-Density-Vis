@@ -1,7 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis;
 
-/// importsa
+/// imports
 import edu.gcsc.vrl.densityvis.*;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
@@ -29,6 +29,8 @@ public class DensityVisualization implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/// TODO introduce matrix for blurring introduce bool to blur or not
+
 	@OutputInfo(style = "shaped3darraycustom", name = " ", typeName = " ")
 	public Shape3DArray visualizeDensity(
 		@ParamGroupInfo(group = "Visualization|false|no description")
@@ -36,7 +38,7 @@ public class DensityVisualization implements java.io.Serializable {
 		DensityResult density,
 		
 		@ParamGroupInfo(group = "Visualization|false|no description")
-		@ParamInfo(name = "Min Density", style = "slider", options = "min=1;max=100;") 
+		@ParamInfo(name = "Min Density [%]", style = "slider", options = "min=0;max=100;") 
 		int percentage,
 		
 		@ParamGroupInfo(group = "Visualization")

@@ -14,6 +14,8 @@ import eu.mihosoft.vrl.visual.VTextField;
 import groovy.lang.Script;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.Box;
 
 /**

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.vecmath.Vector3f;
-import sun.java2d.pipe.Region;
 
 /**
  * @brief Density implementation for internal usage

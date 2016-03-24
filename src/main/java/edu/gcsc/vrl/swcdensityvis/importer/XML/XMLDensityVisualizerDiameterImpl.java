@@ -91,6 +91,8 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 				this.contours.put(this.inputFiles.get(0).getName(), process_contours(rootNode));
 				System.out.println(" done!");
 
+				/// TODO: here we add trees and contours but in fact we could have more cells not one cell
+				/// therefore we work on the trees of the given cell, thus we normalized wrongly the density
 				System.out.println("Processing Trees...");
 				this.trees.put(this.inputFiles.get(0).getName(), process_trees(rootNode));
 				System.out.println(" done!");
@@ -319,8 +321,11 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 	@Override
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
+			/// NOTE: local data must be also something like this:
+			/// HashMap<String, HashMap<String, ArrayList<Edge<Vector3f>>>> filename_local_data;
 			HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
 			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
+				ArrayList<Edge<Vector3f>> final_data = new ArrayList<Edge<Vector3f>>();
 				for (Map.Entry<String, Tree<Vector4d>> tree : cell.getValue().entrySet()) {
 					System.err.println("Number of edges (computeDensity): " + tree.getValue().getEdges().size());
 					ArrayList<Edge<Vector3f>> points = new ArrayList<Edge<Vector3f>>();
@@ -331,9 +336,14 @@ public class XMLDensityVisualizerDiameterImpl implements DensityVisualizable, XM
 							new Vector3f( (float) from.x, (float) from.y, (float) from.z),
 							new Vector3f( (float) to.x, (float) to.y, (float) to.z)));
 					}
-					local_data.put(tree.getKey(), points);
+					final_data.addAll(points);
+					/// local_data.put(tree.getKey(), points);
 				}
+				local_data.put(cell.getKey(), final_data);
 				
+			}
+			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
+				System.err.println("cell name/file name: " + cell.getKey().toString());
 			}
 			XMLDensityData data = new XMLDensityData(local_data);
 			this.context.setDensityData(data);

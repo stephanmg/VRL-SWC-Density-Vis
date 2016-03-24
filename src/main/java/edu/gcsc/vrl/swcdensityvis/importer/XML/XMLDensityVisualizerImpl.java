@@ -261,8 +261,9 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	}
 
 	/**
-	 * @todo this works only in ComputeDensity, since we use the default density diameter impl
-	 *        to calculate the density, in ComputeDensity! in VisualizeDensity we only call calculateGeometry
+	 * @todo this works only because we use in the  ComputeDensity component the default density diameter impl 
+	 * 	 to calculate the density.
+	 *        in visualizedensity component we just dont call this method, we just return the lineGraphGeometry!
 	 *        which returns the line graph geometry without diameter info, i. e. no cylinders, not lines!
 	 * @return 
 	 */

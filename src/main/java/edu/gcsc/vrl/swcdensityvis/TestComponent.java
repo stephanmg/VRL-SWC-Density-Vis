@@ -6,7 +6,6 @@ import edu.gcsc.vrl.swcdensityvis.data.FileSelection;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import eu.mihosoft.vrl.visual.VComboBox;
 import java.io.File;
 import java.io.Serializable;
 

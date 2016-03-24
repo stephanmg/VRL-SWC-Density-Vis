@@ -59,7 +59,7 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 
 	public DensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
-		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.4"));
+		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.5"));
 
 		setDescription("Visualizes the density of a bunch of neuroanatomically-traced SWC/XML/ASC files");
 

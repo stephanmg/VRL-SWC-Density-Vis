@@ -245,9 +245,11 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		// take number of available processors and create a fixed thread pool,
 		// the executor executes then at most the number of available processors
 		// threads to calculate the partial density (Callable PartialDensityComputer)
+		/// TODO/NOTE: maybe only processors/2 is reasonable (since hyperthreading is counted too!)
 		int processors = Runtime.getRuntime().availableProcessors();
 		ExecutorService executor = Executors.newFixedThreadPool(processors);
 		System.out.println("Number of processors: " + processors);
+		System.err.println("number of processors should be divided by 2 as hyperthreading used!");
 
 		ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
 		for (Map.Entry<String, ArrayList<Edge<Vector3f>>> cell : cells.entrySet()) {
@@ -285,7 +287,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 			/// total length
 			float total_length = 0;
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
-				total_length += entry.getValue() / 1; //cells.size(); /// TODO: cells contains the compartment, axon, dendrite and does not represent one file!
+				total_length += entry.getValue() / cells.size(); /// TODO: cells contains the compartment, axon, dendrite and does not represent one file!
 			}
 
 			/// densities
@@ -303,6 +305,8 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 			System.out.println("Non-zero cuboids: " + vals.size());
 			long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;
 			System.out.println("Serial work [s]: " + timeSpentInMillisecondsSerial / 1000.0);
+
+			System.out.println("Number of cells" + cells.size());
 
 		} catch (ExecutionException e) {
 			System.err.println(e);
