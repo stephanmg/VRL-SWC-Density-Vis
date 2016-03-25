@@ -1,9 +1,9 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.types.LA;
 
+/// imports
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.FileDialogManager;
-import eu.mihosoft.vrl.dialogs.SaveImageDialog;
-import eu.mihosoft.vrl.ext.com.jhlabs.image.GaussianFilter;
 import eu.mihosoft.vrl.io.ImageFilter;
 import eu.mihosoft.vrl.io.ImageSaver;
 import eu.mihosoft.vrl.media.VideoCreator;
@@ -18,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,23 +34,38 @@ import javax.swing.JPopupMenu;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 
+/**
+ * @brief a custom Shape3DArray type with some useful enhancements
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
+ */
 @TypeInfo(type = Shape3DArray.class, input = false, output = true, style = "shaped3darraycustom")
 public class Shape3DArrayTypeCustom extends Shape3DArrayType {
-
+	/**
+	 * @brief a class implementing the action of creating an animation
+	 * This class outputs an animation out of rotated views of the images
+	 */
 	private final class CreateAnimation extends AbstractAction {
-
 		private static final long serialVersionUID = 1L;
 		private final Rotator rotator = new Rotator();
 		private boolean bToggleRotate = false;
 		private int imageNumber = 0;
 		private File folder = null;
-		private float spf = 1;
+		private final float spf = 1;
 
+		/**
+		 * @brief ctor
+		 * @param name
+		 * @param mnemonic 
+		 */
 		CreateAnimation(String name, Integer mnemonic) {
 			super(name);
 			putValue(MNEMONIC_KEY, mnemonic);
 		}
 
+		/**
+		 * @brief rotates image with a given rotator and creates video
+		 * @param e 
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
@@ -105,17 +119,25 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	}
 
 	private final class SaveImageDialog {
-
 		public void showDialog(Component parent, Object o) {
 			FileDialogManager dialogManager = new FileDialogManager();
 			dialogManager.saveFile(parent, o, new ImageSaver(), new ImageFilter());
 		}
 	}
 
+	/**
+	 * @brief a class implementing the action of saving the rendered imaged blurred
+	 * @todo introduce possibility to specify a user given matrix for blurring
+	 */
 	private final class SaveButtonAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * @brief ctor
+		 * @param name
+		 * @param mnemonic 
+		 */
 		public SaveButtonAction(String name, Integer mnemonic) {
 			super(name);
 			putValue(MNEMONIC_KEY, mnemonic);
@@ -164,8 +186,10 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		}
 	}
 
+	/**
+	 * @brief rotates the Shape3DArray view (in the VCanvas)
+	 */
 	class Rotator {
-
 		private double rotStep = 10;
 		private double rotStepRad = rotStep * Math.PI / 180;
 		private double rotRadMax = 2 * Math.PI;
@@ -173,6 +197,9 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		private double rotInitRad = 2 * Math.PI / 180;
 		private boolean bToggleRotate = true;
 
+		/**
+		 * @brief ctor
+		 */
 		Rotator() {
 
 		}
@@ -204,11 +231,19 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		}
 	}
 
+	/**
+	 * @brief a class implementing the action for toggling rotating the view
+	 */
 	private final class ToggleButtonAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 		boolean bToggleRotate = false;
 
+		/**
+		 * @brief ctor
+		 * @param name
+		 * @param mnemonic 
+		 */
 		public ToggleButtonAction(String name, Integer mnemonic) {
 			super(name);
 			putValue(MNEMONIC_KEY, mnemonic);
@@ -267,25 +302,37 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	private Shape3D xAxis;
 	private Shape3D yAxis;
 	private Shape3D zAxis;
-
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @brief ctor
+	 */
 	public Shape3DArrayTypeCustom() {
 		super();
 	}
 
+	/**
+	 * @brief ctor
+	 * @param canvas
+	 * @param universeCreator 
+	 */
 	public Shape3DArrayTypeCustom(VCanvas3D canvas, UniverseCreator universeCreator) {
 		super(canvas, universeCreator);
-
 	}
 
+	/**
+	 * @brief init the 3D view of the Shape3DArray
+	 * This creates a scale bar and adds the additional popup menu items 
+	 * @param canvas
+	 * @param universeCreator 
+	 */
 	@Override
 	protected void init3DView(final VCanvas3D canvas, UniverseCreator universeCreator) {
 		super.init3DView(canvas, universeCreator);
 		Shape3DArray array = (Shape3DArray) getViewValue();
 
+		/// scale bar
 		if (array != null) {
-			eu.mihosoft.vrl.system.VMessage.info("not null!", "");
 			Shape3DArray shape = new Shape3DArray();
 
 			LineArray axisXLines = new LineArray(2, LineArray.COORDINATES);
@@ -322,6 +369,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 			setViewValue(shape);
 		}
 
+		/// popup menu
 		JPopupMenu menu = getCanvas().getMenu();
 		if (menu != null) {
 			ToggleButtonAction toggleBA = new ToggleButtonAction("Toggle rotate", KeyEvent.VK_R);
@@ -332,7 +380,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 			menu.addSeparator();
 			JMenuItem save = new JMenuItem(saveBA);
 			menu.add(save);
-			CreateAnimation ca = new CreateAnimation("Toggel animation", KeyEvent.VK_A);
+			CreateAnimation ca = new CreateAnimation("Toggle animation", KeyEvent.VK_A);
 			menu.addSeparator();
 			JMenuItem animation = new JMenuItem(ca);
 			menu.add(animation);
