@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.test;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,15 +11,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @brief tests cuboid 
+ *
  * @author stephan
  */
 public class CuboidTests {
 	private final static Cuboid CUBOID = new Cuboid(0, 0, 0, 1, 1, 1);
 	private static final double DELTA = 1e-15;
-	
-	public CuboidTests() {
-	}
 	
 	@BeforeClass
 	public static void setUpClass() {

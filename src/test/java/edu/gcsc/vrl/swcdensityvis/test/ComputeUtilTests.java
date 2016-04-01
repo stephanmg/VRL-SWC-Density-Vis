@@ -1,5 +1,7 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.test;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.util.CompUtility;
 import javax.vecmath.Vector3f;
 import org.junit.After;

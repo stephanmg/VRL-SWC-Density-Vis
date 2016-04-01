@@ -1,10 +1,7 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.test;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/// imports
 import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import edu.gcsc.vrl.swcdensityvis.util.CuboidUtility;
 import eu.mihosoft.vrl.reflection.Pair;
@@ -21,10 +18,6 @@ import static org.junit.Assert.*;
  * @author stephan
  */
 public class CuboidUtilityTests {
-	
-	public CuboidUtilityTests() {
-	}
-	
 	@BeforeClass
 	public static void setUpClass() {
 	}
