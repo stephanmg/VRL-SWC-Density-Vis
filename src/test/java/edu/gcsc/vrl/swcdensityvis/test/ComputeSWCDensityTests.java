@@ -1,5 +1,7 @@
+/// package's name
 package edu.gcsc.vrl.swcdensityvis.test;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDensity;
 import org.junit.After;
 import org.junit.AfterClass;
