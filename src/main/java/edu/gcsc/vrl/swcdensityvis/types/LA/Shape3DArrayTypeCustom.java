@@ -4,7 +4,6 @@ package edu.gcsc.vrl.swcdensityvis.types.LA;
 /// imports
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.FileDialogManager;
-import eu.mihosoft.vrl.io.ImageFilter;
 import eu.mihosoft.vrl.io.ImageSaver;
 import eu.mihosoft.vrl.media.VideoCreator;
 import eu.mihosoft.vrl.types.Shape3DArrayType;
@@ -31,6 +30,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.filechooser.FileFilter;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 
@@ -41,10 +41,36 @@ import javax.vecmath.Point3f;
 @TypeInfo(type = Shape3DArray.class, input = false, output = true, style = "shaped3darraycustom")
 public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	/**
-	 * @brief a class implementing the action of creating an animation
-	 * This class outputs an animation out of rotated views of the images
+	 * @brief image file filter for saving density visualization
+	 */
+	class ImageFilter extends FileFilter {
+		/**
+		 * @brief accepts jpg, png, gif and bmp (tif not supported OOTB)
+		 * @param file
+		 * @return 
+		 */
+		@Override
+		public boolean accept(File file) {
+			return file.getName().toLowerCase().endsWith(".jpeg")
+				|| file.getName().toLowerCase().endsWith(".jpg")
+				|| file.getName().toLowerCase().endsWith(".png")
+				|| file.getName().toLowerCase().endsWith(".gif")
+				|| file.getName().toLowerCase().endsWith(".bmp") || file.isDirectory();
+		}
+
+		@Override
+		public String getDescription() {
+			return "Image files (jpg, png, gif, bmp)";
+		}
+	}
+
+	/**
+	 * @brief a class implementing the action of creating an animation This
+	 * class outputs an animation out of rotated views of the images
+	 * @todo needs parameterization! e.g. allow user to specify rotational parameter and movie parameters
 	 */
 	private final class CreateAnimation extends AbstractAction {
+
 		private static final long serialVersionUID = 1L;
 		private final Rotator rotator = new Rotator();
 		private boolean bToggleRotate = false;
@@ -55,7 +81,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		/**
 		 * @brief ctor
 		 * @param name
-		 * @param mnemonic 
+		 * @param mnemonic
 		 */
 		CreateAnimation(String name, Integer mnemonic) {
 			super(name);
@@ -64,7 +90,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 
 		/**
 		 * @brief rotates image with a given rotator and creates video
-		 * @param e 
+		 * @param e
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -118,6 +144,9 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		}
 	}
 
+	/**
+	 * @brief image saver dialog
+	 */
 	private final class SaveImageDialog {
 		public void showDialog(Component parent, Object o) {
 			FileDialogManager dialogManager = new FileDialogManager();
@@ -126,8 +155,10 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	}
 
 	/**
-	 * @brief a class implementing the action of saving the rendered imaged blurred
-	 * @todo introduce possibility to specify a user given matrix for blurring
+	 * @brief a class implementing the action of saving the rendered imaged
+	 * blurred
+	 * @todo introduce possibility to specify a user given matrix for
+	 * blurring
 	 */
 	private final class SaveButtonAction extends AbstractAction {
 
@@ -136,7 +167,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		/**
 		 * @brief ctor
 		 * @param name
-		 * @param mnemonic 
+		 * @param mnemonic
 		 */
 		public SaveButtonAction(String name, Integer mnemonic) {
 			super(name);
@@ -180,7 +211,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 			}
 
 			getOffscreenCanvas().imageUpdate(blurred, 0, 0, 0, 1000, 1000);
-			
+
 			new SaveImageDialog().showDialog(getMainCanvas(), blurred);
 
 		}
@@ -190,6 +221,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	 * @brief rotates the Shape3DArray view (in the VCanvas)
 	 */
 	class Rotator {
+
 		private double rotStep = 10;
 		private double rotStepRad = rotStep * Math.PI / 180;
 		private double rotRadMax = 2 * Math.PI;
@@ -242,7 +274,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 		/**
 		 * @brief ctor
 		 * @param name
-		 * @param mnemonic 
+		 * @param mnemonic
 		 */
 		public ToggleButtonAction(String name, Integer mnemonic) {
 			super(name);
@@ -314,17 +346,17 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	/**
 	 * @brief ctor
 	 * @param canvas
-	 * @param universeCreator 
+	 * @param universeCreator
 	 */
 	public Shape3DArrayTypeCustom(VCanvas3D canvas, UniverseCreator universeCreator) {
 		super(canvas, universeCreator);
 	}
 
 	/**
-	 * @brief init the 3D view of the Shape3DArray
-	 * This creates a scale bar and adds the additional popup menu items 
+	 * @brief init the 3D view of the Shape3DArray This creates a scale bar
+	 * and adds the additional popup menu items
 	 * @param canvas
-	 * @param universeCreator 
+	 * @param universeCreator
 	 */
 	@Override
 	protected void init3DView(final VCanvas3D canvas, UniverseCreator universeCreator) {

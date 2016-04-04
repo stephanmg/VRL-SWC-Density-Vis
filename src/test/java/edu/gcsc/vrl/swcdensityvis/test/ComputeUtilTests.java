@@ -23,11 +23,12 @@ public class ComputeUtilTests {
 	private static final Float max = 1e3f;
 	private static final int iterations = 10000;
 	private static final float EPS = 1e-3f;
-	
+
 	/**
 	 * @brief IProjection interface
 	 */
 	private abstract class IProjection {
+
 		/**
 		 * @brief test method for proejction
 		 */
@@ -49,9 +50,9 @@ public class ComputeUtilTests {
 		abstract Vector3f project(Vector3f q);
 
 		/**
-		 * @brief checks the projected vector 
+		 * @brief checks the projected vector
 		 * @param qPrime
-		 * @param q 
+		 * @param q
 		 */
 		abstract void check_results(Vector3f qPrime, Vector3f q);
 	}

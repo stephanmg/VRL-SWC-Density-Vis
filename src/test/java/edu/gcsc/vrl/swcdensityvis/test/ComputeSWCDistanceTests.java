@@ -15,22 +15,23 @@ import static org.junit.Assert.*;
  * @author stephan
  */
 public class ComputeSWCDistanceTests {
+
 	@BeforeClass
 	public static void setUpClass() {
 	}
-	
+
 	@AfterClass
 	public static void tearDownClass() {
 	}
-	
+
 	@Before
 	public void setUp() {
 	}
-	
+
 	@After
 	public void tearDown() {
 	}
-	
+
 	@Test
 	public void compute_density() {
 		ComputeSWCDistance d = new ComputeSWCDistance();
