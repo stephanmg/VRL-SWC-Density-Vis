@@ -59,16 +59,16 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 	private File templateProjectSrc3;
 
 	/**
-	 * @brief configurate plugin
+	 * @brief configurates plugin 
 	 */
 	public DensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
-		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.5"));
+		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.6"));
 
-		setDescription("Visualizes the density of a bunch of neuroanatomically-traced SWC/XML/ASC files");
+		setDescription("Visualizes the density of a bunch of neuroanatomically-traced SWC/XML or ASC files");
 
-		setCopyrightInfo("SWCDensityVisualizationPlugin",
-			"(c) Stephan Grein", "www", "license", "license text");
+		setCopyrightInfo("SWC-Density-Vis Plugin",
+			"(c) stephan", "www.syntaktischer-zucker.de", "LGPLv3", "");
 
 		// allow export package to use by other projects
 		exportPackage("edu.gcsc.vrl.swcdensityvis");
