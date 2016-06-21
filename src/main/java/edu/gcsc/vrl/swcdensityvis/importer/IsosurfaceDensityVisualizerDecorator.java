@@ -3,10 +3,7 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
-import edu.gcsc.vrl.densityvis.DensityUtil;
-import edu.gcsc.vrl.densityvis.VoxelImpl;
 import edu.gcsc.vrl.densityvis.VoxelSet;
-import edu.gcsc.vrl.densityvis.WritableVoxel;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.Color;
@@ -19,6 +16,7 @@ import java.util.List;
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class IsosurfaceDensityVisualizerDecorator extends DensityVisualizerDecorator {
+	/// isosurface definitions
 	private int average;
 	private int deviation;
 	
@@ -101,25 +99,18 @@ public class IsosurfaceDensityVisualizerDecorator extends DensityVisualizerDecor
 		/// density
 		Density density = super.getImpl().computeDensity();
 		List<? extends VoxelSet> voxels = density.getVoxels();
-		System.err.println("Number of VOXELS (before): " + density.getVoxels().size());
 
 		/// save indices of voxels matching threshold criterion
 		for (int i = 0; i < voxels.size()-1; i++) {
 			VoxelSet vs = voxels.get(i);
-			System.err.println("Average: " + average);
-			System.err.println("Deviation: " + deviation);
 			Double voxelVal = vs.getValue();
 			Double lowerBnd = (double) average-deviation;
 			Double upperBnd = (double) average+deviation;
 			
-			if ( (Double.compare(voxelVal, lowerBnd) >= 0) && (Double.compare(voxelVal, upperBnd) <= 0) ) {
-			} else {
-				System.err.println("VOXEL SUBSTITUTED- voxel value: " + vs.getValue() + "; threshold=" + average);
+			if ( ! (Double.compare(voxelVal, lowerBnd) >= 0) && (Double.compare(voxelVal, upperBnd) <= 0) ) {
 				density.getVoxels().remove(vs);
 			}
 		}
-		
-		System.err.println("Number of VOXELS (after): " + density.getVoxels().size());
 		
 		return density;
 	}

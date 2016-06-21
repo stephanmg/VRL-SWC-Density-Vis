@@ -9,22 +9,21 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * @brief provide default density vizualizer implementation
- *        other classes can make use of this and delegate to this implementation
- *        (see for instance XMLDensityVisualizer)
- * @author stephan
+ * @brief the default density visualizer
+ * Note: A general implementation may not be possible
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public class DefaultDensityVisualizer implements DensityVisualizable {
 	private DensityComputationContext context = new DensityComputationContext(new DefaultDensityComputation());
 
 	@Override
 	public void parse() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public void parseStack() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
@@ -36,9 +35,8 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public Shape3DArray calculateGeometry() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
-
 
 	@Override
 	public void setContext(DensityComputationContext context) {
@@ -47,27 +45,26 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public void setDensityData(DensityData data) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public Object[] getDimension() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public Object getCenter() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public void setFiles(ArrayList<File> files) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public void prepare(Color color, double scale, Compartment compartment) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
-
 }

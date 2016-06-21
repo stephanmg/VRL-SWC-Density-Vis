@@ -2,8 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
- *
- * @author stephan
+ * @brief edge density computation strategy
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public interface EdgeDensityComputationStrategy extends DensityComputationStrategy {
 }

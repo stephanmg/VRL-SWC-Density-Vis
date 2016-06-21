@@ -13,10 +13,9 @@ import java.util.HashMap;
 
 /**
  * @brief in case of increasing complexity, one can introduce the DensityComputationStrategyFactory as an abstract Factory, i . e. a Factory EdgeDensityComputationStrategy and TreeDensityComputationStrategy as well as a DefaultDensityComputationStrategy factory
- * @author stephan
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public class DefaultDensityComputation implements DensityComputationStrategy {
-
 	@Override
 	public Density computeDensity() {
 		/// combine here DensityUtil and DensityImpl!
@@ -32,17 +31,16 @@ public class DefaultDensityComputation implements DensityComputationStrategy {
 
 	@Override
 	public void setDensityData(DensityData data) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public Object getDimension() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
 
 	@Override
 	public Object getCenter() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
-
 }

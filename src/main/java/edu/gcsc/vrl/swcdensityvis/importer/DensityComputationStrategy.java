@@ -5,8 +5,8 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 import edu.gcsc.vrl.densityvis.Density;
 
 /**
- *
- * @author stephan
+ * @brief interface for density computation strategies
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public interface DensityComputationStrategy {
 	Density computeDensity();

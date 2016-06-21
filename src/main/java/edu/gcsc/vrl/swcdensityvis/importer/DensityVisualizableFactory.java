@@ -7,35 +7,39 @@ import edu.gcsc.vrl.swcdensityvis.importer.asc.ASCDensityVisualizer;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 
 /**
- * @brief factory (can be called from an VRL-Studio Component!)
- * @author stephan
+ * @brief factory for density visualizable classes
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public final class DensityVisualizableFactory {
-	
+	/**
+	 * @brief get default density visualizer
+	 * @return DensityVisualizabler
+	 */
 	public DensityVisualizable getDefaultDensityVisualizer() {
 		return new DefaultDensityVisualizer();
 	}
+	
 	/**
-	 * 
+	 * @brief create a density visualizer
 	 * @param visualizerType
-	 * @return 
+	 * @return DensityVisualizable
 	 */
 	public DensityVisualizable getDensityVisualizer(String visualizerType) {
 		return create(visualizerType);
 	}
 	
 	/**
-	 * 
+	 * @brief get a density visualizer with a given strategy
 	 * @param visualizerType
 	 * @param strategy
-	 * @return 
+	 * @return DensityVisualizable
 	 */
 	public DensityVisualizable getDensityVisualizer(String visualizerType, DensityComputationStrategy strategy) {
 		return create(visualizerType, strategy);
 	}
 	
 	/**
-	 * 
+	 * @brief get density visualizer with strategy and implementation
 	 * @param visualizerType
 	 * @param strategy
 	 * @param impl
@@ -49,9 +53,9 @@ public final class DensityVisualizableFactory {
 	}
 
 	/**
-	 * 
+	 * @brief internal method to create density visualizers
 	 * @param visualizerType
-	 * @return 
+	 * @return DensityVisualizable
 	 */
 	private DensityVisualizable create(String visualizerType) {
 		if (visualizerType.equalsIgnoreCase("SWC")) {
@@ -66,10 +70,10 @@ public final class DensityVisualizableFactory {
 	}
 	
 	/**
-	 * 
+	 * @brief internal method to create density visualizers
 	 * @param visualizerType
 	 * @param strategy
-	 * @return 
+	 * @return DensityVisualizable
 	 */
 	private DensityVisualizable create(String visualizerType, DensityComputationStrategy strategy) {
 		DensityVisualizable densityVisualizable = create(visualizerType);

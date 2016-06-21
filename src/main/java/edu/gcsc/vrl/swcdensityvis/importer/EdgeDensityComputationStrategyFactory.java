@@ -5,19 +5,28 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.EdgeDensityComputationStrategyXML;
 
 /**
- *
- * @author stephan
+ * @brief edge density computation strategy factory
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public class EdgeDensityComputationStrategyFactory extends AbstractDensityComputationStrategyFactory {
-
 	public EdgeDensityComputationStrategyFactory() {
 	}
 
+	/**
+	 * @brief get tree density computation strategy
+	 * @param choice
+	 * @return 
+	 */
 	@Override
 	public TreeDensityComputationStrategy getTreeDensityComputationStrategy(String choice) {
 		return null;
 	}
 
+	/**
+	 * @brief get edge density computation strategy
+	 * @param choice
+	 * @return 
+	 */
 	@Override
 	public EdgeDensityComputationStrategy getEdgeDensityComputationStrategy(String choice) {
 		if (choice.equalsIgnoreCase("XML")) {

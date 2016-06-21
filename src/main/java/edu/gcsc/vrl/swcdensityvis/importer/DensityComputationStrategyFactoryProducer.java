@@ -2,14 +2,17 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
- *
- * @author stephan
+ * @brief strategy factory producer
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public class DensityComputationStrategyFactoryProducer {
-
+	/**
+	 * 
+	 */
 	public DensityComputationStrategyFactoryProducer() {
 		
 	}
+	
 	/**
 	 * 
 	 * @param choice
