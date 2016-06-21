@@ -1,9 +1,10 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.data;
+package edu.gcsc.vrl.swcdensityvis.types.common;
 
 /// imports
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.FileDialogManager;
+import eu.mihosoft.vrl.io.VFileFilter;
 import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.LayoutType;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
@@ -23,45 +24,41 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 /**
- * @brief load folder dialog
+ *
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
-@TypeInfo(type = File.class, input = true, output = false, style = "my-folder-load-dialog")
-public class LoadFolderFileType extends TypeRepresentationBase {
+@TypeInfo(type = File.class, input = true, output = false, style = "load-compartment-dialog")
+public class LoadCompartmentFileType extends TypeRepresentationBase {
 
 	private static final long serialVersionUID = 1L;
 
 	/// the text field to display
 	private VTextField input;
-	/// the current hoc_tag
-	private String hoc_tag = null;
-	/// the file type
-	private String file_type = null;
-	/// display full path or not?
-	private boolean fullPath = false;
+	/// filter to restrict to allowed files
+	private VFileFilter fileFilter = new VFileFilter();
+	/// the current file_tag
+	private String file_tag = null;
 
 	/**
-	 * Constructor.
+	 * @brief ctor
 	 */
 	@Override
 	public void addedToMethodRepresentation() {
+		/// add to method representation
 		super.addedToMethodRepresentation();
 
 		// register at observable
-		notifyLoadHOCFileObservable();
+		notifyLoadCompartmentFileObservable();
 	}
 
-	public LoadFolderFileType() {
-
-		eu.mihosoft.vrl.system.VMessage.info("MPM Plugin status", "LoadHOCFileType instantiated!");
-
+	public LoadCompartmentFileType() {
 		// create a Box and set it as layout
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
 		setLayout(layout);
 		setLayoutType(LayoutType.STATIC);
 
 		// set the name label
-		nameLabel.setText("Folder Name:");
+		nameLabel.setText("File Name:");
 		nameLabel.setAlignmentX(0.0f);
 		add(nameLabel);
 
@@ -93,9 +90,6 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 		// hide connector, since no external data allowed
 		setHideConnector(true);
 
-		// set to ugx ending only
-		ArrayList<String> endings = new ArrayList<String>();
-
 		// create a file manager
 		final FileDialogManager fileManager = new FileDialogManager();
 
@@ -114,8 +108,8 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 					}
 				}
 
-				File file = fileManager.getLoadFolder(getMainCanvas(),
-					directory, false);
+				File file = fileManager.getLoadFile(getMainCanvas(),
+					directory, fileFilter, false);
 
 				if (file != null) {
 					setViewValue(file);
@@ -133,10 +127,9 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 			input.setCaretPosition(input.getText().length());
 			input.setToolTipText(input.getText());
 			input.setHorizontalAlignment(JTextField.RIGHT);
-			//TODO: reset width according to file name
 		}
 		//  Here we inform the Singleton, that the file has been scheduled
-		notifyLoadHOCFileObservable();
+		notifyLoadCompartmentFileObservable();
 	}
 
 	@Override
@@ -158,71 +151,58 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 
 		if (getValueOptions() != null) {
 
-			if (getValueOptions().contains("hoc_tag")) {
-				property = script.getProperty("hoc_tag");
+			if (getValueOptions().contains("file_tag")) {
+				property = script.getProperty("file_tag");
 			}
 
 			if (property != null) {
-				hoc_tag = (String) property;
+				file_tag = (String) property;
 			}
 		}
 
-		if (hoc_tag == null) {
+		if (file_tag == null) {
 			getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option",
-				"ParamInfo for hoc-subset-selection requires hoc_tag in options",
+				"ParamInfo for file-subset-selection requires file_tag in options",
 				getConnector(), MessageType.ERROR);
 		} else {
-			getMainCanvas().getMessageBox().addMessage("ParamInfo specified correctly", "hoc_tag was: " + hoc_tag, MessageType.INFO);
+			getMainCanvas().getMessageBox().addMessage("ParamInfo specified correctly", "file_tag was: " + file_tag, MessageType.INFO);
 		}
-
+		
 		property = null;
 
 		if (getValueOptions() != null) {
-			if (getValueOptions().contains("file_type")) {
-				property = script.getProperty("file_type");
-			} 
+			if (getValueOptions().contains("endings")) {
+				property = script.getProperty("endings");
+			}
 
 			if (property != null) {
-				file_type = (String) property;
+				ArrayList<String> endings = (ArrayList<String>) property;
+				fileFilter.setAcceptedEndings(endings);
+				fileFilter.setDescription("Geometry files (*." + endings + ")");
 			}
 		}
 		
-		property = null;
-		
-		if (getValueOptions() != null) {
-			if (getValueOptions().contains("displayFullPath")) {
-				property = script.getProperty("displayFullPath");
-			}
-			
-			if (property != null) {
-				this.fullPath = (Boolean) property;
-			}
-		}
-		
-		property = null;
 
 	}
 
-	protected void notifyLoadHOCFileObservable() {
-		eu.mihosoft.vrl.system.VMessage.info("Clamp", "notifyloadhocfileobaservable called!");
+	protected void notifyLoadCompartmentFileObservable() {
 		File file = new File(input.getText());
 		int id = this.getParentMethod().getParentObject().getObjectID();
 		Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);
 		int windowID = 0;
 
 		//  Here we inform the Singleton, that the file has been scheduled
-		if (!file.getAbsolutePath().isEmpty() && file.isDirectory()) {
-			String msg = LoadFolderObservable.getInstance().setSelectedFile(file, hoc_tag, o, windowID, this.file_type,
-				this.fullPath);
+		if (!file.getAbsolutePath().isEmpty() && file.isFile()) {
+			String msg = LoadCompartmentObservable.getInstance().setSelectedFile(file, file_tag, o, windowID);
 			if (!msg.isEmpty() && !getMainCanvas().isLoadingSession()) {
-				getMainCanvas().getMessageBox().addMessage("Invalid hoc-File",
+				getMainCanvas().getMessageBox().addMessage("Invalid geometry file",
 					msg, getConnector(), MessageType.ERROR);
 			}
 
 		} else {
-			LoadFolderObservable.getInstance().setInvalidFile(hoc_tag, o, windowID);
+			LoadCompartmentObservable.getInstance().setInvalidFile(file_tag, o, windowID);
 			if (!input.getText().isEmpty() && !getMainCanvas().isLoadingSession()) {
-				getMainCanvas().getMessageBox().addMessage("Invalid hoc-File",
+				getMainCanvas().getMessageBox().addMessage("Invalid geometry file",
 					"Specified filename invalid: " + file.toString(),
 					getConnector(), MessageType.ERROR);
 			}
@@ -239,3 +219,4 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 			+ VLangUtils.addEscapesToCode(getValue().toString()) + "\"";
 	}
 }
+

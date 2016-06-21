@@ -1,7 +1,8 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.types.LA;
+package edu.gcsc.vrl.swcdensityvis.types.common;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.Shape3DArrayCustom;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.FileDialogManager;
 import eu.mihosoft.vrl.io.ImageSaver;
@@ -27,8 +28,12 @@ import javax.media.j3d.LineArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileFilter;
 import javax.vecmath.Color3f;
@@ -38,8 +43,8 @@ import javax.vecmath.Point3f;
  * @brief a custom Shape3DArray type with some useful enhancements
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
-@TypeInfo(type = Shape3DArray.class, input = false, output = true, style = "shaped3darraycustom")
-public class Shape3DArrayTypeCustom extends Shape3DArrayType {
+@TypeInfo(type = Shape3DArrayCustom.class, input = false, output = true, style = "shaped3darraycustom")
+public class Shape3DArrayTypeCustomOld extends Shape3DArrayType {
 	/**
 	 * @brief image file filter for saving density visualization
 	 */
@@ -257,7 +262,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 			try {
 				Thread.sleep((long) (1000 / fps));
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Shape3DArrayTypeCustom.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(Shape3DArrayTypeCustomOld.class.getName()).log(Level.SEVERE, null, ex);
 			}
 
 		}
@@ -283,6 +288,18 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			JFrame frame = new JFrame();
+			JPanel panel = new JPanel();
+			JLabel labelX = new JLabel("X");
+			JLabel labelY = new JLabel("Y");
+			JLabel labelZ = new JLabel("Z");
+			panel.setLayout(new BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+			panel.add(labelX);
+			panel.add(labelY);
+			panel.add(labelZ);
+			frame.add(panel);
+			frame.setVisible(true);
+
 			if (bToggleRotate == true) {
 				bToggleRotate = false;
 			} else {
@@ -320,7 +337,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 						try {
 							Thread.sleep((long) (1000 / fps));
 						} catch (InterruptedException ex) {
-							Logger.getLogger(Shape3DArrayTypeCustom.class.getName()).log(Level.SEVERE, null, ex);
+							Logger.getLogger(Shape3DArrayTypeCustomOld.class.getName()).log(Level.SEVERE, null, ex);
 						}
 
 					}
@@ -339,7 +356,7 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	/**
 	 * @brief ctor
 	 */
-	public Shape3DArrayTypeCustom() {
+	public Shape3DArrayTypeCustomOld() {
 		super();
 	}
 
@@ -348,9 +365,15 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	 * @param canvas
 	 * @param universeCreator
 	 */
-	public Shape3DArrayTypeCustom(VCanvas3D canvas, UniverseCreator universeCreator) {
+	public Shape3DArrayTypeCustomOld(VCanvas3D canvas, UniverseCreator universeCreator) {
 		super(canvas, universeCreator);
 	}
+
+	 @Override
+    	synchronized public void setViewValue(Object o) {
+		
+    }
+
 
 	/**
 	 * @brief init the 3D view of the Shape3DArray This creates a scale bar
@@ -361,37 +384,36 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 	@Override
 	protected void init3DView(final VCanvas3D canvas, UniverseCreator universeCreator) {
 		super.init3DView(canvas, universeCreator);
+		System.err.println("Test, test!");
 		Shape3DArray array = (Shape3DArray) getViewValue();
 
 		/// scale bar
 		if (array != null) {
 			Shape3DArray shape = new Shape3DArray();
 
+			/// x-axis
 			LineArray axisXLines = new LineArray(2, LineArray.COORDINATES);
 			axisXLines.setCoordinate(0, new Point3f(-1.0f, 0.0f, 0.0f));
 			axisXLines.setCoordinate(1, new Point3f(1.0f, 0.0f, 0.0f));
+			axisXLines.setColor(0, new Color3f(255, 255, 255));
+			axisXLines.setColor(1, new Color3f(255, 255, 255));
 
+			/// y-axis
 			LineArray axisYLines = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-
 			axisYLines.setCoordinate(0, new Point3f(0.0f, -1.0f, 0.0f));
 			axisYLines.setCoordinate(1, new Point3f(0.0f, 1.0f, 0.0f));
 			axisYLines.setColor(0, new Color3f(255, 255, 255));
 			axisYLines.setColor(1, new Color3f(255, 255, 255));
 
+			/// z-axis
 			Point3f z1 = new Point3f(0.0f, 0.0f, -1.0f);
 			Point3f z2 = new Point3f(0.0f, 0.0f, 1.0f);
-			LineArray axisZLines = new LineArray(10, LineArray.COORDINATES | LineArray.COLOR_3);
-
+			LineArray axisZLines = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
 			axisZLines.setCoordinate(0, z1);
 			axisZLines.setCoordinate(1, z2);
-			axisZLines.setCoordinate(2, z2);
-			axisZLines.setCoordinate(3, new Point3f(0.1f, 0.1f, 0.9f));
-			axisZLines.setCoordinate(4, z2);
-			axisZLines.setCoordinate(5, new Point3f(-0.1f, 0.1f, 0.9f));
-			axisZLines.setCoordinate(6, z2);
-			axisZLines.setCoordinate(7, new Point3f(0.1f, -0.1f, 0.9f));
-			axisZLines.setCoordinate(8, z2);
-			axisZLines.setCoordinate(9, new Point3f(-0.1f, -0.1f, 0.9f));
+			axisZLines.setColor(0, new Color3f(255, 255, 255));
+			axisZLines.setColor(1, new Color3f(255, 255, 255));
+			
 			this.xAxis = new Shape3D(axisXLines);
 			this.yAxis = new Shape3D(axisYLines);
 			this.zAxis = new Shape3D(axisZLines);
@@ -399,13 +421,18 @@ public class Shape3DArrayTypeCustom extends Shape3DArrayType {
 			shape.add(yAxis);
 			shape.add(zAxis);
 			setViewValue(shape);
+			
+			LineArray scalebar = new LineArray(2, LineArray.COORDINATES);
+
+			/// TODO: place coordinate system more nice
+			/// TODO: add scale bar 
 		}
 
 		/// popup menu
 		JPopupMenu menu = getCanvas().getMenu();
 		if (menu != null) {
-			ToggleButtonAction toggleBA = new ToggleButtonAction("Toggle rotate", KeyEvent.VK_R);
-			SaveButtonAction saveBA = new SaveButtonAction("Save As blurred", KeyEvent.VK_B);
+			ToggleButtonAction toggleBA = new ToggleButtonAction("Toggle rotational view", KeyEvent.VK_R);
+			SaveButtonAction saveBA = new SaveButtonAction("Save As blurred Image", KeyEvent.VK_B);
 			JMenuItem rotate = new JMenuItem(toggleBA);
 			menu.addSeparator();
 			menu.add(rotate);

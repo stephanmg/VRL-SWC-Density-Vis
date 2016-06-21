@@ -2,7 +2,11 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 import edu.gcsc.vrl.densityvis.Density;
+import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.awt.Color;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * @brief provide default density vizualizer implementation
@@ -53,6 +57,16 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public Object getCenter() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setFiles(ArrayList<File> files) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void prepare(Color color, double scale, Compartment compartment) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

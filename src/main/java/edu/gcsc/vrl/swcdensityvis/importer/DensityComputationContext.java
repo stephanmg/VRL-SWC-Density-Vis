@@ -9,7 +9,6 @@ import edu.gcsc.vrl.densityvis.Density;
  * @author stephan
  */
 public class DensityComputationContext {
-
 	private DensityComputationStrategy densityComputationStrategy;
 
 	/**

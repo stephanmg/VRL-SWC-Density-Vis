@@ -8,7 +8,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.AbstractDensityComputationStrategyFac
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import edu.gcsc.vrl.swcdensityvis.util.ColorUtil;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.Color;
@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import static javax.media.j3d.GeometryArray.COLOR_3;
 import static javax.media.j3d.GeometryArray.COORDINATES;
 import javax.media.j3d.LineArray;
@@ -34,7 +36,7 @@ import org.jdom2.input.sax.XMLReaders;
  *
  * @author stephan
  */
-public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensityVisualizerImplementable {
+public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementable {
 
 	private final AbstractDensityComputationStrategyFactory strategyFactory = new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory(); /// edge factory 
 
@@ -49,8 +51,9 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	private Density density;
 	private boolean isGeometryModified;
 	private final ArrayList<File> inputFiles = new ArrayList<File>();
-	private Color gColor = new Color(255, 255, 255);
+	private Color gColor = null;
 	private double SF = 1;
+	private Compartment compartment;
 
 	/**
 	 *
@@ -72,6 +75,7 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 
 	/**
 	 * @brief only the first file of the list is parsed and processed
+	 * TODO: use ID to identify trees from structure
 	 */
 	@Override
 	public void parse() {
@@ -96,10 +100,64 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 
 			this.inputFiles.remove(0);
 			isGeometryModified = true;
+			
+			/// output trees
+			for (Map.Entry<String, HashMap<String, Tree<Vector3d>>> entry : trees.entrySet()) {
+				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
+			}
+			
+			/// output contours
+			for (Map.Entry<String, HashMap<String, Contour<Vector3d>>> entry : contours.entrySet()) {
+				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+			}
 
-			System.err.println("Trees: " + this.trees.size());
-			System.err.println("Contours: " + this.contours.size());
 
+
+			ArrayList<String> files = new ArrayList<String>();
+			ArrayList<String> to_remove = new ArrayList<String>();
+			
+			for (Map.Entry<String, HashMap<String, Tree<Vector3d>>> entry : trees.entrySet()) {
+				files.add(entry.getKey());
+				System.err.println("entry key: " + entry.getKey());
+				for (Map.Entry<String, Tree<Vector3d>> tree : entry.getValue().entrySet()) {
+					System.err.println("tree key: " + tree.getKey().trim() + ".");
+					for (String comp : compartment.get_names()) {
+						System.err.println("comp: " + comp.trim() + ".");
+						if (tree.getKey().trim().matches(comp.trim())) {
+							System.err.println("*** TO BE REMOVED ***");
+							to_remove.add(tree.getKey());
+						} else {
+							System.err.println("*** NOT TO BE REMOVED ***");
+						}
+					}
+				}
+			}
+			
+			for (Map.Entry<String, HashMap<String, Tree<Vector3d>>> entry : trees.entrySet()) {
+				HashMap<String, Tree<Vector3d>> tree_ = entry.getValue();
+				for (String to_rm : to_remove) {
+					try {
+						tree_.remove(to_rm);
+						System.err.println("*** REMOVED *** (" + to_rm + ").");
+					} catch (NoSuchElementException ex) {
+						System.err.println("Element not present in all files. Are you sure this is a consensus geometry file? " + ex);
+					}
+				}
+			}
+			
+			/// output trees
+			for (Map.Entry<String, HashMap<String, Tree<Vector3d>>> entry : trees.entrySet()) {
+				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
+			}
+			
+			/// output contours
+			for (Map.Entry<String, HashMap<String, Contour<Vector3d>>> entry : contours.entrySet()) {
+				System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+			}
+
+
+			
+		
 		} catch (IOException io) {
 			System.out.println(io.getMessage());
 		} catch (JDOMException jdomex) {
@@ -178,6 +236,8 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			String name = node.getAttributeValue("type");
 			t.setType(node.getAttributeValue("type"));
 			List<Element> points = node.getChildren("point");
+			String color = node.getAttributeValue("color");
+			t.setColor(Color.decode(color));
 			for (int i = 0; i < points.size() - 1; i++) {
 				edges.add(new Edge<Vector3d>(
 					new Vector3d(SF * Double.parseDouble(points.get(i).getAttributeValue("x")),
@@ -273,6 +333,9 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 			XMLDensityData data = new XMLDensityData(new HashMap<String, ArrayList<Edge<Vector3f>>>());
 			this.context.setDensityData(data);
 			this.density = context.executeDensityComputation();
+			
+			/// TODO: needs full implementation -> then bounding box calculation (e.g. getDimension()) works
+			/// since this is calculated on the density data not the geometry data...
 		}
 
 		return this.density;
@@ -300,8 +363,14 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 				for (Tree<Vector3d> t : ts.values()) {
 					for (Edge<Vector3d> e : t.getEdges()) {
 						LineArray la = new LineArray(2, COORDINATES | COLOR_3);
-						la.setColor(0, ColorUtil.color2Color3f(gColor));
-						la.setColor(1, ColorUtil.color2Color3f(gColor));
+						if (gColor != null) {
+							la.setColor(0, ColorUtil.color2Color3f(gColor));
+							la.setColor(1, ColorUtil.color2Color3f(gColor));
+						} else {
+							/// no color set, use color from file
+							la.setColor(0, ColorUtil.color2Color3f(t.getColor()));
+							la.setColor(1, ColorUtil.color2Color3f(t.getColor()));
+						}
 						la.setCoordinates(0, new Point3f[]{new Point3f(e.getFrom()), new Point3f(e.getTo())});
 						this.lineGraphGeometry.add(new Shape3D(la));
 						///System.err.println("***adding one shape3d!***");
@@ -313,10 +382,6 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 		return this.lineGraphGeometry;
 	}
 
-	/**
-	 * 
-	 * @param densityComputationContext 
-	 */
 	@Override
 	public void setContext(DensityComputationContext densityComputationContext) {
 		context = densityComputationContext;
@@ -330,6 +395,18 @@ public class XMLDensityVisualizerImpl implements DensityVisualizable, XMLDensity
 	@Override
 	public Object getCenter() {
 		return this.context.getDensityComputationStrategy().getCenter();
+	}
+
+	@Override
+	public void setExcludedCompartments(Compartment compartment) {
+		this.compartment = compartment;
+	}
+	
+	@Override
+	public void prepare(Color color, double scale, Compartment compartment) {
+		this.setLineGraphColor(color);
+		this.setScalingFactor(scale);
+		this.setExcludedCompartments(compartment);
 	}
 
 }

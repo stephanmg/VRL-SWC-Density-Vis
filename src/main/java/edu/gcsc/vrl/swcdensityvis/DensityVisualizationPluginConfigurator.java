@@ -2,8 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
-import edu.gcsc.vrl.swcdensityvis.data.FileSelectionType;
-import edu.gcsc.vrl.swcdensityvis.data.LoadFolderFileType;
+import edu.gcsc.vrl.swcdensityvis.types.common.FileSelectionType;
+import edu.gcsc.vrl.swcdensityvis.types.common.LoadFolderFileType;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCLoadStackComponent;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCDensityVisualization;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDistance;
@@ -18,7 +18,7 @@ import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixType;
 import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixVectorTestComponent;
 import edu.gcsc.vrl.swcdensityvis.types.LA.DenseVectorArrayTestComponent;
 import edu.gcsc.vrl.swcdensityvis.types.LA.DenseVectorFactory;
-import edu.gcsc.vrl.swcdensityvis.types.LA.Shape3DArrayTypeCustom;
+import edu.gcsc.vrl.swcdensityvis.types.common.Shape3DArrayCustomType;
 import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCCSMatrix;
 import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCCSMatrixType;
 import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCRSMatrix;
@@ -26,6 +26,8 @@ import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCRSMatrixType;
 import edu.gcsc.vrl.swcdensityvis.types.LA.SparseMatrixFactory;
 import edu.gcsc.vrl.swcdensityvis.types.LA.SparseVector;
 import edu.gcsc.vrl.swcdensityvis.types.LA.SparseVectorFactory;
+import edu.gcsc.vrl.swcdensityvis.types.common.CompartmentType;
+import edu.gcsc.vrl.swcdensityvis.types.common.LoadCompartmentFileType;
 import eu.mihosoft.vrl.io.IOUtil;
 import eu.mihosoft.vrl.io.VJarUtil;
 import eu.mihosoft.vrl.io.VersionInfo;
@@ -47,16 +49,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
- * @brief plugin configurator
+ * @brief SWC-Density-Vis plugin configurator
+ * @author stephanmg <stephan@syntaktische-zucker.de>
  */
 public class DensityVisualizationPluginConfigurator extends VPluginConfigurator {
-
-	private File templateProjectSrc;
+	/// templates
+	private File templateProjectSrc1;
 	private File templateProjectSrc2;
 	private File templateProjectSrc3;
 
+	/**
+	 * @brief configurate plugin
+	 */
 	public DensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
 		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.5"));
@@ -75,11 +79,19 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 		addDependency(new PluginDependency("Density-Vis-Plugin", "0.2", VersionInfo.UNDEFINED));
 	}
 
+	/**
+	 * @brief register components and types
+	 * @see VPluginConfigurator#register(eu.mihosoft.vrl.system.PluginAPI) 
+	 * @param api 
+	 */
 	@Override
 	public void register(PluginAPI api) {
-		// register plugin with canvas
+		/// register plugin with canvas
 		if (api instanceof VPluginAPI) {
+			/// plugin API
 			VPluginAPI vapi = (VPluginAPI) api;
+			
+			/// components
 			vapi.addComponent(SWCLoadStackComponent.class);
 			vapi.addComponent(ComputeSWCDensity.class);
 			vapi.addComponent(ComputeSWCDistance.class);
@@ -98,59 +110,78 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 			vapi.addComponent(SparseMatrixFactory.class);
 			vapi.addComponent(SparseVectorFactory.class);
 			vapi.addComponent(SparseVector.class);
+			
+
+			/// types
 			vapi.addTypeRepresentation(DenseMatrixType.class);
 			vapi.addTypeRepresentation(DenseMatrixSilentType.class);
 			vapi.addTypeRepresentation(DenseMatrixArrayType.class);
 			vapi.addTypeRepresentation(SparseCCSMatrixType.class);
 			vapi.addTypeRepresentation(SparseCRSMatrixType.class);
-			vapi.addTypeRepresentation(Shape3DArrayTypeCustom.class);
-			
-			vapi.addComponent(TestComponent.class);
+			vapi.addTypeRepresentation(Shape3DArrayCustomType.class);
+			vapi.addTypeRepresentation(LoadCompartmentFileType.class);
+			vapi.addTypeRepresentation(CompartmentType.class);
 			vapi.addTypeRepresentation(FileSelectionType.class);
 			vapi.addTypeRepresentation(LoadFolderFileType.class);
 		}
 	}
 
+	/**
+	 * @brief unregister components and types
+	 * @see VPluginConfigurator#unregister(eu.mihosoft.vrl.system.PluginAPI) 
+	 * @param api 
+	 */
 	@Override
 	public void unregister(PluginAPI api) {
-		// nothing to unregister
+		/// nothing to unregister
 	}
 
+	/**
+	 * @brief install components, types and templates
+	 * @see VPluginConfigurator#install(eu.mihosoft.vrl.system.InitPluginAPI) 
+	 * @param api
+	 */
 	@Override
-	public void install(InitPluginAPI iApi) {
-		// ensure template projects are updated
-		new File(iApi.getResourceFolder(), "template-01.vrlp").delete();
-		new File(iApi.getResourceFolder(), "template-02.vrlp").delete();
-		new File(iApi.getResourceFolder(), "template-03.vrlp").delete();
+	public void install(InitPluginAPI api) {
+		new File(api.getResourceFolder(), "template-01.vrlp").delete();
+		new File(api.getResourceFolder(), "template-02.vrlp").delete();
+		new File(api.getResourceFolder(), "template-03.vrlp").delete();
 	}
 
+	/**
+	 * @brief init plugin
+	 * @see VPluginConfigurator#init(eu.mihosoft.vrl.system.InitPluginAPI) 
+	 * @param api 
+	 */
 	@Override
-	public void init(InitPluginAPI iApi) {
-
+	public void init(InitPluginAPI api) {
 		CompletionUtil.registerClassesFromJar(VJarUtil.getClassLocation(DensityVisualizationPluginConfigurator.class));
-
-		initTemplateProject(iApi);
+		initTemplateProject(api);
 	}
 
-	private void initTemplateProject(InitPluginAPI iApi) {
-		templateProjectSrc = new File(iApi.getResourceFolder(), "template-01.vrlp");
-		templateProjectSrc2 = new File(iApi.getResourceFolder(), "template-02.vrlp");
-		templateProjectSrc3 = new File(iApi.getResourceFolder(), "template-03.vrlp");
+	/**
+	 * @brief init template project files
+	 * @param api 
+	 */
+	private void initTemplateProject(InitPluginAPI api) {
+		templateProjectSrc1 = new File(api.getResourceFolder(), "template-01.vrlp");
+		templateProjectSrc2 = new File(api.getResourceFolder(), "template-02.vrlp");
+		templateProjectSrc3 = new File(api.getResourceFolder(), "template-03.vrlp");
 
-		if (!templateProjectSrc.exists()) {
-			saveProjectTemplate();
+		if (!templateProjectSrc1.exists()) {
+			saveProjectTemplate("/edu/gcsc/vrl/swcdensityvis/resources/projects/" + "template-01.vrlp");
 		}
 
 		if (!templateProjectSrc2.exists()) {
-			saveProjectTemplate2();
+			saveProjectTemplate("/edu/gcsc/vrl/swcdensityvis/resources/projects/" + "template-02.vrlp");
 		}
 
 		if (!templateProjectSrc3.exists()) {
-			saveProjectTemplate3();
+			saveProjectTemplate("/edu/gcsc/vrl/swcdensityvis/resources/projects/" + "template-03.vrlp");
 		}
 
-		iApi.addProjectTemplate(new ProjectTemplate() {
-
+		/// 1st template
+		api.addProjectTemplate(new ProjectTemplate() {
 			@Override
 			public String getName() {
 				return "SWC-Density-Vis - Template 1 (SWC)";
@@ -158,7 +189,7 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 
 			@Override
 			public File getSource() {
-				return templateProjectSrc;
+				return templateProjectSrc1;
 			}
 
 			@Override
@@ -174,7 +205,9 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 			}
 		});
 
-		iApi.addProjectTemplate(new ProjectTemplate() {
+
+		/// 2nd template
+		api.addProjectTemplate(new ProjectTemplate() {
 			@Override
 			public String getName() {
 				return "SWC-Density-Vis - Template 2 (Matrices)";
@@ -198,7 +231,10 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 				return null;
 			}
 		});
-		iApi.addProjectTemplate(new ProjectTemplate() {
+		
+
+		/// 3rd template
+		api.addProjectTemplate(new ProjectTemplate() {
 			@Override
 			public String getName() {
 				return "SWC-Density-Vis - Template 3 (XML)";
@@ -223,40 +259,16 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 			}
 		});
 	}
-
-	private void saveProjectTemplate() {
-		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(
-			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-01.vrlp");
+	
+	/**
+	 * @brief save the project template as a file
+	 * @param str 
+	 */
+	private void saveProjectTemplate(String str) {
+		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(str);
+		
 		try {
-			IOUtil.saveStreamToFile(in, templateProjectSrc);
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(VRLPlugin.class.getName()).
-				log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
-			Logger.getLogger(VRLPlugin.class.getName()).
-				log(Level.SEVERE, null, ex);
-		}
-	}
-
-	private void saveProjectTemplate2() {
-		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(
-			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-02.vrlp");
-		try {
-			IOUtil.saveStreamToFile(in, templateProjectSrc2);
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(VRLPlugin.class.getName()).
-				log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
-			Logger.getLogger(VRLPlugin.class.getName()).
-				log(Level.SEVERE, null, ex);
-		}
-	}
-
-	private void saveProjectTemplate3() {
-		InputStream in = DensityVisualizationPluginConfigurator.class.getResourceAsStream(
-			"/edu/gcsc/vrl/swcdensityvis/resources/projects/template-03.vrlp");
-		try {
-			IOUtil.saveStreamToFile(in, templateProjectSrc3);
+			IOUtil.saveStreamToFile(in, new File(str));
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(VRLPlugin.class.getName()).
 				log(Level.SEVERE, null, ex);

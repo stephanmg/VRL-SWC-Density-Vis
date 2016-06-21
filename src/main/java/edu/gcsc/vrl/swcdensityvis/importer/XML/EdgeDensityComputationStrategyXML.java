@@ -26,13 +26,13 @@ import javax.vecmath.Vector3f;
 
 /**
  * @brief implement the strategy here ... 
- * @author stephan
+ * @author stephan <tephan@syntaktischer-zucker.de>
  */
 public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
 
 	/**
-	 * 
+	 * @@brief ctor
 	 */
 	public EdgeDensityComputationStrategyXML() {
 		
@@ -67,6 +67,10 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 				temp_z.add(edge.getTo().z);
 			}
 		}
+		
+		System.err.println("temp_x size: " + temp_x.size());
+		System.err.println("temp_y size: " + temp_y.size());
+		System.err.println("temp_z size: " + temp_z.size());
 
 		return new Pair<Vector3f, Vector3f>(
 			new Vector3f(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z)),

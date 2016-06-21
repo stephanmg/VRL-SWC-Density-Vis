@@ -5,27 +5,17 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
+import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
-import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
+import javax.vecmath.Vector3f;
 
 /**
- *
+ * @brief the default XML density visualizer
  * @author stephan
  */
 public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
-
-	/**
-	 *
-	 * @param color
-	 * @param scalingFactor
-	 */
-	public void prepare(Color color, double scalingFactor) {
-		impl.setLineGraphColor(color);
-		impl.setScalingFactor(scalingFactor);
-	}
-
 	/**
 	 *
 	 * @param impl
@@ -64,7 +54,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	public Object getDimension() {
 		return this.impl.getDimension();
 	}
-
+	
 	/**
 	 *
 	 * @return
@@ -94,6 +84,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	 *
 	 * @param files
 	 */
+	@Override
 	public void setFiles(ArrayList<File> files) {
 		this.impl.setFiles(files);
 	}
@@ -114,6 +105,29 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	@Override
 	public Object getCenter() {
 		return this.impl.getCenter();
+	}
+
+	/**
+	 * @brief calculates the bounding box of the geometry to visualize
+	 * @return 
+	 */
+	public Pair<Vector3f, Vector3f> getBoundingBox() {
+		Vector3f dim = (Vector3f) this.getDimension();
+		Vector3f center = (Vector3f) this.getCenter();
+		
+		return new Pair<Vector3f, Vector3f>
+			(
+				new Vector3f(
+					    center.x - dim.x / 2.0f, 
+					    center.y - dim.y / 2.0f,
+				            center.z - dim.z / 2.0f
+			),
+				new Vector3f(
+					    center.x + dim.x / 2.0f, 
+					    center.y + dim.y / 2.0f,
+				            center.z + dim.z / 2.0f
+			)
+		);
 	}
 
 }

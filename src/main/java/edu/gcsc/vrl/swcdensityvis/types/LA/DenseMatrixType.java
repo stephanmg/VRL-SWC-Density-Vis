@@ -14,8 +14,6 @@ import eu.mihosoft.vrl.visual.VTextField;
 import groovy.lang.Script;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import javax.swing.Box;
 
 /**
@@ -36,6 +34,7 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	private DenseMatrix matrix;
 	private int rows = 3;
 	private int cols = 3;
+	private String[] values; /// provided values
 
 	/**
 	 * @brief default ctor and hide ctor in visual representation
@@ -76,13 +75,33 @@ public class DenseMatrixType extends TypeRepresentationBase {
 		}
 
 		boolean bAutoScroll = true;
-
-		for (VTextField tf : textfields) {
-			if (bAutoScroll) {
-				tf.setAutoscrolls(true);
+		
+		if (values == null) {
+			for (VTextField tf : textfields) {
+				if (bAutoScroll) {
+					tf.setAutoscrolls(true);
+				}
+				tf.setColumns(columns);
+				tf.setText(getDefaultValue());
 			}
-			tf.setColumns(columns);
-			tf.setText(getDefaultValue());
+		} else {
+			if (values.length == rows*cols) {
+				for (int i = 0; i < values.length; i++) {
+					if (bAutoScroll) {
+						this.textfields.get(i).setAutoscrolls(true);
+					}	
+					this.textfields.get(i).setColumns(columns);
+					this.textfields.get(i).setText(values[i]);
+				}
+			} else {
+				for (VTextField tf : textfields) {
+					if (bAutoScroll) {
+						tf.setAutoscrolls(true);
+					}
+					tf.setColumns(columns);
+					tf.setText(getDefaultValue());
+				}	
+			}
 		}
 
 		int index = 0;
@@ -161,6 +180,14 @@ public class DenseMatrixType extends TypeRepresentationBase {
 			if (property != null) {
 				setColCount((Integer) property);
 			}
+			
+			if (getValueOptions().contains("values")) {
+				property = script.getProperty("values");
+				String values = (String) property;
+				System.err.println("values: " + values);
+				String[] vals = values.split(",");
+				this.values = vals;
+			}
 		}
 	}
 
@@ -198,12 +225,15 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	public void setViewValue(Object o) {
 		if (o instanceof DenseMatrix) {
 			DenseMatrix dm = (DenseMatrix) o;
-			this.matrix = dm;
-			int index = 0;
-			for (int i = 0; i < rows; i++) {
-				for (int j = 0; j < cols; j++) {
-					this.textfields.get(index).setText("" + this.matrix.get(i, j));
-					index++;
+			dm.resize(rows, columns);
+			if (values == null) {
+				this.matrix = dm;
+				int index = 0;
+				for (int i = 0; i < rows; i++) {
+					for (int j = 0; j < cols; j++) {
+						this.textfields.get(index).setText("" + this.matrix.get(i, j));
+						index++;
+					}
 				}
 			}
 		}

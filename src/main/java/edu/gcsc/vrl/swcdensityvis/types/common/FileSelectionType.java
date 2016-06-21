@@ -1,7 +1,11 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.data;
+package edu.gcsc.vrl.swcdensityvis.types.common;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.FileSelection;
+import edu.gcsc.vrl.swcdensityvis.data.FolderInfo;
+import edu.gcsc.vrl.swcdensityvis.types.common.LoadFolderObserver;
+import edu.gcsc.vrl.swcdensityvis.types.common.LoadFolderObservable;
 import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.lang.VLangUtils;
 import eu.mihosoft.vrl.reflection.LayoutType;

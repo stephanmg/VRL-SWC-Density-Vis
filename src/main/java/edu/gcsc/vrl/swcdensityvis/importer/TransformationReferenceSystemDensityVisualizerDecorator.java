@@ -1,22 +1,29 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.importer.asc;
+package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 
+
 /**
  *
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
-public class ASCDensityVisualizer implements DensityVisualizable {
+public class TransformationReferenceSystemDensityVisualizerDecorator extends DensityVisualizerDecorator {
+
+	public TransformationReferenceSystemDensityVisualizerDecorator(DensityVisualizable impl) {
+		super(impl);
+	}
+
+	@Override
+	public void setFiles(ArrayList<File> files) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 
 	@Override
 	public void parse() {
@@ -29,7 +36,17 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public Object getDimension() {
+	public Shape3DArray calculateGeometry() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setContext(DensityComputationContext context) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void prepare(Color color, double scale, Compartment compartment) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
@@ -39,32 +56,17 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
-	public Shape3DArray calculateGeometry() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void setContext(DensityComputationContext densityComputationContext) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
 	public void setDensityData(DensityData data) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
+	public Object getDimension() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
 	public Object getCenter() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void setFiles(ArrayList<File> files) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void prepare(Color color, double scale, Compartment compartment) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

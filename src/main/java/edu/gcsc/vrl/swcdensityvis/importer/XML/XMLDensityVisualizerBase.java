@@ -2,11 +2,15 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
+import java.awt.Color;
 
 /**
- *
- * @author stephan
+ * @brief the basis for the XML density visualizers
+ * Specialized XML density visualizers may be derived starting
+ * from this basic implementation to meet specific requirements.
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
 
@@ -36,4 +40,18 @@ public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
 	public XMLDensityVisualizerImplementable getImpl() {
 		return this.impl;
 	}
+	
+	/**
+	 *
+	 * @param color
+	 * @param scalingFactor
+	 * @param compartment
+	 */
+	@Override
+	public void prepare(Color color, double scalingFactor, Compartment compartment) {
+		impl.setLineGraphColor(color);
+		impl.setScalingFactor(scalingFactor);
+		impl.setExcludedCompartments(compartment);
+	}
+
 }

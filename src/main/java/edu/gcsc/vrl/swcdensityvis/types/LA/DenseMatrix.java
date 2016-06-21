@@ -15,6 +15,8 @@ import org.la4j.matrix.dense.Basic2DMatrix;
 @ComponentInfo(name="DenseMatrix", category="Neuro/Common/LA")
 public class DenseMatrix extends Basic2DMatrix implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private final static int MAX_ROWS = 3;
+	private final static int MAX_COLS = 3;
 
 	/**
 	 * @brief default ctor
@@ -29,7 +31,7 @@ public class DenseMatrix extends Basic2DMatrix implements Serializable {
 	 * @def ctor
 	 */
 	public DenseMatrix() {
-		super(3, 3);
+		super(MAX_COLS, MAX_ROWS);
 	}
 
 	/**

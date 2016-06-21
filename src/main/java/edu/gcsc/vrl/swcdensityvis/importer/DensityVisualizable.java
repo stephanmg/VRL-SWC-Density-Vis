@@ -2,9 +2,17 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.awt.Color;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
+ * NOTE: this interfaces (DensityVisualizable) is used to implement
+ * different DensityVisualizers, i.e. XML, SWC or ASC - if additional
+ * functions are used for e.g. ASC or XML then a derived interface
+ * e.g. ASCDensityVisualizable or XMLDensityvisualizble may be used
  * @brief density visualizable interface
  * @author stephan
  *
@@ -15,7 +23,8 @@ import eu.mihosoft.vrl.v3d.Shape3DArray;
  * pattern
  */
 public interface DensityVisualizable extends DensityComputationStrategy {
-
+	void setFiles(ArrayList<File> files);
+	
 	void parse();
 
 	void parseStack();
@@ -29,4 +38,6 @@ public interface DensityVisualizable extends DensityComputationStrategy {
 	Shape3DArray calculateGeometry();
 
 	void setContext(DensityComputationContext context);
+
+	void prepare(Color color, double scale, Compartment compartment);
 }

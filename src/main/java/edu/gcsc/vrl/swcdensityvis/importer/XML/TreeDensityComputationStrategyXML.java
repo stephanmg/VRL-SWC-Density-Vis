@@ -333,9 +333,10 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	@Override
 	public Object getCenter() {
 		Pair<Vector3f, Vector3f> minMax = getBoundingBox();
-		return new Vector3f( (minMax.getFirst().x + minMax.getSecond().x) / 2,
-				     (minMax.getFirst().y + minMax.getSecond().y) / 2,
-			             (minMax.getFirst().z + minMax.getSecond().z) / 2);
+		System.err.println("BoundingBox: " + minMax);
+		return new Vector3f( minMax.getSecond().x + ((minMax.getFirst().x - minMax.getSecond().x) / 2),
+				     minMax.getSecond().y + ((minMax.getFirst().y - minMax.getSecond().y) / 2),
+				     minMax.getSecond().z + ((minMax.getFirst().z - minMax.getSecond().z) / 2));
 	}
 
 }

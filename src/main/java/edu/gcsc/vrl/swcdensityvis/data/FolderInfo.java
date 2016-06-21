@@ -56,7 +56,7 @@ public class FolderInfo {
 	 * @brief set the directory
 	 * @param folderName
 	 */
-	void set_path_to_files(String folderName) {
+	public void set_path_to_files(String folderName) {
 		this.folderName = folderName;
 	}
 }

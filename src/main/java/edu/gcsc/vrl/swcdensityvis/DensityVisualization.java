@@ -9,11 +9,13 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
+import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrix;
+import edu.gcsc.vrl.swcdensityvis.data.Shape3DArrayCustom;
+import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
 import java.io.File;
@@ -21,18 +23,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- *
- * @author stephan
+ * @brief DensityVisualization component
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 @ComponentInfo(name = "DensityVisualization", category = "Neuro/SWC-Density-Vis")
 public class DensityVisualization implements java.io.Serializable {
-
+	/// sVUID
 	private static final long serialVersionUID = 1L;
 
 	/// TODO introduce matrix for blurring introduce bool to blur or not
 
-	@OutputInfo(style = "shaped3darraycustom", name = " ", typeName = " ")
-	public Shape3DArray visualizeDensity(
+	@OutputInfo(style = "shaped3darraycustomtype", name = " ", typeName = " ")
+	public Shape3DArrayCustom visualizeDensity(
 		@ParamGroupInfo(group = "Visualization|false|no description")
 		@ParamInfo(name = "Density") 
 		DensityResult density,
@@ -56,7 +58,15 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamGroupInfo(group = "Visualization")
 		@ParamInfo(name = "Density Visible?", style="default", options="value=true") 
 		boolean bVisibleDensity,
+		
+		@ParamGroupInfo(group = "Visualization")
+		@ParamInfo(name = "Scalebar Visible?", style="default", options="value=false")
+		boolean bScalebarVisible,
 
+		@ParamGroupInfo(group = "Visualization")
+		@ParamInfo(name = "Coordinate System Visible?", style="default", options="value=false")
+		boolean bCoordinateSystemVisible,
+		
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Line-graph Geometry") 
 		File[] swcFiles,
@@ -66,24 +76,56 @@ public class DensityVisualization implements java.io.Serializable {
 		String representation,
 		
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Line-graph Geometry Color", style = "color-chooser", options = "value=java.awt.Color.magenta") Color gColor,
-		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Line-graph Geometry Transparency", style = "slider", options = "min=0;max=100;") int gTransparency,
-		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") 
 		Color mColor,
 		
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "min=0;max=100;value=80") 
 		int mTransparency,
+		
+		@ParamGroupInfo(group = "Geometry|false|no description")
+		@ParamInfo(name = "Bounding Box Visible?", style="default", options="value=true") 
+		boolean bVisibleBoundingBox,
 
 		@ParamGroupInfo(group = "Geometry")
 		@ParamInfo(name = "Consensus Geometry Visible?", style="default", options="value=true") 
-		boolean bVisibleGeometry
-	) {
+		boolean bVisibleGeometry,
 
+		@ParamGroupInfo(group = "Geometry")
+		@ParamInfo(name = "Name", typeName = "Compartment name", style="default", options = "file_tag=\"geometry\"")
+		Compartment compartment,
+		
+		@ParamGroupInfo(group = "Output|false|animation and rotational view; Blur|false|Rotation")
+		@ParamInfo(name = "Blurring Kernel", typeName = "Blurring Kernel", style="default", options = "cols=3; rows=3; "
+			+ "values=\"0.0625, 0.125, 0.0625, 0.125, 0.250, 0.125, 0.0625, 0.125, 0.0625\"")
+		DenseMatrix blurKernel,
+		
+		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
+		@ParamInfo(name = "FPS") 
+		Integer fps,
+
+		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
+		@ParamInfo(name = "File type", typeName = "Filetype", style = "selection", options = "value=[\"AVI\","
+			+ " \"MPG\", \"MOV\"]") 
+		String codec,
+		
+		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Rotation")
+		@ParamInfo(name = "Rotation matrix", typeName = "Rotation matrix", style="default", options = "cols=4; rows=4; "
+			+ "values=\"1,0,0,0,0,1,-1,0,0,1,-1,0,0,0,0,1\"")
+		DenseMatrix rotationMatrix
+
+	) {
 		/// the Shape3DArray to visualize
-		Shape3DArray result = new Shape3DArray();
+		Shape3DArrayCustom result = new Shape3DArrayCustom();
+		/**
+		 * @todo make use of rotation matrix to set rotator parameters
+		 */
+		result.set_rotation_matrix(rotationMatrix);
+		
+		/**
+		 * @todo make use of blurring kernel to set blur action toggle parameters
+		 */
+		result.set_blurring_kernel(blurKernel);
 
 		 VGeometry3D geom3d = new VGeometry3D(
 		 density.getGeometry(),
@@ -98,7 +140,6 @@ public class DensityVisualization implements java.io.Serializable {
 
 		Color dColorZero_real = new Color(dColorZero.getRed(), dColorZero.getGreen(), dColorZero.getBlue(), transparencyVal);
 		Color dColorOne_real = new Color(dColorOne.getRed(), dColorOne.getGreen(), dColorOne.getBlue(), 254);
-		Color gColor_real = new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue());
 
 		DensityVisualizableFactory factory = new DensityVisualizableFactory();
 		/**
@@ -111,49 +152,76 @@ public class DensityVisualization implements java.io.Serializable {
 		densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(selection));
 		visualizer.setContext(densityComputationContext);
 
-		XMLDensityVisualizer xmlDensityVisualizer;
+		DensityVisualizable xmlDensityVisualizer;
 		
+		/// chose between different visulization strategies
+		/**
+		 * @todo choose between visualizers, depending on file type XML or ASC or SWC
+		 */
 		if (representation.equalsIgnoreCase("CYLINDER")) {
 			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 		} else {
 			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultImpl());
 		}
 		
+		
+
 		xmlDensityVisualizer.setContext(densityComputationContext);
-		/**
-		 * @todo setFiles could also be moved in the interface
-		 */
 		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(swcFiles)));
-		xmlDensityVisualizer.prepare(gColor_real, 0.01);
+		/// exclude the compartments also for the visualization of the line-graph geometry
+		xmlDensityVisualizer.prepare(null, 0.01, compartment); 
+		///result.set_center(xmlDensityVisualizer.getCenter());
+		///result.set_dim(xmlDensityVisualizer.getCenter());
 
 		/**
 		 * @todo normalize density per voxel to [0,1] not any number ... i. e. we need percentage
 		 */
 
-		/**
-		 * @todo if we calculate geometry in the ComputeDensity it will
-		 * get cached somehow! (this is by our implementation as this is
-		 * expensive, but then leads here to multiple parent branch in
-		 * java3d!)
-		 */
-		
-		/// add the geometry if we want to visualize
+		/// add the consenus line-graph geometry (single geometry file)
 		if (bVisibleGeometry) {
 			/// parse the files
 			xmlDensityVisualizer.parseStack();
 			/// add line graph geometry 
 			result.addAll(xmlDensityVisualizer.calculateGeometry());
 		}
+		
+		/// @todo this can be excluded?!
+		xmlDensityVisualizer.parseStack();
+
+		/// @todo set bounding box for result (Shape3DCustom)
+		/// this makes easy to set the scale bar and the coordinate axes
+		/// in the Shape3DCustomReimplmentationType!
 
 		/// add the density if we want to visualize
 		if (bVisibleDensity) {
     			result.addAll(VisUtil.scaleDensity2Java3D(
 			density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, 0.01));
+		}
+		
+		/// add the bounding box which includes all line-graph geometries
+		if (bVisibleBoundingBox) {
 			result.addAll( geom3d.generateShape3DArray() );
 		}
 		
+		/// add scale bar if demanded
+		if (bScalebarVisible) {
+			result.setScalebarVisible();
+		}
+
+		/// add coordinate system if demanded
+		if (bCoordinateSystemVisible) {
+			result.setCoordinateSystemVisible();
+		}
+
 		/**
-		 * @todo geometry must also be scaled!!! (consistent to the density description!)
+		 * @todo must be implemented correct for the DensityVisualizerImpl:
+		 * getBoundingBox wrong!
+		/// set bounding box to result
+		/// result.set_bounding_box(xmlDensityVisualizer.getBoundingBox());
+		
+		/**
+		 * @note geometry must also be scaled consistent to 
+		 * the density description in ComputeDensity - this is done.
 		 */
 		return result;
 	}

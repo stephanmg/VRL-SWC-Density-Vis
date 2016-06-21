@@ -2,8 +2,8 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
- *
- * @author stephan
+ * @brief density data
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public interface DensityData {
 	public Object getDensityData();

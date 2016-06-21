@@ -1,7 +1,8 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.data;
+package edu.gcsc.vrl.swcdensityvis.types.common;
 
 /// imports
+import edu.gcsc.vrl.swcdensityvis.data.FolderInfo;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;

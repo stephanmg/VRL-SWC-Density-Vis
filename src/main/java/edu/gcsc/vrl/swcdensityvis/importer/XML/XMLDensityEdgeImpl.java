@@ -82,4 +82,5 @@ final class XMLDensityEdgeImpl implements Density {
 	public List<? extends VoxelSet> getVoxels() {
 		return voxels;
 	}
+
 }

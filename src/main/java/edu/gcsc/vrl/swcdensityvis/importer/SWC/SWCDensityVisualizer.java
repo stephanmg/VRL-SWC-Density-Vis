@@ -3,11 +3,15 @@ package edu.gcsc.vrl.swcdensityvis.importer.SWC;
 
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
+import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import edu.gcsc.vrl.swcdensityvis.importer.DefaultDensityVisualizer;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
+import java.awt.Color;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  *
@@ -54,6 +58,16 @@ public class SWCDensityVisualizer implements DensityVisualizable {
 
 	@Override
 	public Object getCenter() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setFiles(ArrayList<File> files) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void prepare(Color color, double scale, Compartment compartment) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

@@ -1,5 +1,7 @@
 /// package's name
-package edu.gcsc.vrl.swcdensityvis.data;
+package edu.gcsc.vrl.swcdensityvis.types.common;
+
+import edu.gcsc.vrl.swcdensityvis.data.FolderInfo;
 
 /**
  * @brief observer design pattern
