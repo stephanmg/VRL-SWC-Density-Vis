@@ -9,13 +9,13 @@ import java.util.Collections;
 import javax.vecmath.Vector3f;
 
 /**
- *
- * @author stephan
+ * @brief utilities for Edge
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class EdgeUtility {
 
 	/**
-	 * @brief private ctor
+	 * @brief utility pattern
 	 */
 	private EdgeUtility() {
 

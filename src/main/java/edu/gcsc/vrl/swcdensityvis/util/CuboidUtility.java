@@ -6,13 +6,13 @@ import edu.gcsc.vrl.swcdensityvis.data.Cuboid;
 import eu.mihosoft.vrl.reflection.Pair;
 
 /**
- * @brief cuboid utilities
- * @author stephan
+ * @brief utilities for Cuboid
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class CuboidUtility {
 
 	/**
-	 * @brief private ctor for utility pattern
+	 * @brief  utility pattern
 	 */
 	private CuboidUtility() {
 	}
@@ -21,9 +21,6 @@ public final class CuboidUtility {
 	 * @brief get index of sampling cube within the bounding box 
 	 * @param bounding
 	 * @param sample
-	 * @param step_x
-	 * @param step_y
-	 * @param step_z
 	 * @return 
 	 */
 	public static int[] getCuboidId(Cuboid bounding, Cuboid sample) {

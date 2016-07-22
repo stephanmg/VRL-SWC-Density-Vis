@@ -24,7 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 /**
- *
+ * @brief ad Compartment load folder dialog
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @TypeInfo(type = File.class, input = true, output = false, style = "load-compartment-dialog")

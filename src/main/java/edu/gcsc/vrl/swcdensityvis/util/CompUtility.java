@@ -13,17 +13,16 @@ import javax.vecmath.Vector3f;
 
 /**
  * @brief computational utilities for density vis
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class CompUtility {
-
 	private final static Vector3f ORIGO_CARTESIAN_COORDINATES_SYSTEM = new Vector3f(0, 0, 0);
 	private final static Vector3f UNIT_VECTOR_X_DIRECTION = new Vector3f(1, 0, 0);
 	private final static Vector3f UNIT_VECTOR_Y_DIRECTION = new Vector3f(0, 1, 0);
 	private final static Vector3f UNIT_VECTOR_Z_DIRECTION = new Vector3f(0, 0, 1);
 
 	/**
-	 * @brief private ctor
+	 * @brief utility pattern
 	 */
 	private CompUtility() {
 	}

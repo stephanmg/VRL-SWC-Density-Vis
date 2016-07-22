@@ -11,7 +11,7 @@ import lombok.ToString;
 /**
  * @brief a swappable pair for numbers only
  * @param <T> a number wrapper
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @Getter @Setter @AllArgsConstructor @EqualsAndHashCode @ToString 
 public class SwappablePair<T extends java.lang.Number> {

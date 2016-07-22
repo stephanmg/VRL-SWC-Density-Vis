@@ -1,6 +1,7 @@
 /// package's name
 package edu.gcsc.vrl.swcdensityvis.types.common;
 
+/// imports
 import edu.gcsc.vrl.swcdensityvis.data.CompartmentInfo;
 
 /**

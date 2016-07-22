@@ -31,55 +31,46 @@ import java.awt.image.Kernel;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.media.j3d.Appearance;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.ColoringAttributes;
-import javax.media.j3d.Font3D;
-import javax.media.j3d.FontExtrusion;
-import javax.media.j3d.Group;
-import javax.media.j3d.LineArray;
-import javax.media.j3d.OrderedGroup;
-import javax.media.j3d.Shape3D;
-import javax.media.j3d.Switch;
-import javax.media.j3d.Text3D;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransparencyAttributes;
+import javax.media.j3d.*;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
+import lombok.extern.log4j.Log4j;
 
 /**
  * @brief TypeRepresentation for Shape3DArrayCustom
  * @see {@link Shape3DArrayType}
- *
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
+@Log4j
 @TypeInfo(type = Shape3DArrayCustom.class, input = false, output = true, style = "shaped3darraycustomtype")
 public final class Shape3DArrayCustomType extends TypeRepresentationBase {
-
 	/**
-	 * @brief this keylistener responds to keyboard input Note: the
-	 * VCanvas3D respectively VCanvas3DCustom focuses the canvas on a
-	 * mouseclick on the canvas, only then the key listener can respond to
-	 * keyboard input from users
+	 * @brief this KeyListener responds to keyboard input for a custom VCanvas3D
+	 * VCanvas3DCustom focuses overrides the mouseClicked() operation to
+	 * focus the VCanvas3DCustom - then the KeyListener can respond to
+	 * keyboard input from the user
 	 */
 	private final class KeyboardAction implements KeyListener {
+		/**
+		 * @brief 
+		 * @param e 
+		 */
 		@Override
 		public void keyTyped(KeyEvent e) {
+			
 		}
 
 		/**
-		 * @brief translate the camera view LEFT, RIGHT => x direction
-		 * UP, DOWN => y direction UP+SHIFT, DOWN+Shift => z direction
+		 * @brief translate the camera view 
+		 * LEFT, RIGHT          => x direction,
+		 * UP, DOWN             => y direction and
+		 * UP+SHIFT, DOWN+Shift => z direction
 		 * @param e
 		 */
 		@Override
@@ -129,214 +120,158 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			}
 		}
 
+		/**
+		 * @brief
+		 * @param e 
+		 */
 		@Override
 		public void keyReleased(KeyEvent e) {
+			
 		}
 	}
 
 	/**
-	 * @brief a class implementing the action for toggling rotating the view
+	 * @brief a toggle button's action for rotation the universe
 	 */
-	private final class ToggleButtonAction extends AbstractAction {
+	private final class ToggleRotationButtonAction extends AbstractAction {
 		/// sVUID
 		private static final long serialVersionUID = 1L;
 
 		/// members
-		boolean bToggleRotate = false;
-
+		private boolean bToggleRotate = false;
+	
 		/**
-		 * @brief ctor
+		 * @brief 
 		 * @param name
 		 * @param mnemonic
 		 */
-		public ToggleButtonAction(String name, Integer mnemonic) {
+		public ToggleRotationButtonAction(String name, Integer mnemonic) {
 			super(name);
 			putValue(MNEMONIC_KEY, mnemonic);
 		}
 
+		/**
+		 * @brief 
+		 * @param e 
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			/// System.err.println("Blur kernel: " + blurKernel);
 			if (bToggleRotate == true) {
 				bToggleRotate = false;
 			} else {
-				eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Toggle rotate");
+				/// eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Toggle rotate");
 				bToggleRotate = true;
 			}
 
 			new Thread() {
-				private final double rotStep = 10;
-				private final double rotStepRad = rotStep * Math.PI / 180;
-				private final double rotRadMax = 2 * Math.PI;
-				private final double fps = 5;
-				private double rotInitRad = 2 * Math.PI / 180;
-
 				@Override
+				@SuppressWarnings("SleepWhileInLoop")
 				public void run() {
+					double rotation[] = rotationParams;
 					while (bToggleRotate) {
-						rotInitRad += rotStepRad;
-						rotInitRad %= rotRadMax;
-						double vals[] = {1, 0, 0, 0,
-							0, Math.cos(rotInitRad), Math.sin(rotInitRad), 0,
-							0, -Math.sin(rotInitRad), Math.cos(rotInitRad), 0,
-							10, 10, 10, 1};
-
-						double vals2[] = {
-							1, 0, 0, 0,
-							0, Math.cos(rotInitRad), -Math.sin(rotInitRad), 0,
-							0, Math.sin(rotInitRad), Math.cos(rotInitRad), 0,
-							0, 0, 0, 1
-						};
-						//setOrientationFromValues(vals);
 						Transform3D t3d = new Transform3D();
-						t3d.set(vals2);
+						/// simple rotation
+						rotation[0] += rotation[3];
+						rotation[1] += rotation[3];
+						rotation[2] += rotation[3];
+						t3d.rotX(rotation[0]);
+						t3d.rotY(rotation[1]);
+						t3d.rotZ(rotation[2]);
 						getUniverseCreator().getRootGroup().setTransform(t3d);
+						
 						try {
 							Thread.sleep((long) (1000 / fps));
 						} catch (InterruptedException ex) {
-							Logger.getLogger(Shape3DArrayTypeCustomOld.class.getName()).log(Level.SEVERE, null, ex);
+							log.error(ex);
 						}
-
 					}
 				}
 			}.start();
-
-			System.err.println(Arrays.toString(getOrientationFromUniverse()));
+			log.info("Orientation of universe: " + Arrays.toString(getOrientationFromUniverse()));
 		}
 	}
 
 	/**
-	 * @brief a class implementing the action of saving the rendered imaged
-	 * blurred
-	 * @todo introduce possibility to specify a user given matrix for
-	 * blurring
+	 * @brief a toggle button's action for blurring the universe
 	 */
-	private final class SaveButtonAction extends AbstractAction {
+	private final class SaveBlurredImageButtonAction extends AbstractAction {
 		/// sVUID
 		private static final long serialVersionUID = 1L;
+
+		/// members
+		private final float[] blur = {
+				1 / 16f, 1 / 8f, 1 / 16f,
+				1 / 8f, 1 / 4f, 1 / 8f,
+				1 / 16f, 1 / 8f, 1 / 16f};
 
 		/**
 		 * @brief ctor
 		 * @param name
 		 * @param mnemonic
+		 * @param blurMatrix
 		 */
-		public SaveButtonAction(String name, Integer mnemonic) {
+		public SaveBlurredImageButtonAction(String name, Integer mnemonic) {
 			super(name);
 			putValue(MNEMONIC_KEY, mnemonic);
+			
+			/// only set blur vals of blurMatrix if matrix available
+			if (blurMatrix != null) {
+				for (int i=0; i < blurMatrix.rows(); i++) {
+					for (int j = 0; i < blurMatrix.columns(); j++) {
+						blur[i*blurMatrix.rows()+j] = (float) blurMatrix.get(i, j);
+					}
+				}
+			} else {
+				log.info("Given blur matrix was empty - "
+					+ "blurring image with default blur matrix: "
+					+ Arrays.toString(blur));
+			}
 		}
-
+		
+		/**
+		 * @brief 
+		 * @param e 
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			/// eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Save blurred");
 			BufferedImage img = getOffscreenCanvas().doRender(getCanvas().getWidth(), getCanvas().getHeight());
-
-			float[] matrix = {
-				1 / 16f, 1 / 8f, 1 / 16f,
-				1 / 8f, 1 / 4f, 1 / 8f,
-				1 / 16f, 1 / 8f, 1 / 16f,};
-
-			int radius = 10;
-			int size = radius * 2 + 1;
-			float[] data = new float[size * size];
-
-			float sigma = radius / 3.0f;
-			float twoSigmaSquare = 2.0f * sigma * sigma;
-			float sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
-			float total = 0.0f;
-
-			int index = 0;
-			for (int y = -radius; y <= radius; y++) {
-				for (int x = -radius; x <= radius; x++) {
-					float distance = x * x + y * y;
-					data[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
-					total += data[index];
-					System.out.printf("%.3f\t", data[index]);
-					index++;
-				}
-			}
-
-			BufferedImageOp op = new ConvolveOp(new Kernel(size, size, data));
+			BufferedImageOp op = new ConvolveOp(new Kernel(blurMatrix.columns(), blurMatrix.rows(), blur));
 			BufferedImage blurred = null;
+			
 			for (int i = 0; i < 1; i++) {
 				blurred = op.filter(img, null);
 				img = blurred;
 			}
 
+			/// TODO: improve the dimensions 0, 0, 0, 1000, 1000 (getCanvas().getWidth(), getCanvas().getHeight())
 			getOffscreenCanvas().imageUpdate(blurred, 0, 0, 0, 1000, 1000);
-
-			new SaveImageDialog().showDialog(getMainCanvas(), blurred);
-
+			SaveImageDialog.showDialog(getMainCanvas(), blurred);
 		}
 	}
 
 	/**
-	 * @brief rotates the Shape3DArray view (in the VCanvas)
+	 * @brief a class implementing the action of creating an animation 
+	 * This class outputs an animation out of rotated views of the universe,
+	 * i.e. creates images out of the view, then generates a movie out of 
+	 * the sequence of images acquired during rotation of the universe
 	 */
-	private class Rotator {
-
-		private double rotStep = 10;
-		private double rotStepRad = rotStep * Math.PI / 180;
-		private double rotRadMax = 2 * Math.PI;
-		private double fps = 5;
-		private double rotInitRad = 2 * Math.PI / 180;
-		private boolean bToggleRotate = true;
-
-		/**
-		 * @brief ctor
-		 */
-		public Rotator() {
-
-		}
-
-		public void rotate() {
-			rotInitRad += rotStepRad;
-			rotInitRad %= rotRadMax;
-			double vals[] = {1, 0, 0, 0,
-				0, Math.cos(rotInitRad), Math.sin(rotInitRad), 0,
-				0, -Math.sin(rotInitRad), Math.cos(rotInitRad), 0,
-				10, 10, 10, 1};
-
-			double vals2[] = {
-				1, 0, 0, 0,
-				0, Math.cos(rotInitRad), -Math.sin(rotInitRad), 0,
-				0, Math.sin(rotInitRad), Math.cos(rotInitRad), 0,
-				0, 0, 0, 1
-			};
-			//setOrientationFromValues(vals);
-			Transform3D t3d = new Transform3D();
-			t3d.set(vals2);
-			getUniverseCreator().getRootGroup().setTransform(t3d);
-			try {
-				Thread.sleep((long) (1000 / fps));
-			} catch (InterruptedException ex) {
-				Logger.getLogger(Shape3DArrayTypeCustomOld.class.getName()).log(Level.SEVERE, null, ex);
-			}
-
-		}
-	}
-
-	/**
-	 * @brief a class implementing the action of creating an animation This
-	 * class outputs an animation out of rotated views of the images
-	 * @todo needs parameterization! e.g. allow user to specify rotational
-	 * parameter and movie parameters
-	 */
-	private final class CreateAnimation extends AbstractAction {
+	private final class ToggleAnimationActionButton extends AbstractAction {
 		/// sVUID
 		private static final long serialVersionUID = 1L;
 
 		/// members
-		private final Rotator rotator = new Rotator();
 		private boolean bToggleRotate = false;
 		private int imageNumber = 0;
-		private File folder = null;
 		private final float spf = 1;
+		private File folder = null;
 
 		/**
 		 * @brief ctor
 		 * @param name
 		 * @param mnemonic
 		 */
-		CreateAnimation(String name, Integer mnemonic) {
+		public ToggleAnimationActionButton(String name, Integer mnemonic) {
 			super(name);
 			putValue(MNEMONIC_KEY, mnemonic);
 		}
@@ -347,12 +282,10 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
 			if (bToggleRotate == true) {
 				bToggleRotate = false;
 			} else {
-				eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Toggle rotate");
-				/// TODO: idea use a custom dialog, with video settings etc...
+				/// eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Toggle animation");
 				final JFileChooser fc = new JFileChooser();
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				fc.showOpenDialog(getMainCanvas());
@@ -364,15 +297,29 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			new Thread() {
 				@Override
 				public void run() {
+					double rotation[] = rotationParams;
 					while (bToggleRotate) {
-						rotator.rotate();
+						Transform3D t3d = new Transform3D();
+						/// simple rotation
+						rotation[0] += rotation[3];
+						rotation[1] += rotation[3];
+						rotation[2] += rotation[3];
+						t3d.rotX(rotation[0]);
+						t3d.rotY(rotation[1]);
+						t3d.rotZ(rotation[2]);
+						getUniverseCreator().getRootGroup().setTransform(t3d);
+						
+						/// TODO improve the width and height of the images we output, e.g. use:
 						/// BufferedImage img = getOffscreenCanvas().doRender(getCanvas().getWidth(), getCanvas().getHeight());
 						BufferedImage img = getOffscreenCanvas().doRender(4096, 4096);
 						try {
-							ImageIO.write(img, "png", new File(folder + File.separator + "animation_" + imageNumber + ".png"));
+							ImageIO.write(img, "png", new File(folder + File.separator 
+								+ "animation_" + imageNumber + ".png"));
 							imageNumber++;
 						} catch (IOException ioe) {
-							eu.mihosoft.vrl.system.VMessage.error("ImageIO write error", "The file " + folder + File.separator + "animation_" + imageNumber + ".png" + " could not be written!");
+							eu.mihosoft.vrl.system.VMessage.error("ImageIO write error", 
+								"The file " + folder + File.separator + "animation_" 
+								+ imageNumber + ".png" + " could not be written!");
 							System.err.println(ioe);
 						}
 					}
@@ -383,13 +330,16 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 				@Override
 				public void run() {
 					if (!bToggleRotate) {
-						/// images saved, create a video
 						VideoCreator videoCreator = new VideoCreator();
 						try {
-							videoCreator.convert(folder, new File(folder + File.separator + "animation.mov"), spf);
+							videoCreator.convert(folder, new File(folder + File.separator 
+								+ "animation" + "." + videoFormat.toLowerCase()), spf);
 						} catch (IOException ex) {
-							eu.mihosoft.vrl.system.VMessage.error("Video creation error", "The following video could not be created: 'animation.mov' out of the images in folder " + folder);
-							System.err.println(ex);
+							eu.mihosoft.vrl.system.VMessage.error("Video creation error", 
+								"The following video could not be created: "
+								+ "'animation." + videoFormat.toLowerCase() 
+								+ " ' out of the images in folder " + folder);
+							log.error(ex);
 						}
 					}
 				}
@@ -413,7 +363,10 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	protected Dimension minimumVCanvas3DSize;
 	public static String ORIENTATION_KEY = "orientation";
 	private double translationIncrementFactor = 1;
-	private DenseMatrix blurKernel;
+	private DenseMatrix blurMatrix;
+	private int fps; 
+	private String videoFormat;
+	private double[] rotationParams;
 
 	/**
 	 * Defines whether to force branch group in favour of ordered group.
@@ -421,8 +374,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	private boolean forceBranchGroup = false;
 
 	/**
-	 * Constructor.
-	 *
+	 * @brief
 	 * @param canvas the 3D canvas
 	 * @param universeCreator the universe creator
 	 */
@@ -432,45 +384,40 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Constructor.
+	 * @brief
 	 */
 	public Shape3DArrayCustomType() {
 		init();
 		if (!VGraphicsUtil.NO_3D) {
-			/// TODO can be removed (next two lines)
-			VCanvas3D c = null;
-			c = new VCanvas3D(this);
-			init3DView(new VCanvas3DCustom(this), new VUniverseCreator());
 			/// The UniverseCreator gives us the Mouse Zoom Behaviour,
 			/// Rotation and Translation Behaviour (by a hidden Mouse Listener)
+			init3DView(new VCanvas3DCustom(this), new VUniverseCreator());
 		} else {
 			add(new JLabel("Java3D support disabled!"));
 		}
 	}
 
 	/**
-	 * Initializes this type representation.
+	 * @brief initializes this type representation
 	 */
 	protected void init() {
 		setUpdateLayoutOnValueChange(false);
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.X_AXIS);
 		setLayout(layout);
-
-		nameLabel.setText("Shape3D Array:");
+		nameLabel.setText("Shape3DCustom Array:");
 		nameLabel.setAlignmentY(0.5f);
 		this.add(nameLabel);
-
 		setHideConnector(true);
 	}
 
 	/**
-	 * Initializes the 3D view of this type representation.
-	 *
+	 * @brief initializes the 3D view of this type representation
 	 * @param canvas the 3D canvas
 	 * @param universeCreator the universe creator
 	 */
 	protected void init3DView(final VCanvas3DCustom canvas, UniverseCreator universeCreator) {
-		dispose3D(); // very important to prevent memory leaks of derived classes!
+		// very important to prevent memory leaks of derived classes
+		dispose3D(); 
 
 		switchGroup = new Switch(Switch.CHILD_MASK);
 
@@ -622,23 +569,25 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		});
 
 		canvas.getMenu().add(item);
-
-		ToggleButtonAction toggleBA = new ToggleButtonAction("Toggle rotational view", KeyEvent.VK_R);
-		SaveButtonAction saveBA = new SaveButtonAction("Save As blurred Image", KeyEvent.VK_B);
+		ToggleRotationButtonAction toggleBA = 
+			new ToggleRotationButtonAction("Toggle rotational view", KeyEvent.VK_R);
+		SaveBlurredImageButtonAction saveBA = 
+			new SaveBlurredImageButtonAction("Save As blurred Image", KeyEvent.VK_B);
 		JMenuItem rotate = new JMenuItem(toggleBA);
 		canvas.getMenu().addSeparator();
 		canvas.getMenu().add(rotate);
 		canvas.getMenu().addSeparator();
 		JMenuItem save = new JMenuItem(saveBA);
 		canvas.getMenu().add(save);
-		CreateAnimation ca = new CreateAnimation("Toggle animation", KeyEvent.VK_A);
+		ToggleAnimationActionButton ca = new ToggleAnimationActionButton("Toggle animation", KeyEvent.VK_A);
 		canvas.getMenu().addSeparator();
 		JMenuItem animation = new JMenuItem(ca);
 		canvas.getMenu().add(animation);
-
 		canvas.addKeyListener(new KeyboardAction());
 
-		Action doNothing = new AbstractAction() {
+		/*Action doNothing = new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.err.println("FOOO!");
 			}
@@ -648,22 +597,27 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			"doSomething");
 		canvas.getActionMap().put("doSomething",
 			doNothing);
+		*/
 	}
 
+	/**
+	 * @brief 
+	 * @param o the class corresponding to this type representation
+	 */
 	@Override
 	synchronized public void setViewValue(Object o) {
-
 		clearView();
-
 		if (!VGraphicsUtil.NO_3D) {
-
-			/// TODO: place coordinate system more nice
-			/// TODO: add scale bar  more nice
-			/// TODO: use getUniverseCreator().getRootGroup().getBounds() 
-			/// to get bounds (there the scalebar and coord system can be placed!);
+			/// TODO: Better placement of coordinate system
+			/// TODO: Better placement of scalebar
+			/// Note: getUniverseCreator().getRootGroup().getBounds() can be used to find the
+			///       bounds (then the scalebar and coordinate system can be place better though)
 			final Shape3DArrayCustom shapes = (Shape3DArrayCustom) o;
 
-			this.blurKernel = shapes.get_blurring_kernel();
+			this.blurMatrix = shapes.getBlurKernel();
+			this.fps = shapes.getFps();
+			this.videoFormat = shapes.getVideoFormat();
+			this.rotationParams = shapes.getRotationParams();
 
 			if (shapes.isCoordinateSystemVisible()) {
 				/// x-axis
@@ -870,13 +824,18 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		}
 	}
 
+	/**
+	 * @brief empty the view
+	 */
 	@Override
 	public void emptyView() {
 		clearView();
 	}
 
+	/**
+	 * @brief clear the view
+	 */
 	private void clearView() {
-
 		if (!VGraphicsUtil.NO_3D) {
 			if (isDoEmpty()) {
 				if (visibleNodes != null) {
@@ -900,8 +859,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Defines the Vcanvas3D size by evaluating a groovy script.
-	 *
+	 * @brief defines the Vcanvas3D size by evaluating a groovy script
 	 * @param script the script to evaluate
 	 */
 	private void setVCanvas3DSizeFromValueOptions(Script script) {
@@ -956,8 +914,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Defines render options by evaluating a groovy script.
-	 *
+	 * @brief defines render options by evaluating a groovy script
 	 * @param script the script to evaluate
 	 */
 	private void setRenderOptionsFromValueOptions(Script script) {
@@ -1014,6 +971,10 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		}
 	}
 
+	/**
+	 * @brief 
+	 * @param script 
+	 */
 	@Override
 	protected void evaluationRequest(Script script) {
 
@@ -1025,6 +986,10 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		setRenderOptionsFromValueOptions(script);
 	}
 
+	/**
+	 * @brief
+	 * @return 
+	 */
 	@Override
 	public CustomParamData getCustomData() {
 
@@ -1044,6 +1009,10 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		return result;
 	}
 
+	/**
+	 * @brief
+	 * @return 
+	 */
 	public double[] getOrientationFromCustomData() {
 
 		if (VGraphicsUtil.NO_3D) {
@@ -1053,7 +1022,11 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		double[] values = (double[]) super.getCustomData().get(ORIENTATION_KEY);
 		return values;
 	}
-
+	
+	/**
+	 * @brief
+	 * @return 
+	 */
 	public double[] getOrientationFromUniverse() {
 		if (VGraphicsUtil.NO_3D) {
 			return new double[0];
@@ -1065,9 +1038,11 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		return values;
 	}
 
+	/**
+	 * @brief
+	 */
 	@Override
 	public void evaluateCustomParamData() {
-
 		if (VGraphicsUtil.NO_3D) {
 			return;
 		}
@@ -1080,8 +1055,11 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		}
 	}
 
+	/**
+	 * @brief
+	 * @param values 
+	 */
 	public void setOrientationFromValues(double[] values) {
-
 		if (VGraphicsUtil.NO_3D) {
 			return;
 		}
@@ -1094,8 +1072,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Returns the canvas used for rendering
-	 *
+	 * @brief returns the canvas used for rendering
 	 * @return the canvas used for rendering
 	 */
 	public VCanvas3D getCanvas() {
@@ -1103,8 +1080,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Returns the canvas used for offscreen rendering
-	 *
+	 * @brief returns the canvas used for offscreen rendering
 	 * @return the canvas used for offscreen rendering
 	 */
 	public VOffscreenCanvas3D getOffscreenCanvas() {
@@ -1112,18 +1088,15 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Indicates whether to empty view of the type representation.
-	 *
-	 * @return <code>true</code> if the view will be emptied;
-	 * <code>false</code> otherwise
+	 * @brief indicates whether to empty view of the type representation.
+	 * @return true> if the view will be emptied, false otherwise.
 	 */
 	public boolean isDoEmpty() {
 		return doEmpty;
 	}
 
 	/**
-	 * Returns the universe creator.
-	 *
+	 * @brief returns the universe creator
 	 * @return the universe creator
 	 */
 	public UniverseCreator getUniverseCreator() {
@@ -1131,7 +1104,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Disposes 3D resources.
+	 * @brief disposes 3D resources
 	 */
 	private void dispose3D() {
 		if (!VGraphicsUtil.NO_3D) {
@@ -1149,12 +1122,19 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		}
 	}
 
+	/**
+	 * @brief
+	 */
 	@Override
 	public void dispose() {
 		dispose3D();
 		super.dispose();
 	}
 
+	/**
+	 * @brief
+	 * @param size 
+	 */
 	@Override
 	public void enterFullScreenMode(Dimension size) {
 		super.enterFullScreenMode(size);
@@ -1170,6 +1150,9 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		revalidate();
 	}
 
+	/**
+	 * @brief
+	 */
 	@Override
 	public void leaveFullScreenMode() {
 		super.leaveFullScreenMode();
@@ -1186,31 +1169,19 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		revalidate();
 	}
 
+	/**
+	 * @brief
+	 * @return 
+	 */
 	@Override
 	public JComponent customViewComponent() {
-
-//        final BufferedImage img = plotPane.getImage();
-//
-//        JPanel panel = new JPanel() {
-//            @Override
-//            public void paintComponent(Graphics g) {
-//                g.drawImage(img, 0, 0, 640, 480,  null);
-//            }
-//        };
-//
-//        return panel;
 		return null;
 	}
-//    protected void setMinimumVCanvas3DSize(Dimension canvas3DSize) {
-//
-//        canvas.setPreferredSize(canvas3DSize);
-//        canvas.setMinimumSize(canvas3DSize);
-//        minimumVCanvas3DSize = canvas3DSize;
-//
-//        setValueOptions("width=" + canvas3DSize.width + ";"
-//                + "height=" + canvas3DSize.height);
-//    }
-
+	
+	/**
+	 * @brief
+	 * @return 
+	 */
 	@Override
 	public boolean noSerialization() {
 		// we cannot serialize shape3d objects
@@ -1218,8 +1189,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Indicates whether to force branch group in favour of ordered group.
-	 *
+	 * @brief indicates whether to force branch group in favour of ordered group
 	 * @return the state
 	 */
 	public boolean isForceBranchGroup() {
@@ -1227,8 +1197,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	}
 
 	/**
-	 * Defines whether to force branch group in favour of ordered group.
-	 *
+	 * @brief defines whether to force branch group in favour of ordered group.
 	 * @param forceBranchGroup the state to set
 	 */
 	public void setForceBranchGroup(boolean forceBranchGroup) {

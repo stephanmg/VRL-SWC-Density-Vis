@@ -14,9 +14,10 @@ public class FolderInfo {
 	private String folderName = null;
 	
 	/**
-	 * @brief ctor
+	 * @brief 
 	 */
 	public FolderInfo() {
+		
 	}
 	
 	/**
@@ -58,5 +59,13 @@ public class FolderInfo {
 	 */
 	public void set_path_to_files(String folderName) {
 		this.folderName = folderName;
+	}
+
+	/**
+	 * @brief get the directory
+	 * @return
+	 */
+	public String get_path_to_files() {
+		return this.folderName;
 	}
 }

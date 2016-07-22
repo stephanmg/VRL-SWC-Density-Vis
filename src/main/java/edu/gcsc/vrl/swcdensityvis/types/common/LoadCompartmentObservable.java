@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * @brief the compartment observable
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class LoadCompartmentObservable {
 

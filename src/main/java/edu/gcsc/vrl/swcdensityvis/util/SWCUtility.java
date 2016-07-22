@@ -29,9 +29,8 @@ import java.util.concurrent.Future;
 import javax.vecmath.Vector3f;
 
 /**
- *
- * @author stephan
- * @brief utilites for SWC files
+ * @brief utilities for SWC
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class SWCUtility {
 

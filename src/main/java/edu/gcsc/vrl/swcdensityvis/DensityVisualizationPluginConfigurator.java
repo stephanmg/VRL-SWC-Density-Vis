@@ -2,56 +2,33 @@
 package edu.gcsc.vrl.swcdensityvis;
 
 /// imports
-import edu.gcsc.vrl.swcdensityvis.types.common.FileSelectionType;
-import edu.gcsc.vrl.swcdensityvis.types.common.LoadFolderFileType;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCLoadStackComponent;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCDensityVisualization;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDistance;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.ComputeSWCDensity;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrix;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixArrayTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixArrayType;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixFactory;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixMatrixTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixSilentType;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixType;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrixVectorTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseVectorArrayTestComponent;
-import edu.gcsc.vrl.swcdensityvis.types.LA.DenseVectorFactory;
+import edu.gcsc.vrl.swcdensityvis.types.LA.*;
+import edu.gcsc.vrl.swcdensityvis.types.common.FileSelectionType;
+import edu.gcsc.vrl.swcdensityvis.types.common.LoadFolderFileType;
 import edu.gcsc.vrl.swcdensityvis.types.common.Shape3DArrayCustomType;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCCSMatrix;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCCSMatrixType;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCRSMatrix;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseCRSMatrixType;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseMatrixFactory;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseVector;
-import edu.gcsc.vrl.swcdensityvis.types.LA.SparseVectorFactory;
 import edu.gcsc.vrl.swcdensityvis.types.common.CompartmentType;
 import edu.gcsc.vrl.swcdensityvis.types.common.LoadCompartmentFileType;
 import eu.mihosoft.vrl.io.IOUtil;
 import eu.mihosoft.vrl.io.VJarUtil;
 import eu.mihosoft.vrl.io.VersionInfo;
 import eu.mihosoft.vrl.lang.visual.CompletionUtil;
-import eu.mihosoft.vrl.system.InitPluginAPI;
-import eu.mihosoft.vrl.system.PluginAPI;
-import eu.mihosoft.vrl.system.PluginDependency;
-import eu.mihosoft.vrl.system.PluginIdentifier;
-import eu.mihosoft.vrl.system.ProjectTemplate;
-import eu.mihosoft.vrl.system.VPluginAPI;
-import eu.mihosoft.vrl.system.VPluginConfigurator;
-import eu.mihosoft.vrl.system.VRLPlugin;
-import java.awt.image.BufferedImage;
+import eu.mihosoft.vrl.system.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.image.BufferedImage;
+import lombok.extern.log4j.Log4j;
 
 /**
  * @brief SWC-Density-Vis plugin configurator
  * @author stephanmg <stephan@syntaktische-zucker.de>
  */
+@Log4j
 public class DensityVisualizationPluginConfigurator extends VPluginConfigurator {
 	/// templates
 	private File templateProjectSrc1;
@@ -270,11 +247,9 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 		try {
 			IOUtil.saveStreamToFile(in, new File(str));
 		} catch (FileNotFoundException ex) {
-			Logger.getLogger(VRLPlugin.class.getName()).
-				log(Level.SEVERE, null, ex);
+			log.error(ex);
 		} catch (IOException ex) {
-			Logger.getLogger(VRLPlugin.class.getName()).
-				log(Level.SEVERE, null, ex);
+			log.error(ex);
 		}
 	}
 }

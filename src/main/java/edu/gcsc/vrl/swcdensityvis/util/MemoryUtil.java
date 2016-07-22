@@ -10,7 +10,7 @@ public final class MemoryUtil {
 	private static final int MiB = (int) Math.pow(1024, 2);
 	
 	/**
-	 * @brief ctor
+	 * @brief utility pattern
 	 */
 	private MemoryUtil() {
 		

@@ -4,15 +4,9 @@ package edu.gcsc.vrl.swcdensityvis;
 /// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.DensityResult;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationContext;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProducer;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizable;
-import edu.gcsc.vrl.swcdensityvis.importer.DensityVisualizableFactory;
-import edu.gcsc.vrl.swcdensityvis.importer.XML.TreeDensityComputationStrategyXML;
-import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityUtil;
-import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
+import edu.gcsc.vrl.swcdensityvis.importer.*;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.*;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
-import edu.gcsc.vrl.swcdensityvis.importer.IsosurfaceDensityVisualizerDecorator;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.MethodInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
@@ -28,11 +22,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.vecmath.Vector3f;
+import lombok.extern.log4j.Log4j;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * @brief ComputeDensity component
  * @author stephan <stephan@syntaktischer-zucker.de>
  */
+@Log4j
 @ComponentInfo(name = "ComputeDensity", category = "Neuro/SWC-Density-Vis")
 public class ComputeDensity implements Serializable {
 	/// sVUID
@@ -72,49 +69,45 @@ public class ComputeDensity implements Serializable {
 		int mDeviation
 
 	) {
-		File[] swcFiles = null;
-		swcFiles = folder.listFiles(new FilenameFilter() {
+		File[] stackFiles = folder.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith(".swc")
-					|| name.endsWith(".xml")
-					|| name.endsWith(".asc");
+				return    name.endsWith(".swc")
+				       || name.endsWith(".xml")
+				       || name.endsWith(".asc");
 			}
 		});
 		
-		/// add all input files for density visualization
-		ArrayList<File> files = new ArrayList<File>(Arrays.asList(swcFiles));
-		if (consensus != null) {
-			files.add(consensus);
-		}
+		/// consider all files from stack and the consensus geometry on top
+		ArrayList<File> files = new ArrayList<File>(Arrays.asList(stackFiles));
+		if (consensus != null) { files.add(consensus); }
 		
-		/// check for sane input, only proceed if files given.
+		/// if no files are selected, abort execution and print error
 		if (files.isEmpty()) {
 			eu.mihosoft.vrl.system.VMessage.error(
 				"ComputeDensity", 
 				"At least one input file must be specified "
 				+ "(i. e. at least one geometry file in the "
-				+ "stack folder or a consensus geometry!)"
+				+ "stack folder or a consensus geometry should "
+				+ "be available!)"
 			);
 		} else {
-			/**
-			 * @todo 
-			 * select density visualizer based on XML, ASC or SWC  -->
-			 * check and throw if wrong or non-available visualizer!
-			 */
+			/// get fileType from selected consensus geometry
+			String fileType = FilenameUtils.getExtension(consensus.toString());
 			DensityVisualizableFactory factory = new DensityVisualizableFactory();
-			DensityVisualizable visualizer = factory.getDensityVisualizer("xml"); /// was: selection string, not "xml"
+			
+			/// instantiate the strategy and the visualizer ...
+			DensityVisualizable visualizer = factory.getDensityVisualizer(fileType); 
 			DensityComputationContext densityComputationContext = new DensityComputationContext();
-			densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy("xml")); /// was selection string, not "xml"
+			densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(fileType)); 
 			visualizer.setContext(densityComputationContext);
-
 			
-			DensityVisualizable xmlDensityVisualizer; /// was: XMLDensityVisualizer
-			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
-			
+			/// for now manually!
+			DensityVisualizable xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 			xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(width, height, depth)));
 			xmlDensityVisualizer.setFiles(files);
-			System.err.println("ALL FILES FOR DENSITY: " + files);
+			log.info("Files for density visualization: " + files);
+			
 			/**
 			 * @note 
 			 * don't scale the geometry in the first place for the
@@ -129,13 +122,14 @@ public class ComputeDensity implements Serializable {
 			 */
 			xmlDensityVisualizer.prepare(Color.yellow, 1, compartment);
 
+			/// decorate with isosurfaces if user wishes
 			if (bIsoSurfaces) {
+				log.info("Isosurface density visualizer decorator used.");
 				xmlDensityVisualizer = new IsosurfaceDensityVisualizerDecorator(xmlDensityVisualizer, mAverage, mDeviation);
 			} else {
-				System.err.println("NO ISOSURFACEDENSITYVISUALIZERDECORATOR");
+				log.info("No isosurface density visualizer decorator used.");
 			}
 			
-
 			/**
 			 * @note 
 			 * if we calculate geometry in the ComputeDensity it will
@@ -154,11 +148,15 @@ public class ComputeDensity implements Serializable {
 			/// this bounding box is different from the bounding box of the
 			/// density voxels (which we don't display - but can be guessed
 			/// if the density is visualized!)
-			System.err.println("DIMENSION (of subset of geometry): " + dim);
-			System.err.println("CENTER (of subset of geometry): " + center);
-			VTriangleArray vta = new Cube(new Vector3d(center.x*0.01, center.y*0.01, center.z*0.01), new Vector3d(dim.x*0.01, dim.y*0.01, dim.z*0.01)).toCSG().toVTriangleArray();
-			return new Object[]{new DensityResult(density, vta), swcFiles};
+			log.info("DIMENSION (of subset of geometry): " + dim);
+			log.info("CENTER (of subset of geometry): " + center);
+			VTriangleArray vta = new Cube(
+				new Vector3d(center.x*0.01, center.y*0.01, center.z*0.01), 
+				new Vector3d(dim.x*0.01, dim.y*0.01, dim.z*0.01))
+				.toCSG().toVTriangleArray();
+			
+			return new Object[]{new DensityResult(density, vta), stackFiles};
 		}
-		return new Object[]{new DensityResult(null, null), swcFiles};
+		return new Object[]{new DensityResult(null, null), stackFiles};
 	}
 }

@@ -5,13 +5,13 @@ package edu.gcsc.vrl.swcdensityvis.util;
 import edu.gcsc.vrl.swcdensityvis.data.SwappablePair;
 
 /**
- * @brief utilities
- * @author stephan
+ * @brief utilities for SwappablePair
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class SwappablePairUtility {
 
 	/**
-	 * @brief private ctor
+	 * @brief utility pattern
 	 */
 	private SwappablePairUtility() {
 

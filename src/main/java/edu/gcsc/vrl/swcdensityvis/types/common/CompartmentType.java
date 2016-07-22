@@ -30,7 +30,7 @@ import javax.swing.event.ListSelectionListener;
 
 /**
  * @brief visualize the compartments within a geometry file as a selectable list
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @TypeInfo(type = Compartment.class, input = true, output = false, style = "default")
 public class CompartmentType extends TypeRepresentationBase implements Serializable, LoadCompartmentObserver {

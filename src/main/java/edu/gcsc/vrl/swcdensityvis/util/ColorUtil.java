@@ -7,13 +7,12 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
 
 /**
- *
- * @author stephan
+ * @brief utilities for Color
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class ColorUtil {
-
 	/**
-	 *
+	 * @brief utility pattern
 	 */
 	private ColorUtil() {
 
