@@ -235,17 +235,12 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			/// eu.mihosoft.vrl.system.VMessage.info("Menu item pressed", "Save blurred");
-			BufferedImage img = getOffscreenCanvas().doRender(getCanvas().getWidth(), getCanvas().getHeight());
+			int w = 4096;
+			int h = ((canvas.getHeight() / canvas.getWidth()) * w);
+			BufferedImage img = getOffscreenCanvas().doRender(w, h);
+			log.info("Blurring image with kernel: " + Arrays.toString(blur));
 			BufferedImageOp op = new ConvolveOp(new Kernel(blurMatrix.columns(), blurMatrix.rows(), blur));
-			BufferedImage blurred = null;
-			
-			for (int i = 0; i < 1; i++) {
-				blurred = op.filter(img, null);
-				img = blurred;
-			}
-
-			/// TODO: improve the dimensions 0, 0, 0, 1000, 1000 (getCanvas().getWidth(), getCanvas().getHeight())
-			getOffscreenCanvas().imageUpdate(blurred, 0, 0, 0, 1000, 1000);
+			BufferedImage blurred = op.filter(img, null);
 			SaveImageDialog.showDialog(getMainCanvas(), blurred);
 		}
 	}
@@ -309,9 +304,9 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 						t3d.rotZ(rotation[2]);
 						getUniverseCreator().getRootGroup().setTransform(t3d);
 						
-						/// TODO improve the width and height of the images we output, e.g. use:
-						/// BufferedImage img = getOffscreenCanvas().doRender(getCanvas().getWidth(), getCanvas().getHeight());
-						BufferedImage img = getOffscreenCanvas().doRender(4096, 4096);
+						int w = 4096;
+						int h = ((canvas.getHeight() / canvas.getWidth()) * w);
+						BufferedImage img = getOffscreenCanvas().doRender(w, h);
 						try {
 							ImageIO.write(img, "png", new File(folder + File.separator 
 								+ "animation_" + imageNumber + ".png"));
@@ -320,7 +315,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 							eu.mihosoft.vrl.system.VMessage.error("ImageIO write error", 
 								"The file " + folder + File.separator + "animation_" 
 								+ imageNumber + ".png" + " could not be written!");
-							System.err.println(ioe);
+							log.error(ioe);
 						}
 					}
 				}
@@ -330,10 +325,16 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 				@Override
 				public void run() {
 					if (!bToggleRotate) {
-						VideoCreator videoCreator = new VideoCreator();
+						/// check for videoformat
+						if (!videoFormat.equalsIgnoreCase("mov")) {
+							eu.mihosoft.vrl.system.VMessage.info("Videoformat", 
+								"Currently only mov videoformat is supported.");
+						}
+						/// create the video
 						try {
+							VideoCreator videoCreator = new VideoCreator();
 							videoCreator.convert(folder, new File(folder + File.separator 
-								+ "animation" + "." + videoFormat.toLowerCase()), spf);
+								+ "animation"), spf);
 						} catch (IOException ex) {
 							eu.mihosoft.vrl.system.VMessage.error("Video creation error", 
 								"The following video could not be created: "
@@ -572,7 +573,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		ToggleRotationButtonAction toggleBA = 
 			new ToggleRotationButtonAction("Toggle rotational view", KeyEvent.VK_R);
 		SaveBlurredImageButtonAction saveBA = 
-			new SaveBlurredImageButtonAction("Save As blurred Image", KeyEvent.VK_B);
+			new SaveBlurredImageButtonAction("Save As Blurred Image", KeyEvent.VK_B);
 		JMenuItem rotate = new JMenuItem(toggleBA);
 		canvas.getMenu().addSeparator();
 		canvas.getMenu().add(rotate);
