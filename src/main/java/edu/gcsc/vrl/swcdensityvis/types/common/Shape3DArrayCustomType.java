@@ -488,7 +488,6 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		universeCreator.getRootGroup().addChild(switchParentGroup);
 
 		JMenuItem item = new JMenuItem("Reset View");
-
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -499,28 +498,20 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		});
 
 		canvas.getMenu().add(item);
-
 		item = new JMenuItem("Save as Image");
-
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				int w = 4096;
-				int h = (int) (((double) canvas.getHeight() / (double) canvas.getWidth()) * w);
-
+				int h = ((canvas.getHeight() / canvas.getWidth()) * w);
 				BufferedImage img = getOffscreenCanvas().doRender(w, h);
-
 				SaveImageDialog.showDialog(getMainCanvas(), img);
 			}
 		});
 
 		canvas.getMenu().add(item);
-
 		canvas.getMenu().addSeparator();
-
 		item = new JMenuItem("Increase Zoom Speed");
-
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -531,9 +522,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		});
 
 		canvas.getMenu().add(item);
-
 		item = new JMenuItem("Decrease Zoom Speed");
-
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -544,11 +533,8 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		});
 
 		canvas.getMenu().add(item);
-
 		canvas.getMenu().addSeparator();
-
 		item = new JMenuItem("Increase Translation Increment");
-
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -557,9 +543,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		});
 
 		canvas.getMenu().add(item);
-
 		item = new JMenuItem("Decrease Translation Increment");
-
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
