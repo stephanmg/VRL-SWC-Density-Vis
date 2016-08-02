@@ -22,6 +22,9 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 [![Stories in In Progress](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=in progress&title=In Progress)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in Done](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=done&title=Done)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 
+### License
+* [![LGPLv3](https://img.shields.io/badge/license-LGPLv3-blue.svg)](./README.md)
+
 
 ## Installation
 
