@@ -19,7 +19,7 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 ### Issues
 * [![Stories in Backlog](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=backlog&title=Backlog)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in In Progress](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=in progress&title=In Progress)](http://waffle.io/stephanmg/vrl-swc-density-vis)
+[![Stories in In Progress](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=in%20progress&title=In%20Progress)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 [![Stories in Done](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=done&title=Done)](http://waffle.io/stephanmg/vrl-swc-density-vis)
 
 ### License
