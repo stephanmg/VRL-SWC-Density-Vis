@@ -40,10 +40,6 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	
 	/**
 	 * @param cells
-	 * @todo: idea to get the cells in it, we need to proceed as follows:
-	 * 			1. parse the files by parseStack() and we use densityVisualizer.parseStack()
-	 * 		        2. we can return the parsed data by getCells()
-	 *                      3. the strategy get's the cells
 	 */
 	public EdgeDensityComputationStrategyXML(HashMap<String, ArrayList<Edge<Vector3f>>> cells) {
 		this.cells = cells;

@@ -9,6 +9,7 @@ import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.SaveImageDialog;
 import eu.mihosoft.vrl.media.VideoCreator;
 import eu.mihosoft.vrl.reflection.CustomParamData;
+import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.types.UniverseCreator;
 import eu.mihosoft.vrl.types.VCanvas3D;
@@ -20,6 +21,7 @@ import eu.mihosoft.vrl.visual.VGraphicsUtil;
 import groovy.lang.Script;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -40,6 +42,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -686,7 +689,17 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			}
 
 			if (shapes.isScalebarVisible()) {
+				/// bounding box of geometry TODO use to set scalebar
+				///Pair<Vector3f, Vector3f> boundingBox = shapes.getBoundingBox();
+				///boundingBox.getFirst();
 				/// scale bar line
+				/*Point3f s1 = new Point3f(boundingBox.getFirst().x,
+							 boundingBox.getFirst().y,
+							 boundingBox.getFirst().z);
+				Point3f s2 = new Point3f(boundingBox.getFirst().x + 1,
+							 boundingBox.getFirst().y,
+							 boundingBox.getFirst().z);
+				*/
 				Point3f s1 = new Point3f(0.0f, 0.0f, -10.0f);
 				Point3f s2 = new Point3f(0.0f, 0.0f, -9.0f);
 				LineArray scaleBarLine = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);

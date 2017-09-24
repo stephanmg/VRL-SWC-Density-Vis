@@ -321,23 +321,43 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 	}
 
 	/**
-	 * @todo this works only because we use in the  ComputeDensity component the default density diameter impl 
-	 * 	 to calculate the density.
-	 *        in visualizedensity component we just dont call this method, we just return the lineGraphGeometry!
-	 *        which returns the line graph geometry without diameter info, i. e. no cylinders, not lines!
+	 * Note that this works only on the trees, the contours aren't processed for the density computation
 	 * @return 
 	 */
 	@Override
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
-			XMLDensityData data = new XMLDensityData(new HashMap<String, ArrayList<Edge<Vector3f>>>());
+			HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
+			///  TODO trees are not cells
+			for (Map.Entry<String, HashMap<String, Tree<Vector3d>>> cell : trees.entrySet()) {
+				ArrayList<Edge<Vector3f>> final_data = new ArrayList<Edge<Vector3f>>();
+				for (Map.Entry<String, Tree<Vector3d>> tree : cell.getValue().entrySet()) {
+					System.err.println("Number of edges (computeDensity): " + tree.getValue().getEdges().size());
+					ArrayList<Edge<Vector3f>> points = new ArrayList<Edge<Vector3f>>();
+					for (Edge<Vector3d> vec : tree.getValue().getEdges()) {
+						Vector3d from = vec.getFrom();
+						Vector3d to = vec.getTo();
+						points.add(new Edge<Vector3f>(
+							new Vector3f((float) from.x, (float) from.y, (float) from.z),
+							new Vector3f((float) to.x, (float) to.y, (float) to.z)));
+					}
+					final_data.addAll(points);
+					/// local_data.put(tree.getKey(), points);
+				}
+				local_data.put(cell.getKey(), final_data);
+			}
+			for (Map.Entry<String, HashMap<String, Tree<Vector3d>>> cell : trees.entrySet()) {
+				System.err.println("cell name/file name: " + cell.getKey());
+			}
+			XMLDensityData data = new XMLDensityData(local_data);
 			this.context.setDensityData(data);
-			this.density = context.executeDensityComputation();
-			
-			/// TODO: needs full implementation -> then bounding box calculation (e.g. getDimension()) works
-			/// since this is calculated on the density data not the geometry data...
+			System.err.println("Data empty?" + data.isEmpty());
+			if (!data.isEmpty()) {
+				this.density = context.executeDensityComputation();
+			} else {
+				eu.mihosoft.vrl.system.VMessage.info("No density data to visualize", "Check your input data (i.e. subset selection of compartments!");
+			}
 		}
-
 		return this.density;
 	}
 
@@ -351,13 +371,14 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 	}
 
 	/**
-	 * 
+	 * Note that the contours are not processed here TODO: process them
 	 * @return 
 	 */
 	@Override
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
 	public Shape3DArray calculateGeometry() {
 		if (this.lineGraphGeometry == null || isGeometryModified) {
+			/// Process trees
 			this.lineGraphGeometry = new Shape3DArray();
 			for (HashMap<String, Tree<Vector3d>> ts : trees.values()) {
 				for (Tree<Vector3d> t : ts.values()) {
@@ -373,10 +394,10 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 						}
 						la.setCoordinates(0, new Point3f[]{new Point3f(e.getFrom()), new Point3f(e.getTo())});
 						this.lineGraphGeometry.add(new Shape3D(la));
-						///System.err.println("***adding one shape3d!***");
 					}
 				}
 			}
+			/// TODO: Process contours
 		}
 		isGeometryModified = false;
 		return this.lineGraphGeometry;
