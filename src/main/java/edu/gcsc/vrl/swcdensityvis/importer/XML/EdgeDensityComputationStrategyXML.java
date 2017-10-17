@@ -26,7 +26,7 @@ import javax.vecmath.Vector3f;
 
 /**
  * @brief implement the strategy here ... 
- * @author stephan <tephan@syntaktischer-zucker.de>
+ * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
