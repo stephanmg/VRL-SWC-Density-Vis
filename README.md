@@ -8,7 +8,5 @@ CI:
 [![CI Coverage Status](https://coveralls.io/repos/stephanmg/VRL-SWC-Density-Vis/badge.png)](https://coveralls.io/r/stephanmg/VRL-SWC-Density-Vis)
 
 Waffle:
-* [![Stories in Backlog](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=backlog&title=Backlog)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in In Progress](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=in progress&title=In Progress)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in Done](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=done&title=Done)](http://waffle.io/stephanmg/vrl-swc-density-vis)
+* [![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
+
