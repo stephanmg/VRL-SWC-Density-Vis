@@ -78,7 +78,8 @@ public class ComputeDensity implements Serializable {
 			}
 		});
 		
-		/// consider all files from stack and the consensus geometry on top
+		/// consider all files from stack and the consensus geometry on top (first file in list is the file which is used to get the representative compartments, which we might want to exclude in the VRL-Studio UI!)
+		/// also TODO: need mechanism to enable/disable display of certain files from the stack in VRL-Studio UI!
 		ArrayList<File> files = new ArrayList<File>(Arrays.asList(stackFiles));
 		if (consensus != null) { files.add(consensus); }
 		
@@ -138,6 +139,7 @@ public class ComputeDensity implements Serializable {
 			 * branches in certain circumstances - provide a fix in future)
 			 */
 			xmlDensityVisualizer.parseStack(); /// parse all files
+			
 			Density density = xmlDensityVisualizer.computeDensity(); /// compute the density
 			
 			/// get dim and center

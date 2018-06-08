@@ -9,9 +9,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- *
- * @author stephan
- * @param <T>
+ * @brief represents a contour
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
+ * @param <T> type
  */
 @Getter @Setter @ToString
 public class Contour<T> {

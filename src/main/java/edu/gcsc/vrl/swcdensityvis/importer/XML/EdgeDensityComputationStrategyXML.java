@@ -25,11 +25,11 @@ import java.util.concurrent.Future;
 import javax.vecmath.Vector3f;
 
 /**
- * @brief implement the strategy here ... 
+ * @brief TODO: this strategy has to be implemented below.
  * @author stephan <stephan@syntaktischer-zucker.de>
  */
 public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
-	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
+	private ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
 
 	/**
 	 * @@brief ctor
@@ -41,7 +41,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	/**
 	 * @param cells
 	 */
-	public EdgeDensityComputationStrategyXML(HashMap<String, ArrayList<Edge<Vector3f>>> cells) {
+	public EdgeDensityComputationStrategyXML(ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells) {
 		this.cells = cells;
 	}
 
@@ -53,14 +53,16 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 		ArrayList<Float> temp_x = new ArrayList<Float>();
 		ArrayList<Float> temp_y = new ArrayList<Float>();
 		ArrayList<Float> temp_z = new ArrayList<Float>();
-		for (ArrayList<Edge<Vector3f>> entry : cells.values()) {
-			for (Edge<Vector3f> edge : entry) {
-				temp_x.add(edge.getFrom().x);
-				temp_x.add(edge.getTo().x);
-				temp_y.add(edge.getFrom().y);
-				temp_y.add(edge.getTo().y);
-				temp_z.add(edge.getFrom().z);
-				temp_z.add(edge.getTo().z);
+		for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells) {
+			for (ArrayList<Edge<Vector3f>> entry : al.values()) {
+				for (Edge<Vector3f> edge : entry) {
+					temp_x.add(edge.getFrom().x);
+					temp_x.add(edge.getTo().x);
+					temp_y.add(edge.getFrom().y);
+					temp_y.add(edge.getTo().y);
+					temp_z.add(edge.getFrom().z);
+					temp_z.add(edge.getTo().z);
+				}
 			}
 		}
 		
@@ -161,9 +163,11 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 		System.out.println("Number of processors: " + processors);
 
 		ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
-		for (Map.Entry<String, ArrayList<Edge<Vector3f>>> cell : cells.entrySet()) {
-			Callable<HashMap<Integer, Float>> c = new PartialDensityComputer(cell.getValue());
-			callables.add(c);
+		for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells)  {
+			for (Map.Entry<String, ArrayList<Edge<Vector3f>>> cell : al.entrySet()) {
+				Callable<HashMap<Integer, Float>> c = new PartialDensityComputer(cell.getValue());
+				callables.add(c);
+			}
 		}
 
 		HashMap<Integer, Float> vals = new HashMap<Integer, Float>();
@@ -191,20 +195,25 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 				}
 			}
 
+			/// number of cells / files
 			System.err.println("cells size:" + cells.size());
-			System.err.println("cells keyset: " + cells.keySet().toString());
+			
+			/// number of compartments per cell / file
+			for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells) {
+			    System.err.println("al keyset: " + al.keySet().toString());
+			}
+			
 			/// total length
 			float total_length = 0;
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
-				total_length += entry.getValue() / 1; //cells.size(); /// TODO: cells contains the compartment, axon, dendrite and does not represent one file!
-				
+				total_length += entry.getValue() / cells.size(); 
 			}
 
 			/// densities
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
 				entry.setValue(entry.getValue() / total_length);
 				if ( (entry.getValue() / total_length) > 1) {
-					System.err.println("density violation!");
+					System.err.println("Density violation (Density > 1)!");
 					System.err.println(entry.getValue());
 					System.err.println(total_length);
 				}
@@ -231,7 +240,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setDensityData(DensityData data) {
-		this.cells = (HashMap<String, ArrayList<Edge<Vector3f>>>) data.getDensityData();
+		this.cells = (ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>) data.getDensityData();
 	}
 
 	/**

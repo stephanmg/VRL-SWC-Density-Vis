@@ -10,6 +10,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.DensityComputationStrategyFactoryProd
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
 import edu.gcsc.vrl.swcdensityvis.util.MemoryUtil;
+import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.v3d.Shape3DArray;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
@@ -17,14 +18,7 @@ import eu.mihosoft.vrl.v3d.jcsg.Vector3d;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.vecmath.Vector3f;
@@ -46,9 +40,8 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	private DensityComputationContext context = new DensityComputationContext(strategyFactory.getDefaultComputationStrategy("XML")); /// get xml implementation of that strategy
 
 	private final SAXBuilder saxBuilder = new SAXBuilder(XMLReaders.NONVALIDATING);
-	private final HashMap<String, HashMap<String, Contour<Vector4d>>> contours = new HashMap<String, HashMap<String, Contour<Vector4d>>>();
-	private final HashMap<String, HashMap<String, Tree<Vector4d>>> trees = new HashMap<String, HashMap<String, Tree<Vector4d>>>();
-	private final Random r = new Random(System.currentTimeMillis());
+	private final ArrayList<Pair<String, HashMap<String, Contour<Vector4d>>>> contours = new ArrayList<Pair<String, HashMap<String, Contour<Vector4d>>>>();
+	private final ArrayList<Pair<String, HashMap<String, Tree<Vector4d>>>> trees = new ArrayList<Pair<String, HashMap<String, Tree<Vector4d>>>>();
 
 	/// proxy members
 	private Shape3DArray lineGraphGeometry;
@@ -78,11 +71,11 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	}
 
 	/**
-	 * @brief get the compartment types from a single geometry file
-	 * The single geometry file may be termed "consensus" geometry file.
-	 * The very first file in the internal used inputFiles list is 
-	 * considered as the "consensus" geometry file for determining
-	 * the available compartment types in the geometries.
+	 * @brief get the compartment types from a single geometry file The
+	 * single geometry file may be termed "consensus" geometry file. The
+	 * very first file in the internal used inputFiles list is considered as
+	 * the "consensus" geometry file for determining the available
+	 * compartment types in the geometries.
 	 * @return
 	 */
 	public Set<String> get_compartments() {
@@ -106,50 +99,52 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	}
 
 	/**
-	 * @brief only the first file of the list is parsed and processed TODO:
-	 * use ID to identify trees from structure
+	 * @brief parse all input files
+	 * TODO: make the cells/files available in vrl-studio, i. e. make available to switch off/on
 	 */
 	@Override
 	public void parse() {
-		try {
-			System.out.print("Building DOM structure...");
-			Document document = saxBuilder.build(this.inputFiles.get(0));
-			Element rootNode = document.getRootElement();
-			System.out.println(" done!");
-			System.out.println("root node: " + rootNode.toString());
-			if (!rootNode.toString().equalsIgnoreCase("[Element: <mbf/>]")) {
-				eu.mihosoft.vrl.system.VMessage.warning("ComputeDensity", "XML in wrong format, trying to auto-correct XML file now!");
-				XMLFileUtil.fixXMLFile(this.inputFiles.get(0).getAbsolutePath());
-				/// re-parse on success
-				parse();
-			} else {
+		for (File file : this.inputFiles) {
+			try {
+				System.out.print("Building DOM structure...");
+				Document document = saxBuilder.build(file);
+				Element rootNode = document.getRootElement();
+				System.out.println(" done!");
+				System.err.println("root node: " + rootNode.toString());
+				if (!rootNode.toString().equalsIgnoreCase("[Element: <mbf/>]")) {
+					eu.mihosoft.vrl.system.VMessage.warning("ComputeDensity", "XML in wrong format, trying to auto-correct XML file now!");
+					XMLFileUtil.fixXMLFile(file.getAbsolutePath());
+					document = saxBuilder.build(file);
+					rootNode = document.getRootElement();
+				}
 				System.out.println("Processing Contours...");
-				this.contours.put(this.inputFiles.get(0).getName(), process_contours(rootNode));
+				Pair<String, HashMap<String, Contour<Vector4d>>> contour_entry;
+				contour_entry = new Pair<String, HashMap<String, Contour<Vector4d>>>(file.getName(), process_contours(rootNode));
+				this.contours.add(contour_entry);
 				System.out.println(" done!");
 
-				/// TODO: here we add trees and contours but in fact we could have more cells not one cell
-				/// therefore we work on the trees of the given cell, thus we normalized wrongly the density
 				System.out.println("Processing Trees...");
-				this.trees.put(this.inputFiles.get(0).getName(), process_trees(rootNode));
+				Pair<String, HashMap<String, Tree<Vector4d>>> tree_entry;
+				tree_entry = new Pair<String, HashMap<String, Tree<Vector4d>>>(file.getName(), process_trees(rootNode));
+				this.trees.add(tree_entry);
 				System.out.println(" done!");
 
-				this.inputFiles.remove(0);
 				isGeometryModified = true;
 
 				/// output trees
-				for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> entry : trees.entrySet()) {
-					System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
+				for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
+					System.err.println("Input file: " + cell.getFirst() + " has " + cell.getSecond().size() + "trees");
 				}
 
 				/// output contours
-				for (Map.Entry<String, HashMap<String, Contour<Vector4d>>> entry : contours.entrySet()) {
-					System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+				for (Pair<String, HashMap<String, Contour<Vector4d>>> cell : contours) {
+					System.err.println("Input file: " + cell.getFirst() + " has " + cell.getSecond().size() + "contours");
 				}
 
-/// exclude a list of compartments
+				/// exclude a list of compartments
 				ArrayList<String> to_remove = new ArrayList<String>();
-				for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> file : this.trees.entrySet()) {
-					HashMap<String, Tree<Vector4d>> tree_ = file.getValue();
+				for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : this.trees) {
+					HashMap<String, Tree<Vector4d>> tree_ = cell.getSecond();
 					for (Map.Entry<String, Tree<Vector4d>> tree : tree_.entrySet()) {
 						for (String comp : compartment.get_names()) {
 							if (tree.getKey().matches(comp + ".*")) {
@@ -160,8 +155,8 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 					}
 				}
 
-				for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> file : this.trees.entrySet()) {
-					HashMap<String, Tree<Vector4d>> tree_ = file.getValue();
+				for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : this.trees) {
+					HashMap<String, Tree<Vector4d>> tree_ = cell.getSecond();
 					for (String to_rm : to_remove) {
 						try {
 							tree_.remove(to_rm);
@@ -172,20 +167,19 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 				}
 
 				/// output trees
-				for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> entry : trees.entrySet()) {
-					System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "trees");
+				for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
+					System.err.println("Input file: " + cell.getFirst() + " has " + cell.getSecond().size() + "trees");
 				}
 
 				/// output contours
-				for (Map.Entry<String, HashMap<String, Contour<Vector4d>>> entry : contours.entrySet()) {
-					System.err.println("Input file: " + entry.getKey() + " has " + entry.getValue().size() + "contours");
+				for (Pair<String, HashMap<String, Contour<Vector4d>>> cell : contours) {
+					System.err.println("Input file: " + cell.getFirst() + " has " + cell.getSecond().size() + "contours");
 				}
-
+			} catch (IOException io) {
+				System.out.println(io.getMessage());
+			} catch (JDOMException jdomex) {
+				System.out.println(jdomex.getMessage());
 			}
-		} catch (IOException io) {
-			System.out.println(io.getMessage());
-		} catch (JDOMException jdomex) {
-			System.out.println(jdomex.getMessage());
 		}
 	}
 
@@ -372,9 +366,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	 */
 	@Override
 	public void parseStack() {
-		while (!inputFiles.isEmpty()) {
-			parse();
-		}
+		parse();
 	}
 
 	/**
@@ -393,12 +385,11 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	@Override
 	public Density computeDensity() {
 		if (density == null || isGeometryModified) {
-			/// NOTE: local data must be also something like this:
-			/// HashMap<String, HashMap<String, ArrayList<Edge<Vector3f>>>> filename_local_data;
-			HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
-			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
+			ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> final_data_real = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
+			for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
+				HashMap<String, ArrayList<Edge<Vector3f>>> local_data = new HashMap<String, ArrayList<Edge<Vector3f>>>();
 				ArrayList<Edge<Vector3f>> final_data = new ArrayList<Edge<Vector3f>>();
-				for (Map.Entry<String, Tree<Vector4d>> tree : cell.getValue().entrySet()) {
+				for (Map.Entry<String, Tree<Vector4d>> tree : cell.getSecond().entrySet()) {
 					System.err.println("Number of edges (computeDensity): " + tree.getValue().getEdges().size());
 					ArrayList<Edge<Vector3f>> points = new ArrayList<Edge<Vector3f>>();
 					for (Edge<Vector4d> vec : tree.getValue().getEdges()) {
@@ -411,13 +402,14 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 					final_data.addAll(points);
 					/// local_data.put(tree.getKey(), points);
 				}
-				local_data.put(cell.getKey(), final_data);
+				local_data.put(cell.getFirst(), final_data);
+				final_data_real.add(local_data);
+			}
+			for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
+				System.err.println("cell name/file name: " + cell.getFirst());
+			}
 
-			}
-			for (Map.Entry<String, HashMap<String, Tree<Vector4d>>> cell : trees.entrySet()) {
-				System.err.println("cell name/file name: " + cell.getKey().toString());
-			}
-			XMLDensityData data = new XMLDensityData(local_data);
+			XMLDensityData data = new XMLDensityData(final_data_real);
 			this.context.setDensityData(data);
 			System.err.println("Data empty?" + data.isEmpty());
 			if (!data.isEmpty()) {
@@ -449,12 +441,13 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 		if (this.lineGraphGeometry == null || isGeometryModified) {
 			this.lineGraphGeometry = new Shape3DArray();
 			/// visualize trees!
-			for (HashMap<String, Tree<Vector4d>> ts : trees.values()) {
-				for (Tree<Vector4d> t : ts.values()) {
+			for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
+				System.err.println("Processing trees of cell: " + cell.getFirst());
+				HashMap<String, Tree<Vector4d>> cell_trees = cell.getSecond();
+				for (Tree<Vector4d> t : cell_trees.values()) {
 					gColor = t.getColor();
 					System.err.println("Edges: " + t.getEdges().size());
 					for (Edge<Vector4d> e : t.getEdges()) {
-						//System.err.println("Edge: " + e);
 						MemoryUtil.printHeapMemoryUsage();
 						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 3);
 
@@ -469,8 +462,10 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 			System.err.println("trees done!");
 
 			/// visualize contours!
-			for (HashMap<String, Contour<Vector4d>> cs : contours.values()) {
-				for (Contour<Vector4d> con : cs.values()) {
+			for (Pair<String, HashMap<String, Contour<Vector4d>>> cell : contours) {
+				System.err.println("Processing contours of cell: " + cell.getFirst());
+				HashMap<String, Contour<Vector4d>> cell_contours = cell.getSecond();
+				for (Contour<Vector4d> con : cell_contours.values()) {
 					gColor = con.getColor();
 					ArrayList<Vector4d> points = con.getPoints();
 					/**

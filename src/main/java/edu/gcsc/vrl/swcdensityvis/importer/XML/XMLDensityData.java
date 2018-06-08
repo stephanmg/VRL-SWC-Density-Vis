@@ -6,7 +6,6 @@ import edu.gcsc.vrl.swcdensityvis.data.Edge;
 import edu.gcsc.vrl.swcdensityvis.importer.DensityData;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import javax.vecmath.Vector3f;
 
 /**
@@ -15,14 +14,21 @@ import javax.vecmath.Vector3f;
  */
 public final class XMLDensityData implements DensityData {
 	/// density data
-	private final HashMap<String, ArrayList<Edge<Vector3f>>> data;
+	private final ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> data;
 	
 	/**
 	 * @brief set the density data
 	 * @param data
 	 */
-	public XMLDensityData(HashMap<String, ArrayList<Edge<Vector3f>>> data) {
+	public XMLDensityData(ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> data) {
 		this.data = data;
+	}
+	
+	/**
+	 * @brief default ctor
+	 */
+	public XMLDensityData() {
+		this.data = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
 	}
 
 	/**
@@ -31,20 +37,15 @@ public final class XMLDensityData implements DensityData {
 	 */
 	@Override
 	@SuppressWarnings("ReturnOfCollectionOrArrayField")
-	public HashMap<String, ArrayList<Edge<Vector3f>>> getDensityData() {
+	public ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> getDensityData() {
 		return this.data;
 	}
 	
 	/**
-	 * @brief checks if there is really *no* density / geometry to be visualized
+	 * @brief check if there is at least one cell with some trees
 	 * @return 
 	 */
 	public boolean isEmpty() {
-		for (Map.Entry<String, ArrayList<Edge<Vector3f>>> tree : this.data.entrySet()) {
-			if (!tree.getValue().isEmpty()) {
-				return false;
-			}
-		}
-		return true;
+		return this.data.isEmpty();
 	}
 }

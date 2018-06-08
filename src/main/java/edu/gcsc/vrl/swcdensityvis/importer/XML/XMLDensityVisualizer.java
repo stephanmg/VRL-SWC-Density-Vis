@@ -13,7 +13,7 @@ import javax.vecmath.Vector3f;
 
 /**
  * @brief the default XML density visualizer
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	/**

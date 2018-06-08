@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import javax.vecmath.Vector3f;
 /**
- *
- * @author stephan
+ * @brief KD tree demo
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class KDTreeDemo {
 	public static void main(String... args) {

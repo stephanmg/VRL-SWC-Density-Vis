@@ -2,20 +2,20 @@
 package edu.gcsc.vrl.swcdensityvis.importer.XML;
 
 /**
- * @brief some factory methods to create instances of the bridge component
- * @author stephan
+ * @brief factory methods to generate bridge objects
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class XMLDensityUtil {
 
 	/**
-	 *
+	 * @brief
 	 */
 	private XMLDensityUtil() {
 
 	}
 
 	/**
-	 *
+	 * @brief get the visualizer implementation
 	 * @return
 	 */
 	public static XMLDensityVisualizerImplementable getImpl() {
@@ -23,7 +23,7 @@ public class XMLDensityUtil {
 	}
 
 	/**
-	 *
+	 * @brief get the visualizer implementation
 	 * @param choice
 	 * @return
 	 */
@@ -36,7 +36,7 @@ public class XMLDensityUtil {
 	}
 	
 	/**
-	 * 
+	 * @brief get the default visualizer implementation
 	 * @return 
 	 */
 	public static XMLDensityVisualizerImplementable getDefaultImpl() {
@@ -44,7 +44,7 @@ public class XMLDensityUtil {
 	}
 	
 	/**
-	 * 
+	 * @brief get the default diameter visualizer implementation
 	 * @return 
 	 */
 	public static XMLDensityVisualizerImplementable getDefaultDiameterImpl() {

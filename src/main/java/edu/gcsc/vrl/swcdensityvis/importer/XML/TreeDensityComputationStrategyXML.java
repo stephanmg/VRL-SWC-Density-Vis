@@ -25,8 +25,8 @@ import java.util.concurrent.Future;
 import javax.vecmath.Vector3f;
 
 /**
- *
- * @author stephan
+ * TODO: adapt this to the changes made in the density data we read in (now all files available)
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
 	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
