@@ -30,12 +30,27 @@ import javax.vecmath.Vector3f;
  */
 public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 	private ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
+	private float width = 10;
+	private float depth = 10;
+	private float height = 10;
 
 	/**
-	 * @@brief ctor
+	 * @brief default ctor
 	 */
 	public EdgeDensityComputationStrategyXML() {
 		
+	}
+	
+	/**
+	 * @brief ctor
+	 * @param width
+	 * @param depth
+	 * @param height 
+	 */
+	public EdgeDensityComputationStrategyXML(float width, float depth, float height) {
+		this.width = width;
+		this.depth = depth;
+		this.height = height;
 	}
 	
 	/**
