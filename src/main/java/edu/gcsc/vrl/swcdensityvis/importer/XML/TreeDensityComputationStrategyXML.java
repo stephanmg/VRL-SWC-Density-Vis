@@ -29,7 +29,7 @@ import javax.vecmath.Vector3f;
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
-	private HashMap<String, ArrayList<Edge<Vector3f>>> cells = new HashMap<String, ArrayList<Edge<Vector3f>>>();
+	private ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
 	private float width_ = 10;
 	private float depth_ = 10;
 	private float height_= 10;
@@ -46,7 +46,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		this.depth_ = depth;
 	}
 	
-	public TreeDensityComputationStrategyXML(HashMap<String, ArrayList<Edge<Vector3f>>> cells) {
+	public TreeDensityComputationStrategyXML(ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells) {
 		this.cells = cells;
 	}
 
@@ -58,14 +58,16 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		ArrayList<Float> temp_x = new ArrayList<Float>();
 		ArrayList<Float> temp_y = new ArrayList<Float>();
 		ArrayList<Float> temp_z = new ArrayList<Float>();
-		for (ArrayList<Edge<Vector3f>> entry : cells.values()) {
-			for (Edge<Vector3f> edge : entry) {
-				temp_x.add(edge.getFrom().x);
-				temp_x.add(edge.getTo().x);
-				temp_y.add(edge.getFrom().y);
-				temp_y.add(edge.getTo().y);
-				temp_z.add(edge.getFrom().z);
-				temp_z.add(edge.getTo().z);
+		for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells) {
+			for (ArrayList<Edge<Vector3f>> entry : al.values()) {
+				for (Edge<Vector3f> edge : entry) {
+					temp_x.add(edge.getFrom().x);
+					temp_x.add(edge.getTo().x);
+					temp_y.add(edge.getFrom().y);
+					temp_y.add(edge.getTo().y);
+					temp_z.add(edge.getFrom().z);
+					temp_z.add(edge.getTo().z);
+				}
 			}
 		}
 
@@ -251,10 +253,13 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		System.out.println("Number of processors: " + processors);
 		System.err.println("number of processors should be divided by 2 as hyperthreading used!");
 
+		
 		ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
-		for (Map.Entry<String, ArrayList<Edge<Vector3f>>> cell : cells.entrySet()) {
-			Callable<HashMap<Integer, Float>> c = new PartialDensityComputer(cell.getValue());
-			callables.add(c);
+		for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells)  {
+			for (Map.Entry<String, ArrayList<Edge<Vector3f>>> cell : al.entrySet()) {
+				Callable<HashMap<Integer, Float>> c = new PartialDensityComputer(cell.getValue());
+				callables.add(c);
+			}
 		}
 
 		HashMap<Integer, Float> vals = new HashMap<Integer, Float>();
@@ -282,12 +287,19 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 				}
 			}
 
+
+			/// number of cells / files
 			System.err.println("cells size:" + cells.size());
-			System.err.println("cells keyset: " + cells.keySet().toString());
+			
+			/// number of compartments per cell / file
+			for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells) {
+			    System.err.println("al keyset: " + al.keySet().toString());
+			}
+			
 			/// total length
 			float total_length = 0;
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
-				total_length += entry.getValue() / cells.size(); /// TODO: cells contains the compartment, axon, dendrite and does not represent one file!
+				total_length += entry.getValue() / cells.size();
 			}
 
 			/// densities
@@ -323,7 +335,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setDensityData(DensityData data) {
-		this.cells = (HashMap<String, ArrayList<Edge<Vector3f>>>) data.getDensityData();
+		this.cells = (ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>) data.getDensityData();
 	}
 	
 	/**

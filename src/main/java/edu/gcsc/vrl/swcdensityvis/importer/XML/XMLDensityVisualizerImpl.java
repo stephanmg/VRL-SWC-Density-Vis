@@ -370,6 +370,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 
 	/**
 	 * TODO: process also contours
+	 * Note: If not color was set, then the color is taken from the files
 	 * @brief in the schematic implementation we dont process contours
 	 * @return
 	 */
