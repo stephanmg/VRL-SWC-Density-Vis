@@ -6,7 +6,6 @@ package edu.gcsc.vrl.swcdensityvis.importer.XML;
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class XMLDensityUtil {
-
 	/**
 	 * @brief
 	 */

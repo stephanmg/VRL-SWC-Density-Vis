@@ -11,7 +11,7 @@ import java.awt.Color;
  * The XML density visualizers may use the additional functions in this
  * interface to provide the functionality for visualizing the XML files.
  * A XMLDensityUtil creates the different implementables by a factory.
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public interface XMLDensityVisualizerImplementable extends DensityVisualizable {
 	public void setLineGraphColor(Color color);

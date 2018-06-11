@@ -13,8 +13,8 @@ import java.util.List;
 import javax.vecmath.Vector3f;
 
 /**
- * @brief Density implementation for internal usage
- * @author stephan
+ * @brief the density implementation for internal usage adopted from Density-Vis
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 final class XMLDensityEdgeImpl implements Density {
 	/// the output voxels
@@ -41,7 +41,7 @@ final class XMLDensityEdgeImpl implements Density {
 	}
 
 	/**
-	 * Computes the average density for each voxel subset.
+	 * @brief computes the average density for each voxel subset.
 	 */
 	private void compute() {
 		/// get the bounding box in physiological units, i. e. µm
@@ -74,7 +74,7 @@ final class XMLDensityEdgeImpl implements Density {
 	}
 
 	/**
-	 * 
+	 * @brief get the voxels back
 	 * @return 
 	 */
 	@Override

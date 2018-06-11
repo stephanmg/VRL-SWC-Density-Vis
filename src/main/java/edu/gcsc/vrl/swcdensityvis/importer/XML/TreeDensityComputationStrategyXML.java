@@ -25,33 +25,44 @@ import java.util.concurrent.Future;
 import javax.vecmath.Vector3f;
 
 /**
- * TODO: adapt this to the changes made in the density data we read in (now all files available)
  * @author stephanmg <stephan@syntaktischer-zucker.de>
+ * @brief the tree density computation strategy for XML files
  */
 public final class TreeDensityComputationStrategyXML implements TreeDensityComputationStrategy {
 	private ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
 	private float width_ = 10;
 	private float depth_ = 10;
-	private float height_= 10;
+	private float height_ = 10;
+	
 	/**
-	 * 
+	 * lbrief default ctor
 	 */
 	public TreeDensityComputationStrategyXML() {
 		
 	}
 
+	/**
+	 * @brief ctor
+	 * @param width
+	 * @param depth
+	 * @param height 
+	 */
 	public TreeDensityComputationStrategyXML(float width, float depth, float height) {
 		this.width_ = width;
 		this.height_ = height;
 		this.depth_ = depth;
 	}
 	
+	/**
+	 * @brief ctor
+	 * @param cells 
+	 */
 	public TreeDensityComputationStrategyXML(ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells) {
 		this.cells = cells;
 	}
 
 	/**
-	 * 
+	 * @brief calculates the bounding box
 	 * @return 
 	 */
 	private Pair<Vector3f, Vector3f> getBoundingBox() {
@@ -79,7 +90,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	}
 
 	/**
-	 * 
+	 * @brief calculate the dimension of the bounding box
 	 * @return 
 	 */
 	@Override
@@ -93,8 +104,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	}
 	
 	/**
-	 * @todo this is not correct! extract the connectivity information from the XML file!
-	 * @todo we overestimate and underestimate the real connections!
+	 * @todo is this correct? maybe we over-/underestimate the real connections?
 	 */
 	private HashMap<Vector3f, ArrayList<Vector3f>> getIncidents(ArrayList<Edge<Vector3f>> cell) {
 		final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>();
@@ -105,7 +115,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	}
 
 	/**
-	 * 
+	 * @brief computes the density with parallel density computation threads
 	 * @return 
 	 */
 	@Override
@@ -212,7 +222,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 							/// note: that up to 1,000,000,000 iterations it's quite fine
 							/// and done within 13 seconds (when using #procs geometries)
 							/// but if we go to 1,000,000,000,000 i. e. sampling cube
-							/// sizes of 0.001 in geometry units it gets slow...
+							/// sizes of 0.001 in geometry units this gets slow...
 							try {
 								temps = tree.range(lower, upper);
 							} catch (KeySizeException e) {
@@ -247,12 +257,10 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		// take number of available processors and create a fixed thread pool,
 		// the executor executes then at most the number of available processors
 		// threads to calculate the partial density (Callable PartialDensityComputer)
-		/// TODO/NOTE: maybe only processors/2 is reasonable (since hyperthreading is counted too!)
 		int processors = Runtime.getRuntime().availableProcessors();
 		ExecutorService executor = Executors.newFixedThreadPool(processors);
 		System.out.println("Number of processors: " + processors);
 		System.err.println("number of processors should be divided by 2 as hyperthreading used!");
-
 		
 		ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
 		for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells)  {
@@ -288,7 +296,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 			}
 
 
-			/// number of cells / files
+			/// number of cells respectively files
 			System.err.println("cells size:" + cells.size());
 			
 			/// number of compartments per cell / file
@@ -329,7 +337,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	}
 
 	/**
-	 * 
+	 * @brief assigns cells
 	 * @param data 
 	 */
 	@Override
@@ -339,16 +347,15 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	}
 	
 	/**
-	 * 
+	 * @brief calculates center of bounding box
 	 * @return 
 	 */
 	@Override
 	public Object getCenter() {
 		Pair<Vector3f, Vector3f> minMax = getBoundingBox();
 		System.err.println("BoundingBox: " + minMax);
-		return new Vector3f( minMax.getSecond().x + ((minMax.getFirst().x - minMax.getSecond().x) / 2),
-				     minMax.getSecond().y + ((minMax.getFirst().y - minMax.getSecond().y) / 2),
-				     minMax.getSecond().z + ((minMax.getFirst().z - minMax.getSecond().z) / 2));
+		return new Vector3f(minMax.getSecond().x + ((minMax.getFirst().x - minMax.getSecond().x) / 2),
+				    minMax.getSecond().y + ((minMax.getFirst().y - minMax.getSecond().y) / 2),
+				    minMax.getSecond().z + ((minMax.getFirst().z - minMax.getSecond().z) / 2));
 	}
-
 }

@@ -15,13 +15,13 @@ import java.io.OutputStream;
 
 /**
  * @brief XML file utilites
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class XMLFileUtil {
 	private static final String NEWLINE = System.getProperty("line.separator");
 
 	/**
-	 * @brief 
+	 * @brief ctor
 	 */
 	private XMLFileUtil() {
 
@@ -53,8 +53,8 @@ public final class XMLFileUtil {
 
 	/**
 	 * @brief checks for broken xml file, maybe not the best check since it
-	 * relys on the line number, i. e. line 2 of xml file!
-	 * @todo make the check better
+	 * relies on the line number, i. e. line 2 of xml file is checked!
+	 * Tries to correct the XML file if not a correct Neurolucida MBF file.
 	 * @param filename
 	 * @throws IOException
 	 */
@@ -68,10 +68,9 @@ public final class XMLFileUtil {
 			
 			// backup input file
 			String[] tokens = filename.split("\\.(?=[^\\.]+$)");
-	//		copyFile(new File(filename), new File(tokens[0] + "_BAK_" + System.currentTimeMillis() + "." + tokens[1]));
 			copyFile(new File(filename), new File(tokens[0] + "." + tokens[1] + "_" + System.currentTimeMillis() + ".BAK"));
 			
-			// read and correct the xml file
+			// read and correct the XML file
 			String line;
 			StringBuilder content = new StringBuilder();
 			int count = 1;

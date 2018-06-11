@@ -103,7 +103,7 @@ public class ComputeDensity implements Serializable {
 			densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(fileType)); 
 			visualizer.setContext(densityComputationContext);
 			
-			/// for now manually!
+			/// for now manually! TODO add all enhanced ctors to factory
 			DensityVisualizable xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 			xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(width, height, depth)));
 			xmlDensityVisualizer.setFiles(files);

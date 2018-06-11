@@ -17,7 +17,7 @@ import javax.vecmath.Vector3f;
  */
 public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	/**
-	 *
+	 * @brief ctor
 	 * @param impl
 	 */
 	public XMLDensityVisualizer(XMLDensityVisualizerImplementable impl) {
@@ -25,7 +25,7 @@ public class XMLDensityVisualizer extends XMLDensityVisualizerBase {
 	}
 
 	/**
-	 *
+	 * @brief ctor
 	 */
 	public XMLDensityVisualizer() {
 		super(XMLDensityUtil.getDefaultImpl());

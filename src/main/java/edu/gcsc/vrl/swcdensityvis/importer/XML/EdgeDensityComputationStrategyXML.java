@@ -25,8 +25,8 @@ import java.util.concurrent.Future;
 import javax.vecmath.Vector3f;
 
 /**
- * @brief TODO: this strategy has to be implemented below.
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @brief the edge density computation strategy for XML files
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 	private ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
@@ -54,6 +54,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	}
 	
 	/**
+	 * @brief ctor
 	 * @param cells
 	 */
 	public EdgeDensityComputationStrategyXML(ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells) {
@@ -61,7 +62,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	}
 
 	/**
-	 * 
+	 * @brief calculates the bounding box
 	 * @return 
 	 */
 	private Pair<Vector3f, Vector3f> getBoundingBox() {
@@ -107,7 +108,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	}
 	
 	/**
-	 * 
+	 * @brief computes the density with paartial density computer threads
 	 * @return 
 	 */
 	@Override
@@ -116,13 +117,12 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 		System.out.println("Dimensions of all cells: " + getDimension());
 		System.out.println("Bounding box Min: " + bounding.getSecond() + ", Max:" + bounding.getFirst());
 
-		/// sampling cube in geometry dimensions (i. e. µm!)
-		final float width = 10.f;
-		final float height = 10.f;
-		final float depth = 10.f;
+		/// sampling cube in geometry dimensions (i. e. µm! or else)
+		final float width_ = width;
+		final float height_ = height;
+		final float depth_ = depth;
 
 		class PartialDensityComputer implements Callable<HashMap<Integer, Float>> {
-
 			/// store lengthes in the cuboids and the cell itself
 			private volatile HashMap<Integer, Float> lengths = new HashMap<Integer, Float>();
 			private volatile ArrayList<Edge<Vector3f>> cell;
@@ -141,9 +141,9 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 						Pair<Vector3f, Vector3f> bounding_e = EdgeUtility.getBounding(new Edge<Vector3f>(edge.getFrom(), edge.getTo()));
 						System.err.println("Bounding_edge: " + bounding_e.getFirst() + "; " + bounding_e.getSecond());
 						Cuboid bounding_ee = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z);
-						Cuboid min = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, width, depth, height);
-						Cuboid max = new Cuboid(bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z, width, depth, height);
-						Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBoundingIndices(bounding_ee, min, max, width, depth, height);
+						Cuboid min = new Cuboid(bounding_e.getFirst().x, bounding_e.getFirst().y, bounding_e.getFirst().y, width_, depth_, height_);
+						Cuboid max = new Cuboid(bounding_e.getSecond().x, bounding_e.getSecond().y, bounding_e.getSecond().z, width_, depth_, height_);
+						Pair<int[], int[]> bounding_ss = CuboidUtility.getSampleCuboidBoundingIndices(bounding_ee, min, max, width_, depth_, height_);
 
 						for (int i = bounding_ss.getFirst()[0]; i < bounding_ss.getSecond()[0]; i++) {
 							for (int j = bounding_ss.getFirst()[1]; j < bounding_ss.getSecond()[1]; j++) {
@@ -153,8 +153,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 									float z = bounding_e.getFirst().z;
 
 									Integer real_index = i * j * k;
-									///System.err.println("real_index: " + real_index);
-									float len = EdgeSegmentWithinCuboid(x, y, z, width, height, depth, edge.getFrom(), new ArrayList<Vector3f>(Arrays.asList(edge.getTo())));
+									float len = EdgeSegmentWithinCuboid(x, y, z, width_, height_, depth_, edge.getFrom(), new ArrayList<Vector3f>(Arrays.asList(edge.getTo())));
 									if (len != 0) {
 										if (lengths.containsKey(real_index)) {
 											lengths.put(real_index, lengths.get(real_index) + len);
@@ -249,7 +248,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	}
 
 	/**
-	 * 
+	 * @brief assign cells 
 	 * @param data 
 	 */
 	@Override
@@ -259,14 +258,14 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	}
 
 	/**
-	 * 
+	 * @brief calculates the center of the bounding box
 	 * @return 
 	 */
 	@Override
 	public Object getCenter() {
 		Pair<Vector3f, Vector3f> minMax = getBoundingBox();
-		return new Vector3f( (minMax.getFirst().x + minMax.getSecond().x) / 2,
-				     (minMax.getFirst().y + minMax.getSecond().y) / 2,
-			             (minMax.getFirst().z + minMax.getSecond().z) / 2);
+		return new Vector3f((minMax.getFirst().x + minMax.getSecond().x) / 2,
+				    (minMax.getFirst().y + minMax.getSecond().y) / 2,
+			            (minMax.getFirst().z + minMax.getSecond().z) / 2);
 	}
 }

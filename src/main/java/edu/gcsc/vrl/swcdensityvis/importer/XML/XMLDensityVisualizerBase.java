@@ -10,15 +10,14 @@ import java.awt.Color;
  * @brief the basis for the XML density visualizers
  * Specialized XML density visualizers may be derived starting
  * from this basic implementation to meet specific requirements.
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
-
 	@SuppressWarnings("ProtectedField")
 	protected XMLDensityVisualizerImplementable impl;
 
 	/**
-	 *
+	 * @brief ctor
 	 * @param impl
 	 */
 	public XMLDensityVisualizerBase(XMLDensityVisualizerImplementable impl) {
@@ -26,7 +25,7 @@ public abstract class XMLDensityVisualizerBase implements DensityVisualizable {
 	}
 
 	/**
-	 *
+	 * @brief ctor
 	 * @param impl
 	 */
 	public void setImpl(XMLDensityVisualizerImplementable impl) {

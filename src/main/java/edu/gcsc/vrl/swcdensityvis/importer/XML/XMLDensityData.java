@@ -10,7 +10,7 @@ import javax.vecmath.Vector3f;
 
 /**
  * @brief data structure to store density data
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class XMLDensityData implements DensityData {
 	/// density data
