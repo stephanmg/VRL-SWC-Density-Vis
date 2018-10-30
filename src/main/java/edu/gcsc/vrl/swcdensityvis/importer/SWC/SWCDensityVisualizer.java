@@ -57,6 +57,11 @@ public class SWCDensityVisualizer implements DensityVisualizable {
 	}
 
 	@Override
+	public Object getBoundingBox() {
+		return defaultDensityVisualizer.getDimension();
+	}
+
+	@Override
 	public Object getCenter() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}

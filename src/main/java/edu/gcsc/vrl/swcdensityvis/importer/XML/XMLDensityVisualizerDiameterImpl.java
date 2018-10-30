@@ -30,8 +30,10 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaders;
 
 /**
- *
- * @author stephan
+ * @brief the diameter implementation
+ * This implementation displays all geometries (sectiosn and contours) as
+ * cylinders, calculates the density and bounding box.
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImplementable {
 
@@ -379,7 +381,8 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	}
 
 	/**
-	 *
+	 * Note that this works only on the trees, the contours aren't processed
+	 * for the density computation
 	 * @return
 	 */
 	@Override
@@ -430,6 +433,15 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	public void setLineGraphColor(Color color) {
 		this.gColor = color;
 	}
+	
+	/**
+	 * @brief get's bounding box
+	 * @return 
+	 */
+	@Override
+	public Object getBoundingBox() {
+		return this.context.getDensityComputationStrategy().getBoundingBox();
+	}
 
 	/**
 	 *
@@ -440,10 +452,11 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	public Shape3DArray calculateGeometry() {
 		if (this.lineGraphGeometry == null || isGeometryModified) {
 			this.lineGraphGeometry = new Shape3DArray();
-			/// visualize trees!
+			/// visualize trees
 			for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
 				System.err.println("Processing trees of cell: " + cell.getFirst());
 				HashMap<String, Tree<Vector4d>> cell_trees = cell.getSecond();
+				/// TODO: change this in the same way as in XMLDensityVisualizerImpl -> much more efficient
 				for (Tree<Vector4d> t : cell_trees.values()) {
 					gColor = t.getColor();
 					System.err.println("Edges: " + t.getEdges().size());

@@ -7,14 +7,14 @@ package edu.gcsc.vrl.swcdensityvis.importer;
  */
 public class DensityComputationStrategyFactoryProducer {
 	/**
-	 * 
+	 * @brief ctor
 	 */
 	public DensityComputationStrategyFactoryProducer() {
 		
 	}
 	
 	/**
-	 * 
+	 * @brief 
 	 * @param choice
 	 * @return 
 	 */
@@ -29,7 +29,7 @@ public class DensityComputationStrategyFactoryProducer {
 	}
 
 	/**
-	 * 
+	 * @brief get default abstract density computation strategy factory
 	 * @return 
 	 */
 	public AbstractDensityComputationStrategyFactory getDefaultAbstractDensityComputationStrategyFactory() {

@@ -161,4 +161,13 @@ public class IsosurfaceDensityVisualizerDecorator extends DensityVisualizerDecor
 	public void prepare(Color color, double scale, Compartment compartment) {
 		super.getImpl().prepare(color, scale, compartment);
 	}
+	
+	/**
+	 * 
+	 * @return 
+	 */
+	@Override
+	public Object getBoundingBox() {
+		return super.getImpl().getBoundingBox();
+	}
 }

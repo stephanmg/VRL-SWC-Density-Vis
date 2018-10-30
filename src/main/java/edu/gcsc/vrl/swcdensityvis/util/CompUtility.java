@@ -119,4 +119,16 @@ public final class CompUtility {
 		return new QuickHull3D();
 	}
 
+	/**
+	 * @brief get volume of conical frustrum
+	 * @param r1
+	 * @param r2
+	 * @param height
+	 * @return 
+	 */
+	public static double vol_of_conical_frustum(double r1, double r2, double height) {
+		double A1 = 2 * Math.PI * r1;
+		double A2 = 2 * Math.PI * r2;
+		return height * (A1+A2+Math.sqrt(A1*A2)) / 3;
+	}
 }

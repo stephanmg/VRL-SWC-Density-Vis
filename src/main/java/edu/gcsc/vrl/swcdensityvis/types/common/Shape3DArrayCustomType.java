@@ -9,7 +9,6 @@ import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.SaveImageDialog;
 import eu.mihosoft.vrl.media.VideoCreator;
 import eu.mihosoft.vrl.reflection.CustomParamData;
-import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.types.UniverseCreator;
 import eu.mihosoft.vrl.types.VCanvas3D;
@@ -21,7 +20,6 @@ import eu.mihosoft.vrl.visual.VGraphicsUtil;
 import groovy.lang.Script;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -42,7 +40,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
 import lombok.extern.log4j.Log4j;
 
 /**

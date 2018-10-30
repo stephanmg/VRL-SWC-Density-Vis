@@ -12,15 +12,23 @@ import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrix;
 import edu.gcsc.vrl.swcdensityvis.data.Shape3DArrayCustom;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
+import edu.gcsc.vrl.swcdensityvis.importer.XML.TreeDensityComputationStrategyXML;
+import edu.gcsc.vrl.swcdensityvis.marching_cubes.MarchingCubes;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
+import eu.mihosoft.vrl.v3d.VGeometry3DAppearance;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Shape3D;
+import javax.vecmath.Vector3f;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -29,7 +37,6 @@ import org.apache.commons.io.FilenameUtils;
  */
 @ComponentInfo(name = "DensityVisualization", category = "Neuro/SWC-Density-Vis")
 public class DensityVisualization implements java.io.Serializable {
-
 	/// sVUID
 	private static final long serialVersionUID = 1L;
 
@@ -84,7 +91,9 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
 		@ParamInfo(name = "increment") double increment
 	) {
-		/// the Shape3DArray to visualize
+		
+		long startTime = System.currentTimeMillis();
+		/// the Shape3DArray to visualize on the Canvas
 		Shape3DArrayCustom result = new Shape3DArrayCustom();
 		result.setFps(fps);
 		result.setSpf(spf);
@@ -100,20 +109,25 @@ public class DensityVisualization implements java.io.Serializable {
 		if (dTransparency) {
 			transparencyVal = 0;
 		}
-		
 
 		Color dColorZero_real = new Color(dColorZero.getRed(), dColorZero.getGreen(), dColorZero.getBlue(), transparencyVal);
 		Color dColorOne_real = new Color(dColorOne.getRed(), dColorOne.getGreen(), dColorOne.getBlue(), 254);
 
-		/// instantiate the strategy and the visualizer ...
+		/// instantiate the strategy and the visualizer 
 		DensityVisualizableFactory factory = new DensityVisualizableFactory();
 		String fileType = FilenameUtils.getExtension(files[0].toString());
 		DensityVisualizable visualizer = factory.getDensityVisualizer(fileType);
+		/// Note: EdgeStrategy is slow... shouldn't be the default anymore
+		/*
 		DensityComputationContext densityComputationContext = new DensityComputationContext();
-		densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(fileType));
+		densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().
+		getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(fileType));
 		visualizer.setContext(densityComputationContext);
+		*/
+		/// TODO: Pass parameters not hardcoded 100, 100, 100 dimensions
+		visualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(100, 100, 100)));
 
-		/// for now manually
+		/// Note: Could be solved with a Factory
 		DensityVisualizable xmlDensityVisualizer;
 		if (representation.equalsIgnoreCase("CYLINDER")) {
 			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
@@ -122,7 +136,9 @@ public class DensityVisualization implements java.io.Serializable {
 		}
 
 		/// exclude compartments and scale, use colors provided by XML file
-		xmlDensityVisualizer.setContext(densityComputationContext);
+		/// xmlDensityVisualizer.setContext(densityComputationContext);
+		/// Density parameters have to be passed by argument, not hard-coded 100, 100, 100!
+		xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(100, 100, 100)));
 		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(files)));
 		xmlDensityVisualizer.prepare(null, 0.01, compartment);
 
@@ -130,36 +146,66 @@ public class DensityVisualization implements java.io.Serializable {
 		 * @todo normalize density per voxel to [0,1] not any number ...
 		 * i. e. we need percentage
 		 */
+		/// parse the files
+		xmlDensityVisualizer.parseStack();
 		/// add the consenus line-graph geometry (single geometry file)
 		if (bVisibleGeometry) {
-			/// parse the files
-			xmlDensityVisualizer.parseStack();
+			/// > 500,000 Elements -> Slow!
 			/// add line graph geometry 
+			System.err.println("Calculating geometry!");
 			result.addAll(xmlDensityVisualizer.calculateGeometry());
 		}
+		
+		/// @TODO calculating the density here should not be necessary to recompute, but we need to do for now because we need the boundingbox from the visualizer, since we don't pass the visualizer
+		xmlDensityVisualizer.computeDensity();
+		xmlDensityVisualizer.getBoundingBox();
+		
+		/// Need to get bounding box of cylinder strategy: EdgeDensityComputationStrategy called for schematic 
+		/// But this is slow. Need to get the bounding box from the cylinder strategy -> but for cylinder strategy the schematic geometry is slow -> change in teh XMLDensityVisualizerDiamImpl then can use also cylinders again.
+		/// And even though we calculate twice -> pass Bounding Box maybe from ComputeDensity?
+		
+		/// add isosurfaces TODO add switch to allow on/off -> Move this into ComputeDensity
+		List<? extends VoxelSet> voxels = density.getDensity().getVoxels();
+		///Shape3D isosurface = new MarchingCubes().run_MC_with_threads(voxels, xmlDensityVisualizer);
+		Shape3D isosurface;
+		///isosurface = new MarchingCubes().testMC2(voxels, xmlDensityVisualizer, 1f);
+		/// TODO Can add a lighting model here: http://www.java3d.org/appearance.html
+		// appearance ap = new Appearance();
+		/// isosurface.setAppearance(ap);
+		///result.add(isosurface);
 
 		/// @todo set bounding box for result (Shape3DCustom)
 		/// this makes easy to set the scale bar and the coordinate axes
 		/// in the Shape3DCustomReimplmentationType!
 		/// add the density if we want to visualize
+		/// @todo: if we scale, density, contours and geometry have to be scaled ALL, not only a single one of them
+		
+	 	/// TODO: 0.01 is visual scale for output on Canvas -> pass scaling parameter -> dont scale the density boxes
 		if (bVisibleDensity) {
 			result.addAll(VisUtil.scaleDensity2Java3D(
 				density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, 0.01));
 		}
 
+		/// TODO: this 0.01 has to be changed also in ComputeDensity for the VTriangleArray cubes (line 144),
+	 	/// otherwise this will give too small cube bounding box on the canvas
+
 		/// add the bounding box which includes all line-graph geometries
+		/// TODO: Geometry is unscaled here, we need to scale it too if we scale density above... with parameter...
 		if (bVisibleBoundingBox) {
 			result.addAll(geom3d.generateShape3DArray());
 		}
 
 		/// add scale bar if demanded
-		result.setScalebarVisible(bScalebarVisible);
+		/// result.setScalebarVisible(bScalebarVisible);
 
 		/// add coordinate system if demanded
-		result.setCoordinateSystemVisible(bCoordinateSystemVisible);
+		/// result.setCoordinateSystemVisible(bCoordinateSystemVisible);
 		
 		/// compute density
-		xmlDensityVisualizer.computeDensity();
+		long startTime2 = System.currentTimeMillis();
+		///xmlDensityVisualizer.computeDensity();
+		long estimatedTime = System.currentTimeMillis() - startTime2;
+		System.err.println("Time has passed: " + estimatedTime);
 		
 		/// TODO: below can fail if we dont use cylinder strategy
 		/// that is, the bounding box is calculated by means of the density.
@@ -173,8 +219,15 @@ public class DensityVisualization implements java.io.Serializable {
 				(Vector3f) xmlDensityVisualizer.getDimension())
 		);*/
 
+		/// TODO EdgeDensityComputationStrategy is SLOW for some reason -> should not be the default anymore
+		/// TODO Returns clearly wrong results... -> See TreeDensityStrategy which outputs correct bounding box!
+		/// Can use same bounding box for the density as density relies on this...
+		/// THIS IS OKAY, we pass only one file... not *all* files, that'S why this is wrong!!!
 		System.err.println("Center: " + xmlDensityVisualizer.getCenter());
 		System.err.println("Dimension: " + xmlDensityVisualizer.getDimension());
+		Pair<Vector3f, Vector3f> bb = (Pair<Vector3f, Vector3f>)xmlDensityVisualizer.getBoundingBox();
+		System.err.println("Bounding box: " + bb.getFirst());
+		System.err.println("Bounding box: " + bb.getSecond());
 		
 		/// TODO Can use center and dimension to set bounding box below!!!
 		/**
@@ -189,6 +242,10 @@ public class DensityVisualization implements java.io.Serializable {
 		 * @note geometry must also be scaled consistent to the density
 		 * description in ComputeDensity - this is done.
 		 */
+		long estimatedTime2 = System.currentTimeMillis() - startTime;
+		System.err.println("Time has passed: " + estimatedTime2);
+		System.err.println("Now adding " + result.size() + "number of Shape3D elements. This may take a while!");
+		System.err.println("Memory used now: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()));
 		return result;
 	}
 }

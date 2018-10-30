@@ -8,7 +8,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 
 /**
  * @brief factory for density visualizable classes
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class DensityVisualizableFactory {
 	/**

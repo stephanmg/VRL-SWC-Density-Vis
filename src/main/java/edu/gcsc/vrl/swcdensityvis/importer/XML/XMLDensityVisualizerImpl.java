@@ -27,7 +27,6 @@ import javax.media.j3d.Shape3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4d;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -35,7 +34,8 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaders;
 
 /**
- * @brief the schematic implementation to visualize the XML density data
+ * @brief the schematic implementation 
+ * This implementation displays all sections of the geometry as 1d graph structure.
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementable {
@@ -223,6 +223,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 
 	/**
 	 * @brief process tress
+	 * TODO: add diameter information and use in density calculations for trees -> vol_of_conical_frustum
 	 */
 	private HashMap<String, Tree<Vector3d>> process_trees(Element rootNode) {
 		ArrayList< Edge< Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
@@ -382,23 +383,30 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 			this.lineGraphGeometry = new Shape3DArray();
 			for (Pair<String, HashMap<String, Tree<Vector3d>>> cell : trees) {
 				HashMap<String, Tree<Vector3d>> tree = cell.getSecond();
+				/// For each tree set the LineArray element... *much* more efficient 
 				for (Tree<Vector3d> t : tree.values()) {
-					for (Edge<Vector3d> e : t.getEdges()) {
-						LineArray la = new LineArray(2, COORDINATES | COLOR_3);
+					ArrayList<Edge<Vector3d>> edges = t.getEdges();
+					LineArray la = new LineArray(edges.size()*2, COORDINATES | COLOR_3);
+					for (int i = 0; i < edges.size(); i++) {
 						if (gColor != null) {
-							la.setColor(0, ColorUtil.color2Color3f(gColor));
-							la.setColor(1, ColorUtil.color2Color3f(gColor));
+							la.setColor(2*i, ColorUtil.color2Color3f(gColor));
+							la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(gColor));
 						} else {
 							/// no color set, use color from file
-							la.setColor(0, ColorUtil.color2Color3f(t.getColor()));
-							la.setColor(1, ColorUtil.color2Color3f(t.getColor()));
+							la.setColor(2*i, ColorUtil.color2Color3f(t.getColor()));
+							la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(t.getColor()));
 						}
-						la.setCoordinates(0, new Point3f[]{new Point3f(e.getFrom()), new Point3f(e.getTo())});
-						this.lineGraphGeometry.add(new Shape3D(la));
+					}
+					ArrayList<Point3f> points = new ArrayList<Point3f>();
+					for (int i = 0; i < edges.size(); i++) {
+						points.add(new Point3f(edges.get(i).getFrom()));
+						points.add(new Point3f(edges.get(i).getTo()));
+					}
+					la.setCoordinates(0, points.toArray(new Point3f[points.size()]));
+					this.lineGraphGeometry.add(new Shape3D(la));
 					}
 				}
 			}
-		}
 		isGeometryModified = false;
 		return this.lineGraphGeometry;
 	}
@@ -416,6 +424,11 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 	@Override
 	public Object getCenter() {
 		return this.context.getDensityComputationStrategy().getCenter();
+	}
+	
+	@Override
+	public Object getBoundingBox() {
+		return this.context.getDensityComputationStrategy().getBoundingBox();
 	}
 
 	@Override

@@ -65,7 +65,8 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	 * @brief calculates the bounding box
 	 * @return 
 	 */
-	private Pair<Vector3f, Vector3f> getBoundingBox() {
+	@Override
+	public Pair<Vector3f, Vector3f> getBoundingBox() {
 		ArrayList<Float> temp_x = new ArrayList<Float>();
 		ArrayList<Float> temp_y = new ArrayList<Float>();
 		ArrayList<Float> temp_z = new ArrayList<Float>();
@@ -260,7 +261,6 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		int processors = Runtime.getRuntime().availableProcessors();
 		ExecutorService executor = Executors.newFixedThreadPool(processors);
 		System.out.println("Number of processors: " + processors);
-		System.err.println("number of processors should be divided by 2 as hyperthreading used!");
 		
 		ArrayList<Callable<HashMap<Integer, Float>>> callables = new ArrayList<Callable<HashMap<Integer, Float>>>();
 		for (HashMap<String, ArrayList<Edge<Vector3f>>> al : cells)  {
@@ -304,12 +304,18 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 			    System.err.println("al keyset: " + al.keySet().toString());
 			}
 			
-			/// total length
+			/// total length (Note: This should be the average dendritic length per cell)
 			float total_length = 0;
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
 				total_length += entry.getValue() / cells.size();
 			}
 
+			/// TODO: this is not entirely correct: Since we get 
+			/// average dendritic length -> might get "wrong" density violation 
+			/// then... Should change this check to be consistent
+			
+			/// should this be normalized by voxel volume? prob. not...
+			
 			/// densities
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
 				if ( (entry.getValue() / total_length) > 1) {
@@ -320,7 +326,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 				entry.setValue(entry.getValue() / total_length);
 			}
 
-			System.out.println("Total dendritic length [\\mu m]: " + total_length);
+			System.out.println("Total (average) dendritic length [\\mu m]: " + total_length);
 
 			System.out.println("Non-zero cuboids: " + vals.size());
 			long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;

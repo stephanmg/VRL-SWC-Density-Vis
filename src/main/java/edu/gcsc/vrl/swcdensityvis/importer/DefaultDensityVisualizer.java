@@ -67,4 +67,9 @@ public class DefaultDensityVisualizer implements DensityVisualizable {
 	public void prepare(Color color, double scale, Compartment compartment) {
 		throw new UnsupportedOperationException("Not supported yet."); 
 	}
+	
+	@Override
+	public Object getBoundingBox() {
+		throw new UnsupportedOperationException("Not supported yet."); 
+	}
 }

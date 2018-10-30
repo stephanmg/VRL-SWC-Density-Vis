@@ -6,7 +6,7 @@ import edu.gcsc.vrl.swcdensityvis.importer.XML.EdgeDensityComputationStrategyXML
 
 /**
  * @brief edge density computation strategy factory
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public class EdgeDensityComputationStrategyFactory extends AbstractDensityComputationStrategyFactory {
 	public EdgeDensityComputationStrategyFactory() {

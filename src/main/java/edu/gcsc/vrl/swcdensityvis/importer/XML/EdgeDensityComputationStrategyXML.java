@@ -65,7 +65,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	 * @brief calculates the bounding box
 	 * @return 
 	 */
-	private Pair<Vector3f, Vector3f> getBoundingBox() {
+	public Pair<Vector3f, Vector3f> getBoundingBox() {
 		ArrayList<Float> temp_x = new ArrayList<Float>();
 		ArrayList<Float> temp_y = new ArrayList<Float>();
 		ArrayList<Float> temp_z = new ArrayList<Float>();

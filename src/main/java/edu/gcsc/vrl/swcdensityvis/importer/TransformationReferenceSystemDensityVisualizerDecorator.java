@@ -68,4 +68,10 @@ public class TransformationReferenceSystemDensityVisualizerDecorator extends Den
 	public Object getCenter() {
 		throw new UnsupportedOperationException("Not supported yet."); 
 	}
+	
+
+	@Override
+	public Object getBoundingBox() {
+		throw new UnsupportedOperationException("Not supported yet."); 
+	}
 }

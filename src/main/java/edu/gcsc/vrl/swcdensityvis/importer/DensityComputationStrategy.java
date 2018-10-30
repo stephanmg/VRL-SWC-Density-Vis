@@ -13,4 +13,5 @@ public interface DensityComputationStrategy {
 	void setDensityData(DensityData data);
 	Object getDimension();
 	Object getCenter();
+	Object getBoundingBox();
 }

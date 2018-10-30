@@ -68,4 +68,10 @@ public class ASCDensityVisualizer implements DensityVisualizable {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
+	@Override
+	public Object getBoundingBox() {
+		throw new UnsupportedOperationException();
+	}
+
+
 }
