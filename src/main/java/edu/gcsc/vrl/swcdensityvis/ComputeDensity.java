@@ -27,7 +27,7 @@ import org.apache.commons.io.FilenameUtils;
 
 /**
  * @brief ComputeDensity component
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @Log4j
 @ComponentInfo(name = "ComputeDensity", category = "Neuro/SWC-Density-Vis")
@@ -35,6 +35,19 @@ public class ComputeDensity implements Serializable {
 	/// sVUID
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @brief computes the density and the bounding box of the density
+	 * @param folder
+	 * @param consensus
+	 * @param width
+	 * @param height
+	 * @param depth
+	 * @param compartment
+	 * @param bIsoSurfaces
+	 * @param mAverage
+	 * @param mDeviation
+	 * @return 
+	 */
 	@MethodInfo(valueStyle = "multi-out", interactive = false)
 	@OutputInfo(
 		style = "multi-out",
@@ -69,7 +82,10 @@ public class ComputeDensity implements Serializable {
 		int mDeviation
 
 	) {
+		/// Roughly measure start time
 		long startTime = System.currentTimeMillis();
+		
+		/// Accept only a subset of possible files
 		File[] stackFiles = folder.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -79,8 +95,8 @@ public class ComputeDensity implements Serializable {
 			}
 		});
 		
-		/// Note the consensus geometry should not be included in the stack
-		/// input folder of SWC/XML/ASC files, since otherwise doubly counted
+		/// Note the consensus geometry is not included in the calculations
+		/// and thus this option can be safely removed in further refactorings
 		ArrayList<File> files = new ArrayList<File>(Arrays.asList(stackFiles));
 		if (consensus != null) { files.add(consensus); }
 		
@@ -94,55 +110,48 @@ public class ComputeDensity implements Serializable {
 				+ "be available!)"
 			);
 		} else {
-			/// get fileType from selected consensus geometry
+			/// Get the file type from the selected consensus geometry
 			String fileType = FilenameUtils.getExtension(consensus.toString());
 			DensityVisualizableFactory factory = new DensityVisualizableFactory();
 			
-			/// instantiate the strategy and the visualizer
+			/// Instantiate the density visualizing strategy and the visualizer itself
 			DensityVisualizable visualizer = factory.getDensityVisualizer(fileType); 
 			DensityComputationContext densityComputationContext = new DensityComputationContext();
 			densityComputationContext.setDensityComputationStrategy(new DensityComputationStrategyFactoryProducer().getDefaultAbstractDensityComputationStrategyFactory().getDefaultComputationStrategy(fileType)); 
 			visualizer.setContext(densityComputationContext);
 			
-			/// TODO: This could be doen with a factory method to give 
-			/// the required visualizer, e.g. XML/ASC/SWC.
+			/// Note: Could use a factory to produce the desired density visualizer, e.g. ASC, XML or TXT.
 			DensityVisualizable xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
 			xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(width, height, depth)));
 			xmlDensityVisualizer.setFiles(files);
-			log.info("Files for density visualization: " + files);
-			
-			/// TODO: Add parameter to GUI for scaling the visual output,
-			/// e.g. scale density and the geometry with a value: scaling.
 			xmlDensityVisualizer.prepare(Color.yellow, 1, compartment);
+			log.info("We have the following files for density calculation: " + files);
 
-			/// decorate with isosurfaces if user wishes to get isosurfaces
+			/// Decorate the visualizer with isosurfaces if user wishes to view isosurfaces
+			/// TODO: This should be brought into the DensityVisualization component
 			if (bIsoSurfaces) {
 				log.info("Isosurface density visualizer decorator used.");
 				xmlDensityVisualizer = new IsosurfaceDensityVisualizerDecorator(xmlDensityVisualizer, mAverage, mDeviation);
-				/// TODO: bring Marching Cubes into the ISosurfacDensityVisualizerDecorator
 			} else {
 				log.info("No isosurface density visualizer decorator used.");
 			}
 			
-			/// Note: We cache the geometry, this produced in rare cases
-			/// multiple parent branches. This should be fixed now.
-			/// parse all files and calculate density
+			/// Parse the geometry fiels, then calculat the density and measure elapsed time 
 			xmlDensityVisualizer.parseStack(); 
 			Density density = xmlDensityVisualizer.computeDensity(); 
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.err.println("Time has passed: " + estimatedTime);
+			System.err.println("Roughly the following time has passed: " + estimatedTime);
 			
-			/// Note for dim and center this is the DIameterImpl! and thus not slow...
-			
-			/// get dim and center in physiological units
+			/// Get dimension and center in physiological units for debugging
 			Vector3f dim = (Vector3f) xmlDensityVisualizer.getDimension();
 			Vector3f center = (Vector3f) xmlDensityVisualizer.getCenter(); 
 			log.info("DIMENSION (of subset of geometry): " + dim);
 			log.info("CENTER (of subset of geometry): " + center);
 			
-	 		/// TODO: 0.01 is visual scale for output on Canvas -> pass scaling parameter -> set to 1 also!
-			/// ScaleDensityToJava scales only the density, need also to scale the bounding box geometry (cube)
-			/// Best idea to scale it here?!
+			/// The geometry is too large in physiological units thus scale by 1%
+			/// Note: This should be added as an optional scaling parameter in the GUI
+			/// Additionally the geometry is not scaled for the density visualization,
+			/// as the density get's scaled with VisUtil in the DensityVisualization class
 			VTriangleArray vta = new Cube(
 				new Vector3d(center.x*0.01, center.y*0.01, center.z*0.01), 
 				new Vector3d(dim.x*0.01, dim.y*0.01, dim.z*0.01))

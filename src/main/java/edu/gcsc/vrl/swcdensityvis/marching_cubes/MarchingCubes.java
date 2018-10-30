@@ -245,6 +245,7 @@ public class MarchingCubes {
 
 
 	/**
+	 * TODO: Add the possibility to specify a range of isoValues, e.g. [min, max]: trivial
 	 * @brief the marching cubes for our density voxels
 	 * @param voxels
 	 * @param visualizer
@@ -253,13 +254,13 @@ public class MarchingCubes {
 	 * @return 
 	 */
 	@SuppressWarnings("CallToPrintStackTrace")
-	public Shape3D testMC2(List<? extends VoxelSet> voxels, DensityVisualizable visualizer, float scale) {
+	public Shape3D MC(List<? extends VoxelSet> voxels, DensityVisualizable visualizer, float scale) {
 		/// dimension of density data
 		Vector3f dim = (Vector3f) visualizer.getDimension();
 		Vector3f center = (Vector3f) visualizer.getCenter();
-		float width = dim.x/0.01f;
-		float depth = dim.y/0.01f;
-		float height = dim.z/0.01f;
+		float width = dim.x/scale;
+		float depth = dim.y/scale;
+		float height = dim.z/scale;
 
 		/// dimension of individual voxels (Note: Could be improved)
 		float voxWidth = voxels.get(0).getWidth();
@@ -276,7 +277,7 @@ public class MarchingCubes {
 		final float[] voxDim = new float[]{voxWidth, voxHeight, voxDepth};
 		
 		/// the iso level which should be visualized
-		final float isoLevel = 0.0f; // wasA: 0.99f;
+		final float isoLevel = 0.0f; // was: 0.99f;
 		
 		/// the number of threads (Note: Includes hyperthreading)
 		int nThreads = Runtime.getRuntime().availableProcessors();
@@ -353,15 +354,18 @@ public class MarchingCubes {
 			vertices.get(i).y *= 1f;//*scale;
 			vertices.get(i).z *= 1f;//*scale;
 		}
-
 		
+		/// TODO: This scaling is not correct: need to consider scale factor
+		/// from min,max of isocontours to min,max  of bounding box geometry 
+		/// then shift towards the density voxels / geometry of neurons
+		
+		@SuppressWarnings("unchecked")
 		Pair<Vector3f, Vector3f> bb = (Pair<Vector3f, Vector3f>)visualizer.getBoundingBox();
 		Vector3f min_bb = bb.getSecond();
 		min_bb.x *= 0.01;
 		min_bb.y *= 0.01;
 		min_bb.z *= 0.01;
 		System.err.println("min_bb: " + min_bb);
-		/// Note: we shift from min of vertices of the isocontours... however, we should use the pivot which seems to be (0, 0, 0)
 		Vector3f min = getMin(vertices);
 		float shift_x = (min_bb.x - min.x);
 		float shift_y = (min_bb.y - min.y);
@@ -395,7 +399,6 @@ public class MarchingCubes {
 	 * @param args 
 	 */
 	public static void main(String... args) {
-		new MarchingCubes().testMC();
 	}
 	
 	/**
@@ -432,149 +435,4 @@ public class MarchingCubes {
 		return new Vector3f(Collections.max(temp_x), Collections.max(temp_y), Collections.max(temp_z));
 	}
 	
-	/**
-	 * @brief old test method. TODO: Can be discarded later
-	 */
-	@SuppressWarnings("CallToPrintStackTrace")
-	public void testMC() {
-		/// Let's say our bounding box is 100, 200, 300 then we have to calculate this into a "size".
-		/// if our voxel size would be 100 then we would have 1, 2, 3 for the scalarfield and voxDim would be 100, 100, 100
-		/// bounding of geometry
-		float width = 1000;
-		float depth = 1000;
-		float height = 1000;
-
-		float voxWidth = 100;
-		float voxHeight = 100;
-		float voxDepth = 100;
-
-		final float[] scalarField = new float[10 * 10 * 10]; /// a scalar field with 10*10*10 points in 3D voxel dim describes how large one of these points is, if voxDim 1x1x1 then we have exactly 10*10*10 points, otherwise we reduce by a factor of voxdim, e.g. if voxDim is 2x2x2 we reduce by factor 8 
-		//	float[] voxDim = new float[]{2.0f, 2.0f, 2.0f};
-		final float[] voxDim = new float[]{100f, 100f, 100f};
-		float isoLevel = 0.99f;
-		int offset = 0;
-		int index = 0;
-		for (int x = 0; x < 1000; x += 1) {
-			scalarField[index] = (float) Math.random();
-			index++;
-		}
-
-		/*System.err.println("Lenght scalar field: " + scalarField.length);
-		 int volZFull = 10;
-		 ArrayList<Point3f> vertices = marchingCubesFloat(scalarField, new int[]{10, 10, 10}, volZFull, voxDim, isoLevel, offset);
-		 System.err.println("num vertices: " + vertices.size());*/
-		int nThreads = Runtime.getRuntime().availableProcessors();
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		final ArrayList<ArrayList<Point3f>> results = new ArrayList<ArrayList<Point3f>>();
-
-		// Thread work distribution
-		int remainder = 10 % nThreads;
-		int segment = 10 / nThreads;
-
-		int zAxisOffset = 0;
-		for (int i = 0; i < nThreads; i++) {
-			// Distribute remainder among first (remainder) threads
-			int segmentSize = (remainder-- > 0) ? segment + 1 : segment;
-
-			// Padding needs to be added to correctly close the gaps between segments
-			final int paddedSegmentSize = (i != nThreads - 1) ? segmentSize + 1 : segmentSize;
-
-			// Finished callback
-			final CallbackMC callback = new CallbackMC() {
-				@Override
-				public void run() {
-					results.add(getVertices());
-				}
-			};
-
-			// Java...
-			final int finalZAxisOffset = zAxisOffset;
-
-			// Start the thread
-			Thread t = new Thread() {
-				public void run() {
-					MarchingCubes.marchingCubesFloat(scalarField, new int[]{10, 10, paddedSegmentSize}, 10, voxDim, 0.99f, finalZAxisOffset, callback);
-				}
-			};
-
-			threads.add(t);
-			t.start();
-
-			// Correct offsets for next iteration
-			zAxisOffset += segmentSize;
-		}
-
-		// Join the threads
-		for (int i = 0; i < threads.size(); i++) {
-			try {
-				threads.get(i).join();
-			} catch (InterruptedException e) {
-				System.err.println("Threads could not be joined.");
-				e.printStackTrace();
-			}
-		}
-		System.err.println("results.size: " + results.size());
-		int totalVerts = 0;
-		for (int i = 0; i < results.size(); i++) {
-			totalVerts += results.get(i).size();
-		}
-		System.err.println("total vertices: " + totalVerts);
-	}
-
-
-	/**
-	 * @brief old prepare method: TODO: can be discarded
-	 * @param voxels
-	 * @param visualizer
-	 * @return 
-	 */
-	public static float[] prepare_data_for_MC(List<? extends VoxelSet> voxels, DensityVisualizable visualizer) {
-
-		final float[] scalarField = new float[voxels.size()];
-		for (int i = 0; i < voxels.size(); i++) {
-			scalarField[i] = (float) voxels.get(i).getValue();
-		}
-		return scalarField;
-	}
-	/**
-	 * @brief old test for MCs with threads: TODO can be discarded later
-	 * @param voxels
-	 * @param visualizer
-	 * @return
-	 */
-	public Shape3D run_MC_with_threads(List<? extends VoxelSet> voxels, DensityVisualizable visualizer) {
-		/// TODO: add parallel call to threads here from example code
-		/// TODO: need to shift towards center of voxel densities
-		///final float[] scalarField  = prepare_data_for_MC(voxels, visualizer);
-		final float[] scalarField = createScalarField(voxels, visualizer);
-		System.err.println("size of scalar field: " + scalarField.length);
-		Vector3f dim = (Vector3f) visualizer.getDimension();
-		int[] volDim = new int[]{10, 10, 10}; /// TODO: use bounding box of our geometry
-		int volZFull = 10;
-		float[] voxDim = new float[]{1, 1, 1}; /// TODO: use voxel dim of our geometry
-		float isoLevel = 0.5f;
-		int offset = 0;
-		System.err.println("Running marching cubes now!");
-
-		final ArrayList<Point3f> vertices = new ArrayList<Point3f>();
-		final CallbackMC callback = new CallbackMC() {
-			@Override
-			public void run() {
-				vertices.addAll(getVertices());
-			}
-		};
-
-		marchingCubesFloat(scalarField, volDim, volZFull, voxDim, isoLevel, offset, callback);
-		System.err.println("Number of triangles: " + vertices.size());
-		TriangleArray triArray = new TriangleArray(vertices.size(), TriangleArray.COORDINATES | TriangleArray.NORMALS | TriangleArray.COLOR_3);
-		/// TODO: set the colors (add parameter to run MC with threads from VRL-Studio GUI!)
-		/// Depending on the isoLevel the color are ligher or darker maybe?
-		triArray.setCoordinates(0, vertices.toArray(new Point3f[vertices.size()]));
-		GeometryInfo geometryInfo = new GeometryInfo(triArray);
-		NormalGenerator ng = new NormalGenerator();
-		ng.generateNormals(geometryInfo);
-		GeometryArray result = geometryInfo.getGeometryArray();
-		/// Note For illumination model, we need to calculate gradient of the scalar field potentially..
-		return new Shape3D(result);
-	}
 }

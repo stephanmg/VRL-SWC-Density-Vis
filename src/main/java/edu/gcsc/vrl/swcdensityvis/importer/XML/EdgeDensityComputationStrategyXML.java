@@ -26,13 +26,15 @@ import javax.vecmath.Vector3f;
 
 /**
  * @brief the edge density computation strategy for XML files
+ * Note: This class is deprecated and won't be maintained start from future commits
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
+@Deprecated
 public final class EdgeDensityComputationStrategyXML implements EdgeDensityComputationStrategy {
 	private ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>> cells = new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>();
-	private float width = 10;
-	private float depth = 10;
-	private float height = 10;
+	private float width = 100;
+	private float depth = 100;
+	private float height = 100;
 
 	/**
 	 * @brief default ctor
@@ -65,6 +67,7 @@ public final class EdgeDensityComputationStrategyXML implements EdgeDensityCompu
 	 * @brief calculates the bounding box
 	 * @return 
 	 */
+	@Override
 	public Pair<Vector3f, Vector3f> getBoundingBox() {
 		ArrayList<Float> temp_x = new ArrayList<Float>();
 		ArrayList<Float> temp_y = new ArrayList<Float>();
