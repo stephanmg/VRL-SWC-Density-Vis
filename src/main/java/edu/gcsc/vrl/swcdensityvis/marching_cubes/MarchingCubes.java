@@ -223,6 +223,10 @@ public class MarchingCubes {
 	private static float[] createScalarField(List<? extends VoxelSet> voxels, DensityVisualizable visualizer) {
 		Vector3f center = (Vector3f) visualizer.getCenter();
 		Vector3f dim = (Vector3f) visualizer.getDimension();
+		float scale = 100f;
+		dim.x *= scale;
+		dim.y *= scale;
+		dim.z *= scale;
 		int index = 0;
 		final float[] scalarField = new float[voxels.size() * (int) dim.x / voxels.get(0).getWidth()];
 		for (float x = center.x - dim.x; x < center.x + center.x; x += voxels.get(0).getWidth()) {
@@ -253,9 +257,9 @@ public class MarchingCubes {
 		/// dimension of density data
 		Vector3f dim = (Vector3f) visualizer.getDimension();
 		Vector3f center = (Vector3f) visualizer.getCenter();
-		float width = dim.x;
-		float depth = dim.y;
-		float height = dim.z;
+		float width = dim.x/0.01f;
+		float depth = dim.y/0.01f;
+		float height = dim.z/0.01f;
 
 		/// dimension of individual voxels (Note: Could be improved)
 		float voxWidth = voxels.get(0).getWidth();
@@ -272,7 +276,7 @@ public class MarchingCubes {
 		final float[] voxDim = new float[]{voxWidth, voxHeight, voxDepth};
 		
 		/// the iso level which should be visualized
-		final float isoLevel = 0.99f;
+		final float isoLevel = 0.0f; // wasA: 0.99f;
 		
 		/// the number of threads (Note: Includes hyperthreading)
 		int nThreads = Runtime.getRuntime().availableProcessors();
@@ -345,9 +349,9 @@ public class MarchingCubes {
 		
 		/// origin / offset is (0, 0, 0) in ScaleDensityToJava3D... TODO shift!
 		for (int i = 0; i < vertices.size(); i++) {
-			vertices.get(i).x *= 100f*scale; // voxel dim times scale
-			vertices.get(i).y *= 100f*scale;
-			vertices.get(i).z *= 100f*scale;
+			vertices.get(i).x *= 1f;//scale; // voxel dim times scale
+			vertices.get(i).y *= 1f;//*scale;
+			vertices.get(i).z *= 1f;//*scale;
 		}
 
 		

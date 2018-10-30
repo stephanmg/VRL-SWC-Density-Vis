@@ -168,11 +168,11 @@ public class DensityVisualization implements java.io.Serializable {
 		List<? extends VoxelSet> voxels = density.getDensity().getVoxels();
 		///Shape3D isosurface = new MarchingCubes().run_MC_with_threads(voxels, xmlDensityVisualizer);
 		Shape3D isosurface;
-		///isosurface = new MarchingCubes().testMC2(voxels, xmlDensityVisualizer, 1f);
+		isosurface = new MarchingCubes().testMC2(voxels, xmlDensityVisualizer, 0.01f);
 		/// TODO Can add a lighting model here: http://www.java3d.org/appearance.html
 		// appearance ap = new Appearance();
 		/// isosurface.setAppearance(ap);
-		///result.add(isosurface);
+		result.add(isosurface);
 
 		/// @todo set bounding box for result (Shape3DCustom)
 		/// this makes easy to set the scale bar and the coordinate axes
