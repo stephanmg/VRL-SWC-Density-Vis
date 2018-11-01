@@ -16,5 +16,4 @@ public class XMLDensityDataDemo {
 	public static void main(String... args) {
 		new XMLDensityData(new ArrayList<HashMap<String, ArrayList<Edge<Vector3f>>>>()).getDensityData();
 	}
-
 }

@@ -38,7 +38,6 @@ public class MarchingCubes {
 		float maxX = voxDim[0] * (volDim[0] - 1);
 		float maxY = voxDim[1] * (volDim[1] - 1);
 		float maxZ = voxDim[2] * (volZFull - 1);
-		float maxAxisVal = Math.max(maxX, Math.max(maxY, maxZ));
 
 		// Volume iteration
 		for (int z = 0; z < volDim[2] - 1; z++) {
@@ -115,7 +114,7 @@ public class MarchingCubes {
 						continue;
 					}
 
-					// Interpolate the positions based od voxel intensities
+					// Interpolate the positions based on voxel intensities
 					float mu = 0.5f;
 
 					// bottom of the cube
@@ -180,10 +179,10 @@ public class MarchingCubes {
 						int index2 = LookupTables.TRIANGLE_TABLE[cubeindex + i + 1];
 						int index3 = LookupTables.TRIANGLE_TABLE[cubeindex + i + 2];
 
-						// Add triangles vertices normalized with the maximal possible value
-						vertices.add(new Point3f(vertList[index3][0] / maxAxisVal - 0.5f, vertList[index3][1] / maxAxisVal - 0.5f, vertList[index3][2] / maxAxisVal - 0.5f));
-						vertices.add(new Point3f(vertList[index2][0] / maxAxisVal - 0.5f, vertList[index2][1] / maxAxisVal - 0.5f, vertList[index2][2] / maxAxisVal - 0.5f));
-						vertices.add(new Point3f(vertList[index1][0] / maxAxisVal - 0.5f, vertList[index1][1] / maxAxisVal - 0.5f, vertList[index1][2] / maxAxisVal - 0.5f));
+						// Add triangle vertices unnormalized
+						vertices.add(new Point3f(vertList[index3][0], vertList[index3][1], vertList[index3][2]));
+						vertices.add(new Point3f(vertList[index2][0], vertList[index2][1], vertList[index2][2]));
+						vertices.add(new Point3f(vertList[index1][0], vertList[index1][1], vertList[index1][2]));
 
 						i += 3;
 					}
@@ -220,13 +219,12 @@ public class MarchingCubes {
 	 * triple for loop in TreeDensityComputationStrategy in the XML package
 	 * @return 
 	 */
-	private static float[] createScalarField(List<? extends VoxelSet> voxels, DensityVisualizable visualizer) {
+	private static float[] createScalarField(List<? extends VoxelSet> voxels, DensityVisualizable visualizer, float scale) {
 		Vector3f center = (Vector3f) visualizer.getCenter();
 		Vector3f dim = (Vector3f) visualizer.getDimension();
-		float scale = 100f;
-		dim.x *= scale;
-		dim.y *= scale;
-		dim.z *= scale;
+		dim.x *= 1f/scale;
+		dim.y *= 1f/scale;
+		dim.z *= 1f/scale;
 		int index = 0;
 		final float[] scalarField = new float[voxels.size() * (int) dim.x / voxels.get(0).getWidth()];
 		for (float x = center.x - dim.x; x < center.x + center.x; x += voxels.get(0).getWidth()) {
@@ -273,7 +271,7 @@ public class MarchingCubes {
 		final int sizeZ = (int) (height / voxDepth);
 
 		/// the scalar field for our voxel data
-		final float[] scalarField = createScalarField(voxels, visualizer);
+		final float[] scalarField = createScalarField(voxels, visualizer, scale);
 		final float[] voxDim = new float[]{voxWidth, voxHeight, voxDepth};
 		
 		/// the iso level which should be visualized
@@ -347,12 +345,13 @@ public class MarchingCubes {
 		for (int i = 0; i < results.size(); i++) {
 			vertices.addAll(results.get(i));
 		}
+
 		
 		/// origin / offset is (0, 0, 0) in ScaleDensityToJava3D... TODO shift!
 		for (int i = 0; i < vertices.size(); i++) {
-			vertices.get(i).x *= 1f;//scale; // voxel dim times scale
-			vertices.get(i).y *= 1f;//*scale;
-			vertices.get(i).z *= 1f;//*scale;
+			vertices.get(i).x *= scale;
+			vertices.get(i).y *= scale;
+			vertices.get(i).z *= scale;
 		}
 		
 		/// TODO: This scaling is not correct: need to consider scale factor
@@ -365,19 +364,25 @@ public class MarchingCubes {
 		min_bb.x *= 0.01;
 		min_bb.y *= 0.01;
 		min_bb.z *= 0.01;
+		Vector3f max_bb = bb.getFirst();
+		max_bb.x *= 0.01;
+		max_bb.y *= 0.01;
+		max_bb.z *= 0.01;
 		System.err.println("min_bb: " + min_bb);
+		System.err.println("max_bb: " + max_bb);
 		Vector3f min = getMin(vertices);
-		float shift_x = (min_bb.x - min.x);
-		float shift_y = (min_bb.y - min.y);
-		float shift_z = (min_bb.z - min.z);
+		Vector3f max = getMax(vertices);
+		float shift_x = 100*(max_bb.x - min.x);
+		float shift_y = 100*(max_bb.y - min.y);
+		float shift_z = 100*(max_bb.z - min.z);
 		System.err.println("min: " + min);
+		System.err.println("max: " + max);
 		
-		/*
 		for (int i = 0; i < vertices.size(); i++) {
-			vertices.get(i).x -= shift_x;
-			vertices.get(i).y -= shift_y;
-			vertices.get(i).z -= shift_z;
-		}*/
+			vertices.get(i).x += shift_x;
+			vertices.get(i).y += shift_y;
+			vertices.get(i).z += shift_z;
+		}
 
 		/// create Java3D triangles with normal information and colors
 		TriangleArray triArray = new TriangleArray(vertices.size(), TriangleArray.COORDINATES 

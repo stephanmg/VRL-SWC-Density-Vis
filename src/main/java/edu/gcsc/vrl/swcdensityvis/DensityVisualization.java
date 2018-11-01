@@ -154,6 +154,8 @@ public class DensityVisualization implements java.io.Serializable {
 		/**
 		 * TODO: Normalization of Density: Check Tree/Edge implementation: 
 		 * Need to scale with total length of neurons not with average length!
+		 * Note: computeDensity is necessary, since bounding box gets calculated via this too. 
+		 * This will have to be changed since this increases runtime by a factor two...
 		 */
 		xmlDensityVisualizer.parseStack();
 		xmlDensityVisualizer.computeDensity();
