@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.media.j3d.Shape3D;
 import javax.vecmath.Vector3f;
-import org.apache.commons.io.FilenameUtils;
 
 /**
  * @brief DensityVisualization component
@@ -155,7 +154,7 @@ public class DensityVisualization implements java.io.Serializable {
 		 * TODO: Normalization of Density: Check Tree/Edge implementation: 
 		 * Need to scale with total length of neurons not with average length!
 		 * Note: computeDensity is necessary, since bounding box gets calculated via this too. 
-		 * This will have to be changed since this increases runtime by a factor two...
+		 * This will have to be changed since this increases runtime by a factor two.
 		 */
 		xmlDensityVisualizer.parseStack();
 		xmlDensityVisualizer.computeDensity();
@@ -172,7 +171,7 @@ public class DensityVisualization implements java.io.Serializable {
 		/// to allow enabling the isocontours and modify the settings, e.g. isoValue in this component
 		List<? extends VoxelSet> voxels = density.getDensity().getVoxels();
 		Shape3D isosurface;
-		isosurface = new MarchingCubes().MC(voxels, xmlDensityVisualizer, 0.01f);
+		isosurface = new MarchingCubes().MC(voxels, xmlDensityVisualizer, 0.01f, 0f);
 		/// TODO: Can add a lighting model with this: http://www.java3d.org/appearance.html
 		// appearance ap = new Appearance();
 		// isosurface.setAppearance(ap);
