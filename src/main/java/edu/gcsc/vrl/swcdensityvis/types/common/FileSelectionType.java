@@ -221,7 +221,7 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 
 		if (hoc_tag == null) {
 			getMainCanvas().getMessageBox().addMessage("Invalid ParamInfo option",
-				"ParamInfo for hoc-subset-selection requires hoc_tag in options",
+				"ParamInfo for compartment-selection requires a tag in options",
 				getConnector(), MessageType.ERROR);
 		}
 		

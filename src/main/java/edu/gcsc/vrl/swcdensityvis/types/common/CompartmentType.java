@@ -43,7 +43,7 @@ public class CompartmentType extends TypeRepresentationBase implements Serializa
 	private String file_tag = null;
 
 	public void init() {
-		eu.mihosoft.vrl.system.VMessage.info("CompartmentType", "init was called");
+		//eu.mihosoft.vrl.system.VMessage.info("CompartmentType", "init was called");
 		// create a VBoxLayout and set it as layout
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
 		setLayout(layout);

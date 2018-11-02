@@ -165,7 +165,7 @@ public class LoadCompartmentFileType extends TypeRepresentationBase {
 				"ParamInfo for file-subset-selection requires file_tag in options",
 				getConnector(), MessageType.ERROR);
 		} else {
-			getMainCanvas().getMessageBox().addMessage("ParamInfo specified correctly", "file_tag was: " + file_tag, MessageType.INFO);
+			/// getMainCanvas().getMessageBox().addMessage("ParamInfo specified correctly", "file_tag was: " + file_tag, MessageType.INFO);
 		}
 		
 		property = null;
