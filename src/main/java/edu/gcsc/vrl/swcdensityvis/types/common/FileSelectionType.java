@@ -48,7 +48,6 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 	private final double percentage = 0.5;
 
 	public void init() {
-		eu.mihosoft.vrl.system.VMessage.info("FileSelectionType", "init was called");
 		// create a VBoxLayout and set it as layout
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
 		setLayout(layout);

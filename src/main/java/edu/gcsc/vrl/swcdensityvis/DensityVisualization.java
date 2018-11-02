@@ -23,7 +23,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
+import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 /**
@@ -76,42 +79,57 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") boolean dTransparency,
 		@ParamGroupInfo(group = "Visualization")
 		@ParamInfo(name = "Density Visible?", style = "default", options = "value=true") boolean bVisibleDensity,
-		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Scalebar Visible?", style = "default", options = "value=false") boolean bScalebarVisible,
-		@ParamGroupInfo(group = "Visualization")
-		@ParamInfo(name = "Coordinate System Visible?", style = "default", options = "value=false") boolean bCoordinateSystemVisible,
+		
+		@ParamGroupInfo(group = "Isosurfaces|false|no description")
+		@ParamInfo(name = "Visible?", style="default", options="value=true") 
+		boolean bIsoSurfaces,
+		@ParamGroupInfo(group = "Isosurfaces")
+		@ParamInfo(name = "Average [%]", style = "slider", options = "min=0;max=100;value=50") 
+		int mAverage,
+		@ParamGroupInfo(group = "Isosurfaces")
+		@ParamInfo(name = "Deviation [%]", style = "slider", options = "min=0;max=100;value=1") 
+		int mDeviation,
+
 		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Line-graph Geometry") File[] files,
+		@ParamInfo(name = "Neuron geometry") File[] files,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Representation", style = "selection", options = "value=[\"cylinder\", \"schematic\"]") String representation,
+		@ParamGroupInfo(group = "Geometry")
+		@ParamInfo(name = "Geometry Visible?", style = "default", options = "value=true") boolean bVisibleGeometry,
+		
+		@ParamGroupInfo(group = "Geometry|false|no description")
+		@ParamInfo(name = "Bounding Box Visible?", style = "default", options = "value=true") boolean bVisibleBoundingBox,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") Color mColor,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "min=0;max=100;value=80") int mTransparency,
-		@ParamGroupInfo(group = "Geometry|false|no description")
-		@ParamInfo(name = "Bounding Box Visible?", style = "default", options = "value=true") boolean bVisibleBoundingBox,
-		@ParamGroupInfo(group = "Geometry")
-		@ParamInfo(name = "Consensus Geometry Visible?", style = "default", options = "value=true") boolean bVisibleGeometry,
-		@ParamGroupInfo(group = "Geometry")
-		@ParamInfo(name = "Name", typeName = "Compartment name", style = "default", options = "file_tag=\"geometry\"") Compartment compartment,
+		
+		@ParamInfo(name = "Compartment Types", typeName = "Compartment Type", style="default", options = "file_tag=\"geometry\"")
+		Compartment compartment,
+		
+		@ParamGroupInfo(group = "Canvas|false|no description")
+		@ParamInfo(name = "Scalebar Visible?", style = "default", options = "value=false") boolean bScalebarVisible,
+		@ParamGroupInfo(group = "Canvas|false|no description")
+		@ParamInfo(name = "Coordinate System Visible?", style = "default", options = "value=false") boolean bCoordinateSystemVisible,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Blur|false|Rotation")
+		
 		@ParamInfo(name = "Blurring Kernel", typeName = "Blurring Kernel", style = "default", options = "cols=3; rows=3; "
 			+ "values=\"0.0625, 0.125, 0.0625, 0.125, 0.250, 0.125, 0.0625, 0.125, 0.0625\"") DenseMatrix blurKernel,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
-		@ParamInfo(name = "FPS") Integer fps,
+		@ParamInfo(name = "FPS", style="slider", options = "min=0;max=100;value=30") int fps,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
-		@ParamInfo(name = "SPF") Integer spf,
+		@ParamInfo(name = "SPF", style="slider", options = "min=0;max=100;value=1") int spf,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
 		@ParamInfo(name = "File type", typeName = "Filetype", style = "selection", options = "value=[\"AVI\","
 			+ " \"MPG\", \"MOV\"]") String videoFormat,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "rotX") double rotX,
+		@ParamInfo(name = "rotX", style="slider", options = "min=0;max=255;value=1") double rotX,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "rotY") double rotY,
+		@ParamInfo(name = "rotY", style="slider", options = "min=0;max=255;value=1") double rotY,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "rotZ") double rotZ,
+		@ParamInfo(name = "rotZ", style="slider", options = "min=0;max=255;value=1") double rotZ,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "increment") double increment
+		@ParamInfo(name = "increment", style="slider", options = "min=0;max=255;value=1") double increment
 	) {
 		
 		long startTime = System.currentTimeMillis();
@@ -167,15 +185,20 @@ public class DensityVisualization implements java.io.Serializable {
 		}
 
 		
-		/// TODO: Add option (which we move from ComputeDensity to DensityVisualization component first)
-		/// to allow enabling the isocontours and modify the settings, e.g. isoValue in this component
-		List<? extends VoxelSet> voxels = density.getDensity().getVoxels();
-		Shape3D isosurface;
-		isosurface = new MarchingCubes().MC(voxels, xmlDensityVisualizer, 0.01f, 0f);
-		/// TODO: Can add a lighting model with this: http://www.java3d.org/appearance.html
-		// appearance ap = new Appearance();
-		// isosurface.setAppearance(ap);
-		result.add(isosurface);
+		/// TODO: Factor this out into the IsoSurfaceDensityVisualizerDecorator!
+		/// xmlDensityVisualizer = new IsosurfaceDensityVisualizerDecorator();
+		if (bIsoSurfaces) {
+			List<? extends VoxelSet> voxels = density.getDensity().getVoxels();
+			Shape3D isosurface;
+			isosurface = new MarchingCubes().MC(voxels, xmlDensityVisualizer, 0.01f, percentage);
+			Color3f black = new Color3f(0.0f, 0.0f, 0.0f);
+			Material mat = new Material(black, black, black, black, 70.0f);
+			mat.setCapability(Material.ALLOW_COMPONENT_WRITE);
+			Appearance ap = new Appearance();
+			ap.setMaterial(mat);
+			isosurface.setAppearance(ap);
+			result.add(isosurface);
+		}
 
 	 	/// TODO: This scales the density as mentioned before in ComputeDensity, make this an option, e.g. 1% = 0.01.
 		if (bVisibleDensity) {

@@ -213,7 +213,8 @@ public class MarchingCubes {
 	 * @param scale
 	 * Note: To ensure consistency one needs to iterate in the same way over
 	 * the density data as the DensityComputationStrategies do, e.g. see the
-	 * triple for loop in TreeDensityComputationStrategy in the XML package
+	 * triple for loop in TreeDensityComputationStrategy in the XML package.
+	 * Also, it is assumed that x, y and z dimensions of voxels are the same.
 	 * @return 
 	 */
 	private static float[] createScalarField(List<? extends VoxelSet> voxels, DensityVisualizable visualizer, float scale) {
@@ -223,13 +224,11 @@ public class MarchingCubes {
 		dim.y *= 1f/scale;
 		dim.z *= 1f/scale;
 		int index = 0;
-		final float[] scalarField = new float[voxels.size() * (int) dim.x / voxels.get(0).getWidth()];
-		for (float x = center.x - dim.x; x < center.x + center.x; x += voxels.get(0).getWidth()) {
-			for (float y = center.y - dim.y; y < center.y + center.y; y += voxels.get(0).getHeight()) {
-				for (float z = center.z - dim.z; z < center.z + center.z; z += voxels.get(0).getDepth()) {
+		final float[] scalarField = new float[voxels.size() * (int) dim.x / voxels.get(0).getWidth()]; 
+		for (float x = center.x - dim.x/2; x < center.x + dim.x/2; x += voxels.get(0).getWidth()) {
+			for (float y = center.y - dim.y/2; y < center.y + dim.y/2; y += voxels.get(0).getHeight()) {
+				for (float z = center.z - dim.z/2; z < center.z + dim.z/2; z += voxels.get(0).getDepth()) {
 					scalarField[index] = (float) voxels.get(index).getValue();
-					// System.err.println("Density value: " + (float) voxels.get(index).getValue());
-					// System.err.println("Voxels coordinates: " +  voxels.get(index).getX() + ", " + voxels.get(index).getY() + ", " + voxels.get(index).getZ());
 					index++;
 				}
 			}
@@ -384,18 +383,22 @@ public class MarchingCubes {
 		GeometryInfo geometryInfo = new GeometryInfo(triArray);
 		NormalGenerator ng = new NormalGenerator();
 		ng.generateNormals(geometryInfo);
-		/// TODO: assign colors depending on the the density value
-		/// Note For illumination model, need to get gradient of scalarfield
+		/// Note: For illumination model, need to get gradient of scalarfield
 		GeometryArray result = geometryInfo.getGeometryArray();
 		return new Shape3D(result);
 	}
 	
 	/**
-	 * @brief get minimum coordinate of a set of vertices
+	 * @brief get minimum coordinate of a set of vertices,
+	 * Note: If the set is empty, then (0, 0, 0) is returned.
 	 * @param vertices
 	 * @return 
 	 */
 	public static Vector3f getMin(ArrayList<Point3f> vertices) {
+		if (vertices.isEmpty()) {
+			return new Vector3f(0f, 0f, 0f);
+		}
+		
 		ArrayList<Float> temp_x = new ArrayList<Float>();
 		ArrayList<Float> temp_y = new ArrayList<Float>();
 		ArrayList<Float> temp_z = new ArrayList<Float>();
@@ -404,6 +407,7 @@ public class MarchingCubes {
 			temp_y.add(p.y);
 			temp_z.add(p.z);
 		}
+		
 		return new Vector3f(Collections.min(temp_x), Collections.min(temp_y), Collections.min(temp_z));
 	}
 }

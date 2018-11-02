@@ -52,9 +52,6 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 	}
 
 	public LoadFolderFileType() {
-
-		eu.mihosoft.vrl.system.VMessage.info("MPM Plugin status", "LoadHOCFileType instantiated!");
-
 		// create a Box and set it as layout
 		VBoxLayout layout = new VBoxLayout(this, VBoxLayout.Y_AXIS);
 		setLayout(layout);
@@ -204,7 +201,6 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 	}
 
 	protected void notifyLoadHOCFileObservable() {
-		eu.mihosoft.vrl.system.VMessage.info("Clamp", "notifyloadhocfileobaservable called!");
 		File file = new File(input.getText());
 		int id = this.getParentMethod().getParentObject().getObjectID();
 		Object o = ((VisualCanvas) getMainCanvas()).getInspector().getObject(id);

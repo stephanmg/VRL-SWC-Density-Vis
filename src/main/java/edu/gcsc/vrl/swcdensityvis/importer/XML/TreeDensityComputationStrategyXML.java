@@ -304,35 +304,28 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 			    System.err.println("al keyset: " + al.keySet().toString());
 			}
 			
-			/// total length (Note: This should be the average dendritic length per cell)
+			/// total length (previously the average dendritic length was used)
 			float total_length = 0;
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
-				total_length += entry.getValue() / cells.size();
+				total_length += entry.getValue();
 			}
 
-			/// TODO: this is not entirely correct: Since we get 
-			/// average dendritic length -> might get "wrong" density violation 
-			/// then... Should change this check to be consistent
-			
-			/// should this be normalized by voxel volume? prob. not...
-			
 			/// densities
 			for (Map.Entry<Integer, Float> entry : vals.entrySet()) {
 				if ( (entry.getValue() / total_length) > 1) {
-					System.err.println("density violation!");
-					System.err.println(entry.getValue());
-					System.err.println(total_length);
+					System.err.println("Density violation: " + entry.getValue() + 
+						" (total Length: " + total_length + ")");
 				}
 				entry.setValue(entry.getValue() / total_length);
 			}
 
-			System.out.println("Total (average) dendritic length [\\mu m]: " + total_length);
-
+			/// Some more debug output, will be removed in future commits
+			System.out.println("Total dendritic length [\\mu m]: " + total_length);
+			System.out.println("Total average dendritic length [\\mu m]: " + total_length / cells.size());
 			System.out.println("Non-zero cuboids: " + vals.size());
 			long timeSpentInMillisecondsSerial = System.currentTimeMillis() - millisecondsStartSerial;
 			System.out.println("Serial work [s]: " + timeSpentInMillisecondsSerial / 1000.0);
-
-			System.out.println("Number of cells" + cells.size());
+			System.out.println("Number of cells: " + cells.size());
 
 		} catch (ExecutionException e) {
 			System.err.println(e);

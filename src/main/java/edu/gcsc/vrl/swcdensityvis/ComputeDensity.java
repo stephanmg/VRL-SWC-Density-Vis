@@ -68,19 +68,7 @@ public class ComputeDensity implements Serializable {
 		@ParamInfo(name = "Depth", typeName = "Depth of sampling cube", style = "slider", options = "min=1;max=100") int depth,
 		@ParamGroupInfo(group = "Advanced options|true|Compute the density for the image (stack); Compartment|true|Compartment")
 		@ParamInfo(name = "Compartment Types", typeName = "Compartment Type", style="default", options = "file_tag=\"geometry\"")
-		Compartment compartment,
-			
-		@ParamGroupInfo(group = "Advanced options|true|Compute the density for the image (stack); Isosurfaces|true|Isosurfaces")
-		@ParamInfo(name = "Visible?", style="default", options="value=true") 
-		boolean bIsoSurfaces,
-		
-		@ParamGroupInfo(group = "Advanced options|true|Compute the density for the image (stack); Isosurfaces|true|Isosurfaces")
-		@ParamInfo(name = "Average [%]", style = "slider", options = "min=0;max=100;value=50") 
-		int mAverage,
-		
-		@ParamInfo(name = "Deviation [%]", style = "slider", options = "min=0;max=100;value=1") 
-		int mDeviation
-
+		Compartment compartment
 	) {
 		/// Roughly measure start time
 		long startTime = System.currentTimeMillis();
@@ -126,15 +114,6 @@ public class ComputeDensity implements Serializable {
 			xmlDensityVisualizer.setFiles(files);
 			xmlDensityVisualizer.prepare(Color.yellow, 1, compartment);
 			log.info("We have the following files for density calculation: " + files);
-
-			/// Decorate the visualizer with isosurfaces if user wishes to view isosurfaces
-			/// TODO: This should be brought into the DensityVisualization component
-			if (bIsoSurfaces) {
-				log.info("Isosurface density visualizer decorator used.");
-				xmlDensityVisualizer = new IsosurfaceDensityVisualizerDecorator(xmlDensityVisualizer, mAverage, mDeviation);
-			} else {
-				log.info("No isosurface density visualizer decorator used.");
-			}
 			
 			/// Parse the geometry fiels, then calculat the density and measure elapsed time 
 			xmlDensityVisualizer.parseStack(); 
