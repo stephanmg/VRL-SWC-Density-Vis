@@ -18,7 +18,6 @@ import lombok.ToString;
 public class Tree<T> {
 	private String type;
 	private ArrayList<Edge<T>> edges;
-	/// TODO: have to add also average diameter for density calculation
 	private Color color;
 	private String leaf;
 }

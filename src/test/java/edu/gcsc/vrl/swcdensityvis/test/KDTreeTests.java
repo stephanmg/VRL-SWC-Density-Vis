@@ -43,10 +43,6 @@ public class KDTreeTests {
 	}
 
 	@Test
-	/**
-	 * @todo define members for the tree etc., other test methods need to
-	 * access them
-	 */
 	public void testBuildKDTree() {
 		HashMap<String, ArrayList<SWCCompartmentInformation>> cells = new HashMap<String, ArrayList<SWCCompartmentInformation>>(1);
 		try {
@@ -69,7 +65,7 @@ public class KDTreeTests {
 			double[] lo = {0, 0, 0};
 			double[] hi = {5, 20, 5};
 			try {
-				List<ArrayList<Vector3f>> temps = tree.range(lo, hi);
+				tree.range(lo, hi);
 			} catch (KeySizeException e) {
 				fail("No key could be found for search query: " + e);
 			}
@@ -77,17 +73,11 @@ public class KDTreeTests {
 	}
 
 	@Test
-	/**
-	 * @todo implement
-	 */
 	public void testKDTreeSearch() {
 
 	}
 
 	@Test
-	/**
-	 * @todo implement
-	 */
 	public void testKDTreeRange() {
 
 	}

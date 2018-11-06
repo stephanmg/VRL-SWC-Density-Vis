@@ -102,7 +102,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 
 	/**
 	 * @brief parse all input files
-	 * TODO: make the cells/files available in vrl-studio, i. e. make available to switch off/on
+	 * TODO: Could think of making the files available for selection/deselection in VRL-Studio
 	 */
 	@Override
 	public void parse() {
@@ -304,8 +304,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 
 	/**
 	 * @brief process trees
-	 * @todo respectively note: it seems to be the case that trees aren't
-	 * nested!
+	 * Note: Trees are *not* allowed to be nested
 	 */
 	private HashMap<String, Tree<Vector4d>> process_trees(Element rootNode) {
 		HashMap<String, Tree<Vector4d>> trees_ = new HashMap<String, Tree<Vector4d>>();
@@ -326,8 +325,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 
 	/**
 	 * @brief process contours
-	 * @todo respectively note: contours seem not to be allowed to be
-	 * nested!
+	 * Note: Contours are *not* allowed to be nested
 	 * @param rootNode
 	 */
 	private HashMap<String, Contour<Vector4d>> process_contours(Element rootNode) {
@@ -482,8 +480,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 					gColor = con.getColor();
 					ArrayList<Vector4d> points = con.getPoints();
 					/**
-					 * @todo refactor to use edge instead of
-					 * points
+					 * TODO: Refactor this and use edges instead of points
 					 */
 					MemoryUtil.printHeapMemoryUsage();
 					for (int i = 0; i < points.size() - 1; i++) {

@@ -4,13 +4,12 @@ package edu.gcsc.vrl.swcdensityvis.types.LA;
 /// imports
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.types.ArrayBaseType;
 import groovy.lang.Script;
 import java.lang.annotation.Annotation;
 
 /**
  * @brief matrix array type
- * @author stephan grein
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @TypeInfo(type = DenseMatrix[].class, input = true, output = true, style = "matrix-array")
 public class DenseMatrixArrayType extends DenseMatrixArrayBaseType {
@@ -78,7 +77,7 @@ public class DenseMatrixArrayType extends DenseMatrixArrayBaseType {
 		});
 
 		/**
-		 * @todo on multi-methods branch we can do:
+		 * Note: on multi-methods branch of VRL we can do:
 		 * setElementInputInfo(new DefaultParamInfo("", "default",
 		 * "elemSize=" + elemRowSize, false));
 		 */

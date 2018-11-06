@@ -593,8 +593,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	synchronized public void setViewValue(Object o) {
 		clearView();
 		if (!VGraphicsUtil.NO_3D) {
-			/// TODO: Better placement of coordinate system
-			/// TODO: Better placement of scalebar
+			/// TODO: Better placement of coordinate system and scalebar
 			/// Note: getUniverseCreator().getRootGroup().getBounds() can be used to find the
 			///       bounds (then the scalebar and coordinate system can be place better though)
 			final Shape3DArrayCustom shapes = (Shape3DArrayCustom) o;
@@ -686,11 +685,12 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			}
 
 			if (shapes.isScalebarVisible()) {
-				/// bounding box of geometry TODO use to set scalebar
-				///Pair<Vector3f, Vector3f> boundingBox = shapes.getBoundingBox();
-				///boundingBox.getFirst();
+				/// Note: We can use the bounding box of the geometry to scale the scalebar
+				/// Pair<Vector3f, Vector3f> boundingBox = shapes.getBoundingBox();
+				/// boundingBox.getFirst();
 				/// scale bar line
-				/*Point3f s1 = new Point3f(boundingBox.getFirst().x,
+				/*
+				Point3f s1 = new Point3f(boundingBox.getFirst().x,
 							 boundingBox.getFirst().y,
 							 boundingBox.getFirst().z);
 				Point3f s2 = new Point3f(boundingBox.getFirst().x + 1,
@@ -899,7 +899,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		}
 
 		if (w != null && h != null && getCanvas() != null) {
-			// TODO find out why offset is 5
+			// TODO: Find out why offset is 5?
 			getCanvas().setPreferredSize(new Dimension(w - 5, h));
 			getCanvas().setMinimumSize(minimumVCanvas3DSize);
 			getCanvas().setSize(new Dimension(w - 5, h));

@@ -53,17 +53,14 @@ final class XMLDensityEdgeImpl implements Density {
 		for (float x = bounding.getSecond().x; x < bounding.getFirst().x; x += this.voxelWidth) {
 			for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y += this.voxelHeight) {
 				for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z += this.voxelDepth) {
-					/// is the index handling correct here?
-					/**
-					 * @todo see above, this is not correct in the edge strategy! => wrong indices, thus many many indices to iterate over and thereby slow...
-					 */
+					/// Note: Is the index handling really correct here?
 					index = (int) x * (int) y * (int) z;
 					///System.err.println("xyz: " + index);
 					if (density.containsKey(index)) {
-						/// note: density.get(index) in interval [0, 1] -> thus we multiply by 100, for making in the graphical representation available the density in percentage 0 to 100 %
+						/// Note: density.get(index) in interval [0, 1], multiply by 100 -> percentage 
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 100));  /// note however, multiplication with 100 is not required!
 	//					System.err.println("density: " + density.get(index) * 100);
-						/** @todo we need to take the default voxel volume into account for a density */
+						/// TODO: Scale voxels with physiological length
 					} else {
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, 0));
 					}

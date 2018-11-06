@@ -36,8 +36,5 @@ public class ComputeSWCDensityTests {
 	public void compute_density() {
 		ComputeSWCDensity d = new ComputeSWCDensity();
 		assertTrue("compute swc density can be instantiated", (d != null));
-		/**
-		 * @todo implement
-		 */
 	}
 }

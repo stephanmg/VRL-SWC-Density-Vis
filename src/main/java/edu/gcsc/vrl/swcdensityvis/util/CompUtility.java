@@ -109,12 +109,13 @@ public final class CompUtility {
 	 * @brief the uniform shrinkage of a quickhull
 	 * @param qhull
 	 * @param factor
-	 * @todo
+	 * @note test the quickhull implementation shrink uniform method more rigorous 
+	 * For now this method is not needed, but we should nevertheles test it.
 	 */
 	public static QuickHull3D shrink_uniform(QuickHull3D qhull, double factor) {
 		/// 1. get quickhull
 		/// 2. calculate center out of vertices
-		/// 3. scale coordinates by factor (with respect to the densities in the 100 % qhull!)
+		/// 3. scale coordinates by factor wrt the densities in the hull
 		/// 4. transform back to calculated center
 		return new QuickHull3D();
 	}

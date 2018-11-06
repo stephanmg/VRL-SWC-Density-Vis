@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * @brief test matrix component for visual representation
- * @author stephan grein
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @ComponentInfo(name="DenseMatrixArrayTestComponent", category="Neuro/Common/LA/Test")
 public class DenseMatrixArrayTestComponent implements Serializable {

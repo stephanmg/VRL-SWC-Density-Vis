@@ -77,10 +77,6 @@ public class FileSelectionType extends TypeRepresentationBase implements Seriali
 				if (sectionList.getSelectedIndices() != null && hocFileName.getText() != null) {
 					// construct selectedValuesList by hand since 
 					// getSelectedValuesList() depends on 1.7 and may raise an exception
-					/**
-					 * @todo implement/
-					 */
-
 				}
 			}
 		});

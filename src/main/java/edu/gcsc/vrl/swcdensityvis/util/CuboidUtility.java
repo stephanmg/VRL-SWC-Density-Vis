@@ -10,7 +10,6 @@ import eu.mihosoft.vrl.reflection.Pair;
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class CuboidUtility {
-
 	/**
 	 * @brief  utility pattern
 	 */
@@ -42,7 +41,6 @@ public final class CuboidUtility {
 
 	/**
 	 * @brief get cuboid by id
-	 * @todo implement
 	 *
 	 * @param bounding
 	 * @param id

@@ -17,7 +17,6 @@ import java.util.Random;
  * @author stephan
  */
 public class ComputeUtilTests {
-
 	private static final Random rand = new Random();
 	private static final Float min = 0f;
 	private static final Float max = 1e3f;

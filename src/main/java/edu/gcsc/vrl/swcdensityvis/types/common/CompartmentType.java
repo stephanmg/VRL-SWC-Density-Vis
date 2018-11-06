@@ -73,10 +73,6 @@ public class CompartmentType extends TypeRepresentationBase implements Serializa
 				if (sectionList.getSelectedIndices() != null && geometryFileName.getText() != null) {
 					// construct selectedValuesList by hand since 
 					// getSelectedValuesList() depends on 1.7 and may raise an exception
-					/**
-					 * @todo implement/
-					 */
-
 				}
 			}
 		});

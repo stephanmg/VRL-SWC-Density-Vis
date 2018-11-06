@@ -105,7 +105,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 	}
 	
 	/**
-	 * @todo is this correct? maybe we over-/underestimate the real connections?
+	 * TODO: Check that this is correct: Maybe we over-/underestimate the real connections?
 	 */
 	private HashMap<Vector3f, ArrayList<Vector3f>> getIncidents(ArrayList<Edge<Vector3f>> cell) {
 		final HashMap<Vector3f, ArrayList<Vector3f>> incidents = new HashMap<Vector3f, ArrayList<Vector3f>>();
@@ -135,7 +135,7 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 		/**
 		 * @brief thread, e. g. callable, which computes for one cell
 		 * the dendritic length in each cuboid
-		 * @todo performance penalties: i. build kdtree and operations
+		 * Note performance penalties: i. build kdtree and operations
 		 * on kdtree (maybe we don't need the kdtree, this could
 		 * probably the case if we have geometries with a few edges!)
 		 * ii. intersection algorithms iii. hashmap as sparse data

@@ -6,7 +6,7 @@ import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 
 /**
  *
- * @author stephan
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public abstract class DenseMatrixBaseType extends TypeRepresentationBase implements DenseMatrixAbstractType {
 	private static final long serialVersionUID = 1L;

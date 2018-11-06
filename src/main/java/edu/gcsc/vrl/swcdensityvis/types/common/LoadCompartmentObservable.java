@@ -300,7 +300,7 @@ public class LoadCompartmentObservable {
 	public synchronized String setSelectedFile(final File file, String file_tag, Object object, int windowID) {
 		LoadCompartmentObservable.CompartmentFileTag fileTag = getTag(file_tag, object, windowID, true);
 		/**
-		 * @todo populate sections from parsed file
+		 * Note: The compartment selection is only supported for Neurolucida.
 		 * Depending on the file extension we assume a parser and get
 		 * the default implementation to parse the file - for now
 		 * only XML files are supported and the compartments from

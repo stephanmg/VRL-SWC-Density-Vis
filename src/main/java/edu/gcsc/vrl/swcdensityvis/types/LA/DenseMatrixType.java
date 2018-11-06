@@ -18,7 +18,7 @@ import javax.swing.Box;
 
 /**
  * @brief dense matrix type for VRL (default to 3x3 for now)
- * @author stephan grein
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @TypeInfo(type = DenseMatrix.class, input = true, output = true, style = "default")
 public class DenseMatrixType extends TypeRepresentationBase {
@@ -219,7 +219,6 @@ public class DenseMatrixType extends TypeRepresentationBase {
 	/**
 	 * @brief set view's value
 	 * @param o
-	 * @todo implement
 	 */
 	@Override
 	public void setViewValue(Object o) {

@@ -169,7 +169,7 @@ public class LoadFolderObservable {
 			}
 		}
 		/**
-		 * @todo should we inform the listeners here?!
+		 * Note: Should the observer be informed here too?
 		 */
 		// obs.update(getTag(hoc_tag, object, windowID, false).data);
 	}

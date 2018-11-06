@@ -40,15 +40,13 @@ public final class DensityVisualizableFactory {
 	
 	/**
 	 * @brief get density visualizer with strategy and implementation
+	 * TODO: Implement DensityVisualizableFactory getDensityVisualizer()
 	 * @param visualizerType
 	 * @param strategy
 	 * @param impl
 	 * @return 
 	 */
 	public DensityVisualizable getDensityVisualizer(String visualizerType, DensityComputationStrategy strategy, DensityVisualizable impl) {
-		/**
-		 * @todo implement
-		 */
 		return impl;
 	}
 

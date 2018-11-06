@@ -11,7 +11,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -44,16 +43,9 @@ public class CuboidUtilityTests {
 	@Test
 	public void getCuboidById() {
 		CuboidUtility.getCuboidbyId(new Cuboid(0f, 0f, 0f, 1f, 1f, 1f), new int[]{1, 2, 3}, 0.1f, 0.1f, 0.1f);
-		/**
-		 * @todo implement
-		 */
 	}
 
 	@Test
 	public void getCuboidId() {
-		//	CuboidUtility.getCuboidId(new Cuboid(0f, 0f, 0f, 1.0f, 1.0f, 1.0f), new Cuboid(0f, 0f, 0f, 0.25f, 0.25f, 0.25f), 0.1f, 0.1f, 0.1f);
-		/**
-		 * @todo implement
-		 */
 	}
 }

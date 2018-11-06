@@ -33,7 +33,6 @@ import javax.vecmath.Vector3f;
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 public final class SWCUtility {
-
 	public final static float DEFAULT_WIDTH = 10.f;
 	public final static float DEFAULT_HEIGHT = 10.f;
 	public final static float DEFAULT_DEPTH = 10.f;
@@ -390,7 +389,7 @@ public final class SWCUtility {
 		/**
 		 * @brief thread, e. g. callable, which computes for one cell
 		 * the dendritic length in each cuboid
-		 * @todo performance penalties: i. build kdtree and operations
+		 * Note: Performance penalties: i. build kdtree and operations
 		 * on kdtree (maybe we don't need the kdtree, this could
 		 * probably the case if we have geometries with a few edges!)
 		 * ii. intersection algorithms iii. hashmap as sparse data
@@ -575,8 +574,7 @@ public final class SWCUtility {
 	}
 
 	/**
-	 * @brief @todo check if this is correct -> introduce JUnit Tests. case
-	 * 1 is verified, case 2, 3 needs to be verified
+	 * @brief note: case 1 is verified, case 2, 3 needs to be verified
 	 * @param x
 	 * @param y
 	 * @param z
@@ -735,7 +733,7 @@ public final class SWCUtility {
 
 	/**
 	 * @brief get all incident vertices
-	 * @todo see implementation notes concerning speedup of computation
+	 * @note see implementation notes concerning speedup of computation
 	 * @param cell
 	 * @return
 	 */

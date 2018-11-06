@@ -130,7 +130,7 @@ public class LoadFolderFileType extends TypeRepresentationBase {
 			input.setCaretPosition(input.getText().length());
 			input.setToolTipText(input.getText());
 			input.setHorizontalAlignment(JTextField.RIGHT);
-			//TODO: reset width according to file name
+			/// Note: Could reset width of input according to file name
 		}
 		//  Here we inform the Singleton, that the file has been scheduled
 		notifyLoadHOCFileObservable();

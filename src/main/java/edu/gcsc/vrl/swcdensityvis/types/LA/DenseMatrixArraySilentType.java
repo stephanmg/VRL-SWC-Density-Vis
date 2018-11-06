@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * @brief matrix array type
- * @author stephan grein
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @TypeInfo(type = DenseMatrix[].class, input = true, output = true, style = "matrix-array-silent")
 public class DenseMatrixArraySilentType extends ArrayBaseType {
@@ -78,7 +78,7 @@ public class DenseMatrixArraySilentType extends ArrayBaseType {
 		});
 
 		/**
-		 * @todo on multi-methods branch we can do:
+		 * Note: on multi-methods branch of VRL we can do:
 		 * setElementInputInfo(new DefaultParamInfo("", "default",
 		 * "elemSize=" + elemRowSize, false));
 		 */

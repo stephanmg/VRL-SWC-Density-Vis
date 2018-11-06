@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 /**
  * @brief computes the density
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @ComponentInfo(name = "ComputeSWCDensity", category = "Neuro/SWC-Density-Vis")
 public class ComputeSWCDensity implements java.io.Serializable {
@@ -66,13 +67,9 @@ public class ComputeSWCDensity implements java.io.Serializable {
 		}
 
 		/// density must respect new rescaled geometry and therefore fit in cuboid
+		/// Note: The rescaling is done in the VisUtil from Density-Vis now
 		Density density = DensityUtil.computeDensity(cells, width, height, depth, choice);
 		double dim = Collections.max(Arrays.asList(SWCUtility.getDimensions(cells).x, SWCUtility.getDimensions(cells).y, SWCUtility.getDimensions(cells).z));
-		/* @todo the vta is way to big, since the geometry/density get's rescaled with the VisUtil.
-		         we could however rescale the cube too, or we just omit the cube for rendering,
-			since it isn't necessary in fact...
-					
-		*/
 		
 		VTriangleArray vta = new Cube(dim, dim, dim).toCSG().toVTriangleArray();
 		// we could also fill the line graph geometry in the VTA array!!!

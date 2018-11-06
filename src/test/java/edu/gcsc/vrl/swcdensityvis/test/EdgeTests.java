@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
  * @author stephan
  */
 public class EdgeTests {
-
 	private final static Edge<Vector3f> EDGE = new Edge<Vector3f>(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
 
 	@BeforeClass

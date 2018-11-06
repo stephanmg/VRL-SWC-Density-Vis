@@ -51,8 +51,5 @@ public class SWCCompartmentInformationTests {
 
 	@Test
 	public void remaining_tests() {
-		/**
-		 * @todo implement
-		 */
 	}
 }

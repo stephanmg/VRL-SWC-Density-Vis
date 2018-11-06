@@ -20,10 +20,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-/**
- * @todo make use of easymock to mock things away in test cases next or mockito
- */
-import static org.easymock.EasyMock.createNiceMock;
+/// Note: Use easymock to write proper unit tests for SWCUtilityTests
+/// import static org.easymock.EasyMock.createNiceMock;
 
 /**
  *
@@ -207,9 +205,6 @@ public class SWCUtilityTests {
 
 		assertEquals("Length should be " + Math.sqrt(3 * Math.pow(10, 2)), Math.sqrt(3 * Math.pow(10, 2)), length, DELTA);
 
-		/**
-		 * @todo implement other cases too
-		 */
 	}
 
 	@Test
@@ -279,8 +274,5 @@ public class SWCUtilityTests {
 			Vector3f dim = SWCUtility.getDimensions(entry);
 			assertEquals("Dimensions don't agree.", dim, new Vector3f(77.28f, 48.75f, 34.09f));
 		}
-		/**
-		 * @todo check dims
-		 */
 	}
 }

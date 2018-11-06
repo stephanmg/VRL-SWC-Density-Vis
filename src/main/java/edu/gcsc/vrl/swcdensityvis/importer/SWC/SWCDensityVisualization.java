@@ -24,8 +24,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 /**
- *
- * @author stephan
+ * @brief Density visualization for SWC files
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
 @ComponentInfo(name="SWCDensityVisualization", category="Neuro/SWC-Density-Vis")
 public class SWCDensityVisualization implements java.io.Serializable {
@@ -83,8 +83,6 @@ public class SWCDensityVisualization implements java.io.Serializable {
       density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, true));
     result.addAll( geom3d.generateShape3DArray() );
 	
-    /// scaling factor needs to be the same as in the density visualization!!! 
-    /** @todo */
     @SuppressWarnings("unchecked")
     Iterator<Map.Entry<String, ArrayList<SWCCompartmentInformation>>> it = cells.entrySet().iterator();
     while (it.hasNext()) {
@@ -102,17 +100,12 @@ public class SWCDensityVisualization implements java.io.Serializable {
 		  if (from == -1 || to < 0) continue;
 		  Vector3f vector_old = (points.get(from).getCoordinates());
 		  Vector3f vector2_old = (points.get(to).getCoordinates());
-		  /**
-		   * @todo we need to use copies!!!! not references....
-		   */
-		  /**
-		   * @todo different colors for the compartments, this is also easy...
-		   */
 		  Vector3f vector = new Vector3f(vector_old);
 		  Vector3f vector2 = new Vector3f(vector2_old);
 		  System.err.println("vector: " + vector);
 		  System.err.println("vector2: " + vector2);
 		  System.err.println("");
+		  /// TODO: Use the same scaling factor as in the DensityVisualization
 		  vector.scale(0.01f);
 		  vector2.scale(0.01f);
 		  Point3f point = new Point3f(vector);
@@ -123,37 +116,6 @@ public class SWCDensityVisualization implements java.io.Serializable {
 		  la.setCoordinates(0, new Point3f[]{point, point2});
 		  Shape3D myShape = new Shape3D(la);
 		  result.add(myShape);
-		  /**
-		   * @todo add coordinate system - easy as we just need to create some lines and text with java3d ...
-		   */
-		  
-		/*  LineArray axisXLines=new LineArray(2,LineArray.COORDINATES);
-    		axisXLines.setCoordinate(0,new Point3f(-1.0f,0.0f,0.0f));
-   		 axisXLines.setCoordinate(1,new Point3f(1.0f,0.0f,0.0f));        
-    
-    		LineArray axisYLines=new LineArray(2,LineArray.COORDINATES|LineArray.COLOR_3);
-      
- 		   axisYLines.setCoordinate(0,new Point3f(0.0f,-1.0f,0.0f));
- 		   axisYLines.setCoordinate(1,new Point3f(0.0f,1.0f,0.0f));
-      
-    		Point3f z1=new Point3f(0.0f,0.0f,-1.0f);
-    		Point3f z2=new Point3f(0.0f,0.0f,1.0f);
-    	LineArray axisZLines=new LineArray(10,LineArray.COORDINATES|LineArray.COLOR_3);
-      
-	    axisZLines.setCoordinate(0,z1);
-	    axisZLines.setCoordinate(1,z2);
-	    axisZLines.setCoordinate(2,z2);
-	    axisZLines.setCoordinate(3,new Point3f(0.1f,0.1f,0.9f));
-	    axisZLines.setCoordinate(4,z2);
-	    axisZLines.setCoordinate(5,new Point3f(-0.1f,0.1f,0.9f));
-	    axisZLines.setCoordinate(6,z2);
-	    axisZLines.setCoordinate(7,new Point3f(0.1f,-0.1f,0.9f));
-	    axisZLines.setCoordinate(8,z2);
-	    axisZLines.setCoordinate(9,new Point3f(-0.1f,-0.1f,0.9f));
-	    	result.add(new Shape3D(axisXLines));
-	    	result.add(new Shape3D(axisYLines));
-	    	result.add(new Shape3D(axisZLines));
-		  */
 		 }
 		  
   }

@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- *
- * @author Stephan Grein <stephan.grein@gcsc.uni-frankfurt.de>
- * @brief imports the SWC file (TODO needs probably to be split into more components)
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
+ * @brief imports the SWC file 
+ * Note: Could be split up in more than one VRL component
  */
 @ComponentInfo(name = "SWCLoadStack", category = "Neuro/SWC-Density-Vis")
 public class SWCLoadStackComponent implements Serializable {

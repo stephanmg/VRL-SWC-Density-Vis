@@ -77,8 +77,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 
 	/**
 	 * @brief parse all input files 
-	 * TODO: make the cells/files available in
-	 * vrl-studio, i. e. make available to switch off/on
+	 * TODO: Could think of making the files available for selection/deselection in VRL-Studio
 	 */
 	@Override
 	public void parse() {
@@ -223,7 +222,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 
 	/**
 	 * @brief process tress
-	 * TODO: add diameter information and use in density calculations for trees -> vol_of_conical_frustum
+	 * TODO: Add diameter information and use in density calculations -> vol_of_conical_frustrum(cone)
 	 */
 	private HashMap<String, Tree<Vector3d>> process_trees(Element rootNode) {
 		ArrayList< Edge< Vector3d>> edges = new ArrayList<Edge<Vector3d>>();
@@ -370,7 +369,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 	}
 
 	/**
-	 * TODO: process also contours
+	 * TODO: Process the contours
 	 * Note: If not color was set, then the color is taken from the files
 	 * @brief in the schematic implementation we dont process contours
 	 * @return

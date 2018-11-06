@@ -2,15 +2,18 @@
 package edu.gcsc.vrl.swcdensityvis.importer;
 
 /**
- * @breif tree density computation strategy factory
- * @author stephan <stephan@syntaktischer-zucker.de>
+ * @brief tree density computation strategy factory
+ * @author stephanmg <stephan@syntaktischer-zucker.de>
+ * TODO: Implement the TreeDensityComputationStrategyFactory 
  */
 public class TreeDensityComputationStrategyFactory extends AbstractDensityComputationStrategyFactory {
+	/**
+	 * 
+	 */
 	public TreeDensityComputationStrategyFactory() {
 	}
 
 	/**
-	 * @todo implement
 	 * @param choice
 	 * @return 
 	 */
@@ -20,7 +23,6 @@ public class TreeDensityComputationStrategyFactory extends AbstractDensityComput
 	}
 
 	/**
-	 * @todo implement
 	 * @param choice
 	 * @return 
 	 */

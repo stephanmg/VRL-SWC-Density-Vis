@@ -54,12 +54,9 @@ final class XMLDensityTreeImpl implements Density {
 			for (float y = bounding.getSecond().y; y < bounding.getFirst().y; y += this.voxelHeight) {
 				for (float z = bounding.getSecond().z; z < bounding.getFirst().z; z += this.voxelDepth) {
 					if (density.containsKey(index)) {
-						/// note: density.get(index) in interval [0, 1] -> thus we multiply by 100, for making in the graphical representation available the density in percentage 0 to 100 %
+						/// Note: density.get(index) in interval [0, 1], multiply by 100 -> percentage 
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 100));  /// note however, multiplication with 100 is not required!
-						//System.err.println("density: " + density.get(index) * 100); 
-						/** @todo we need to take the default voxel volume into account for a density 
-						 *  this means: dividing by the morphological volume! (for now we allow for 1x1x1 volumes which corresponds to 1x1x1 in morphological units, i. e. um^3 here!)
-						 */
+						/// TODO: Scale voxels with physiological length
 						  
 					} else {
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, 0));

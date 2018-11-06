@@ -15,7 +15,6 @@ import static org.junit.Assert.*;
  * @author stephan
  */
 public class CuboidTests {
-
 	private final static Cuboid CUBOID = new Cuboid(0, 0, 0, 1, 1, 1);
 	private static final double DELTA = 1e-15;
 
