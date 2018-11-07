@@ -221,27 +221,25 @@ public class DensityVisualization implements java.io.Serializable {
 			result.setCoordinateSystemVisible(bCoordinateSystemVisible);
 		}
 		
+		/// measure time
 		long startTime2 = System.currentTimeMillis();
 		long estimatedTime = System.currentTimeMillis() - startTime2;
 		System.err.println("Time has passed: " + estimatedTime);
 		
-		/// TODO: Setting this helps us to implement and scale the coordinate system and the scale bar correct
-		result.setBoundingBox(
-			new Pair<Vector3f, Vector3f>(
-				(Vector3f) xmlDensityVisualizer.getCenter(),
-				(Vector3f) xmlDensityVisualizer.getDimension())
-		);
+		/// set bounding box for result shape3darray
+		@SuppressWarnings("unchecked")
+		Pair<Vector3f, Vector3f> bb = (Pair<Vector3f, Vector3f>)xmlDensityVisualizer.getBoundingBox();
+		result.setBoundingBox(bb);
 
 		/// Center and dimension of geometries
 		System.err.println("Center: " + xmlDensityVisualizer.getCenter());
 		System.err.println("Dimension: " + xmlDensityVisualizer.getDimension());
 		
 		/// Bounding min and max of geometries
-		@SuppressWarnings("unchecked")
-		Pair<Vector3f, Vector3f> bb = (Pair<Vector3f, Vector3f>)xmlDensityVisualizer.getBoundingBox();
 		System.err.println("Bounding box: " + bb.getFirst());
 		System.err.println("Bounding box: " + bb.getSecond());
 		
+		/// measure time and memory
 		long estimatedTime2 = System.currentTimeMillis() - startTime;
 		System.err.println("Time has passed: " + estimatedTime2);
 		System.err.println("Now adding " + result.size() + "number of Shape3D elements. This may take a while!");

@@ -9,6 +9,7 @@ import eu.mihosoft.vrl.annotation.TypeInfo;
 import eu.mihosoft.vrl.dialogs.SaveImageDialog;
 import eu.mihosoft.vrl.media.VideoCreator;
 import eu.mihosoft.vrl.reflection.CustomParamData;
+import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.reflection.TypeRepresentationBase;
 import eu.mihosoft.vrl.types.UniverseCreator;
 import eu.mihosoft.vrl.types.VCanvas3D;
@@ -40,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import lombok.extern.log4j.Log4j;
 
 /**
@@ -593,9 +595,6 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 	synchronized public void setViewValue(Object o) {
 		clearView();
 		if (!VGraphicsUtil.NO_3D) {
-			/// TODO: Better placement of coordinate system and scalebar
-			/// Note: getUniverseCreator().getRootGroup().getBounds() can be used to find the
-			///       bounds (then the scalebar and coordinate system can be place better though)
 			final Shape3DArrayCustom shapes = (Shape3DArrayCustom) o;
 
 			this.blurMatrix = shapes.getBlurKernel();
@@ -604,26 +603,25 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			this.rotationParams = shapes.getRotationParams();
 
 			if (shapes.isCoordinateSystemVisible()) {
+				Vector3f bb = shapes.getBoundingBox().getSecond();
 				/// x-axis
 				LineArray axisXLines = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-				axisXLines.setCoordinate(0, new Point3f(-1.0f, 0.0f, 0.0f));
-				axisXLines.setCoordinate(1, new Point3f(1.0f, 0.0f, 0.0f));
+				axisXLines.setCoordinate(0, new Point3f(bb.x-2, bb.y, bb.z));
+				axisXLines.setCoordinate(1, new Point3f(bb.x, bb.y, bb.z));
 				axisXLines.setColor(0, new Color3f(0, 0, 255));
 				axisXLines.setColor(1, new Color3f(0, 0, 255));
 
 				/// y-axis
 				LineArray axisYLines = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-				axisYLines.setCoordinate(0, new Point3f(0.0f, -1.0f, 0.0f));
-				axisYLines.setCoordinate(1, new Point3f(0.0f, 1.0f, 0.0f));
+				axisYLines.setCoordinate(0, new Point3f(bb.x, bb.y-2, bb.z));
+				axisYLines.setCoordinate(1, new Point3f(bb.x, bb.y, bb.z));
 				axisYLines.setColor(0, new Color3f(0, 255, 0));
 				axisYLines.setColor(1, new Color3f(0, 255, 0));
 
 				/// z-axis
-				Point3f z1 = new Point3f(0.0f, 0.0f, -1.0f);
-				Point3f z2 = new Point3f(0.0f, 0.0f, 1.0f);
 				LineArray axisZLines = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
-				axisZLines.setCoordinate(0, z1);
-				axisZLines.setCoordinate(1, z2);
+				axisZLines.setCoordinate(0, new Point3f(bb.x, bb.y, bb.z-2));
+				axisZLines.setCoordinate(1, new Point3f(bb.x, bb.y, bb.z));
 				axisZLines.setColor(0, new Color3f(255, 255, 0));
 				axisZLines.setColor(1, new Color3f(255, 255, 0));
 
@@ -634,11 +632,11 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 				shapes.add(yAxis);
 				shapes.add(zAxis);
 
-				Text3D xLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), new FontExtrusion()), "X", new Point3f(-1.0f, 0.0f, 0.0f));
-				Text3D yLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), new FontExtrusion()), "Y",
-					new Point3f(0.0f, -1.0f, 0.0f));
-				Text3D zLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), new FontExtrusion()), "Z",
-					new Point3f(0.0f, 0.0f, -1.0f));
+				Text3D xLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), 0.01, new FontExtrusion()), "X", new Point3f(bb.x-2, bb.y, bb.z));
+				Text3D yLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), 0.01, new FontExtrusion()), "Y",
+					new Point3f(bb.x, bb.y-2, bb.z));
+				Text3D zLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), 0.01, new FontExtrusion()), "Z",
+					new Point3f(bb.x, bb.y, bb.z-2));
 
 				Shape3D text3dShape3d1 = new Shape3D(xLabel);
 				Shape3D text3dShape3d2 = new Shape3D(yLabel);
@@ -685,36 +683,32 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 			}
 
 			if (shapes.isScalebarVisible()) {
-				/// Note: We can use the bounding box of the geometry to scale the scalebar
-				/// Pair<Vector3f, Vector3f> boundingBox = shapes.getBoundingBox();
-				/// boundingBox.getFirst();
 				/// scale bar line
-				/*
+				Pair<Vector3f, Vector3f> boundingBox = shapes.getBoundingBox();
 				Point3f s1 = new Point3f(boundingBox.getFirst().x,
 							 boundingBox.getFirst().y,
 							 boundingBox.getFirst().z);
 				Point3f s2 = new Point3f(boundingBox.getFirst().x + 1,
-							 boundingBox.getFirst().y,
-							 boundingBox.getFirst().z);
-				*/
-				Point3f s1 = new Point3f(0.0f, 0.0f, -10.0f);
-				Point3f s2 = new Point3f(0.0f, 0.0f, -9.0f);
+							 boundingBox.getFirst().y, 
+							 boundingBox.getFirst().z); 
+				
 				LineArray scaleBarLine = new LineArray(2, LineArray.COORDINATES | LineArray.COLOR_3);
 				scaleBarLine.setCoordinate(0, s1);
 				scaleBarLine.setCoordinate(1, s2);
-				scaleBarLine.setColor(0, new Color3f(255, 0, 255));
+				scaleBarLine.setColor(0, new Color3f(255, 255, 255));
+				scaleBarLine.setColor(1, new Color3f(255, 255, 255));
 
 				Shape3D scaleBar = new Shape3D(scaleBarLine);
 				shapes.add(scaleBar);
-				Text3D scaleLabel = new Text3D(new Font3D(new Font("Garamond", java.awt.Font.PLAIN, 1), new FontExtrusion()), "10µm",
-					new Point3f(0.0f, 0.0f, -10.0f));
+				Text3D scaleLabel = new Text3D(new Font3D(new Font("Garamond", 
+					java.awt.Font.PLAIN, 1), 0.01, new FontExtrusion()), "1µm",
+					new Point3f(boundingBox.getFirst().x, boundingBox.getFirst().y+1, 
+						boundingBox.getFirst().z));
 
 				Shape3D text3dShape3d4 = new Shape3D(scaleLabel);
-
 				Appearance appearance4 = new Appearance();
-
 				ColoringAttributes ca4 = new ColoringAttributes();
-				ca4.setColor(new Color3f(255, 0, 255));
+				ca4.setColor(new Color3f(255, 255, 255));
 				appearance4.setColoringAttributes(ca4);
 
 				TransparencyAttributes myTA4 = new TransparencyAttributes();
@@ -723,24 +717,8 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 				appearance4.setTransparencyAttributes(myTA4);
 				text3dShape3d4.setAppearance(appearance4);
 				shapes.add(text3dShape3d4);
-
 			}
 			
-			/*
-			Appearance appearanceBlue = new Appearance();
-			ColoringAttributes coloringAttributesBlue = new ColoringAttributes();
-			coloringAttributesBlue.setColor(new Color3f(Color.blue));
-			appearanceBlue.setColoringAttributes(coloringAttributesBlue);
-
-			Cone cone = new Cone(0.2f, 0.8f, appearanceBlue);
-			Transform3D transform3dCone = new Transform3D();
-			transform3dCone.setTranslation(new Vector3f(-0.2f, 0, 0));
-			//Um 45 Grad an der x-Achse rotieren => Spitze geht auf User zu.
-			transform3dCone.rotX(Math.PI / 4);
-			TransformGroup transformGroupCone = new TransformGroup(transform3dCone);
-			transformGroupCone.addChild(cone);
-			*/
-
 			if (shapeParents[0] != null) {
 				shapeParents[1] = new BranchGroup();
 				shapeParents[1].setCapability(BranchGroup.ENABLE_PICK_REPORTING);
@@ -899,7 +877,7 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 		}
 
 		if (w != null && h != null && getCanvas() != null) {
-			// TODO: Find out why offset is 5?
+			// Note: Why is the offset 5 here?
 			getCanvas().setPreferredSize(new Dimension(w - 5, h));
 			getCanvas().setMinimumSize(minimumVCanvas3DSize);
 			getCanvas().setSize(new Dimension(w - 5, h));
