@@ -102,7 +102,6 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 
 	/**
 	 * @brief parse all input files
-	 * TODO: Could think of making the files available for selection/deselection in VRL-Studio
 	 */
 	@Override
 	public void parse() {
@@ -442,7 +441,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 	}
 
 	/**
-	 *
+	 * Note: How can we speed this up? Cylinders have to be created in the given case
 	 * @return
 	 */
 	@Override
@@ -454,13 +453,12 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 			for (Pair<String, HashMap<String, Tree<Vector4d>>> cell : trees) {
 				System.err.println("Processing trees of cell: " + cell.getFirst());
 				HashMap<String, Tree<Vector4d>> cell_trees = cell.getSecond();
-				/// TODO: change this in the same way as in XMLDensityVisualizerImpl -> much more efficient
 				for (Tree<Vector4d> t : cell_trees.values()) {
 					gColor = t.getColor();
 					System.err.println("Edges: " + t.getEdges().size());
 					for (Edge<Vector4d> e : t.getEdges()) {
 						MemoryUtil.printHeapMemoryUsage();
-						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 3);
+						Cylinder cyl = new Cylinder(new Vector3d(e.getFrom().x, e.getFrom().y, e.getFrom().z), new Vector3d(e.getTo().x, e.getTo().y, e.getTo().z), e.getFrom().w, e.getTo().w, 1);
 
 						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()), null, 1F, false, false, false).generateShape3DArray());
 						MemoryUtil.printHeapMemoryUsage();
@@ -472,16 +470,14 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 
 			System.err.println("trees done!");
 
-			/// visualize contours!
+			/// Process contours
 			for (Pair<String, HashMap<String, Contour<Vector4d>>> cell : contours) {
 				System.err.println("Processing contours of cell: " + cell.getFirst());
 				HashMap<String, Contour<Vector4d>> cell_contours = cell.getSecond();
 				for (Contour<Vector4d> con : cell_contours.values()) {
 					gColor = con.getColor();
 					ArrayList<Vector4d> points = con.getPoints();
-					/**
-					 * TODO: Refactor this and use edges instead of points
-					 */
+					/// TODO: Refactor to use edges instead of points
 					MemoryUtil.printHeapMemoryUsage();
 					for (int i = 0; i < points.size() - 1; i++) {
 						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i + 1).x, points.get(i + 1).y, points.get(i + 1).z), points.get(i).w, points.get(i + 1).w, 3);
@@ -493,6 +489,8 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 				}
 
 			}
+
+			System.err.println("contours done!");
 
 		}
 
