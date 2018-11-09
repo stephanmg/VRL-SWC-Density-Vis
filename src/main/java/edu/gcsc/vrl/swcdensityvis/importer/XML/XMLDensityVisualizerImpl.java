@@ -416,6 +416,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 					/// TODO: Refactor to use edges instead of points
 					LineArray la = new LineArray(con.getPoints().size()*2, COORDINATES | COLOR_3);
 					ArrayList<Vector3d> points = con.getPoints();
+					ArrayList<Point3f> points_final = new ArrayList<Point3f>();
 					for (int i = 0; i < points.size(); i++) {
 						if (gColor != null) {
 							la.setColor(2*i, ColorUtil.color2Color3f(gColor));
@@ -425,10 +426,10 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 							la.setColor(2*i, ColorUtil.color2Color3f(con.getColor()));
 							la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(con.getColor()));
 						}
-						points.add(new Vector3d(points.get(2*i)));
-						points.add(new Vector3d(points.get(2*(i+1)-1)));
+						points_final.add(new Point3f(points.get(2*i)));
+						points_final.add(new Point3f(points.get(2*(i+1)-1)));
 					}
-					la.setCoordinates(0, points.toArray(new Point3f[points.size()]));
+					la.setCoordinates(0, points_final.toArray(new Point3f[points.size()]));
 					this.lineGraphGeometry.add(new Shape3D(la));
 					}
 				}
