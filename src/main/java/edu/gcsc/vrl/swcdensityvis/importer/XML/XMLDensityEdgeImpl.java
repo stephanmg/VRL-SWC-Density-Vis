@@ -56,6 +56,7 @@ final class XMLDensityEdgeImpl implements Density {
 					/// Note: Is the index handling really correct here?
 					index = (int) x * (int) y * (int) z;
 					///System.err.println("xyz: " + index);
+					/// TODO: refactor this to a guard statement, e.g. if density.length != numX*numY*numZ
 					if (density.containsKey(index)) {
 						/// Note: density.get(index) in interval [0, 1], multiply by 100 -> percentage 
 						voxels.add(new VoxelImpl((int) x, (int) y, (int) z, this.voxelWidth, this.voxelHeight, this.voxelDepth, density.get(index) * 100));  /// note however, multiplication with 100 is not required!

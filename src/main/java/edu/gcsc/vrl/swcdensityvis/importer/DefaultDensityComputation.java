@@ -1,7 +1,5 @@
-/// package's name
 package edu.gcsc.vrl.swcdensityvis.importer;
 
-/// imports
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.DensityUtil;
 import edu.gcsc.vrl.swcdensityvis.importer.SWC.SWCCompartmentInformation;

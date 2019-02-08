@@ -5,8 +5,9 @@ package edu.gcsc.vrl.swcdensityvis.importer;
  * @brief empty DensityVisualizer decorator
  * @author stephanmg <stephan@syntaktischer-zucker.de>
  */
-public abstract class DensityVisualizerDecorator implements DensityVisualizable {
-	private DensityVisualizable impl;
+public abstract class DensityVisualizerDecorator implements Decorator {
+	@SuppressWarnings("ProtectedField")
+	protected DensityVisualizable impl;
 
 	/**
 	 * 
@@ -14,21 +15,5 @@ public abstract class DensityVisualizerDecorator implements DensityVisualizable 
 	 */
 	public DensityVisualizerDecorator(DensityVisualizable impl) {
 		this.impl = impl;
-	}
-
-	/**
-	 *
-	 * @param impl
-	 */
-	public void setImpl(DensityVisualizable impl) {
-		this.impl = impl;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public DensityVisualizable getImpl() {
-		return this.impl;
 	}
 }
