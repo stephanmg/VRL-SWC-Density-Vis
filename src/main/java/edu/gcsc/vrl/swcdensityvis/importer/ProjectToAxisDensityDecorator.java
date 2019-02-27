@@ -2,6 +2,7 @@ package edu.gcsc.vrl.swcdensityvis.importer;
 
 import edu.gcsc.vrl.densityvis.Density;
 import edu.gcsc.vrl.densityvis.VoxelSet;
+import eu.mihosoft.vrl.math.Trajectory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +23,8 @@ public class ProjectToAxisDensityDecorator extends DensityVisualizerDecorator {
 	 * @param impl 
  	 * @see {@link DensityVisualizerDecorator}
 	 */
-	public ProjectToAxisDensityDecorator(DensityVisualizable impl, String axis) {
+	public ProjectToAxisDensityDecorator(DensityVisualizable impl) {
 		super(impl);
-		this.axis = axis;
 	}
 
 	/**
@@ -60,7 +60,13 @@ public class ProjectToAxisDensityDecorator extends DensityVisualizerDecorator {
 	 * @brief returns the projected values for plotting
 	 * @return 
 	 */
-	public HashMap<Integer, Double> getAxis() {
-		return this.xyValues;
+	public Trajectory getAxis(String axis) {
+		this.axis = axis;
+		computeDensity();
+		Trajectory trajectory = new Trajectory(axis);
+		for (Map.Entry<Integer, Double> entry : xyValues.entrySet()) {
+			trajectory.add(entry.getKey(), entry.getValue());
+		}
+		return trajectory;
 	}
 }

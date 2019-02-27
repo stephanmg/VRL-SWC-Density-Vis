@@ -10,12 +10,14 @@ import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrix;
 import edu.gcsc.vrl.swcdensityvis.data.Shape3DArrayCustom;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
+import edu.gcsc.vrl.swcdensityvis.importer.ProjectToAxisDensityDecorator;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.TreeDensityComputationStrategyXML;
 import edu.gcsc.vrl.swcdensityvis.marching_cubes.MarchingCubes;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.OutputInfo;
 import eu.mihosoft.vrl.annotation.ParamGroupInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vrl.math.Trajectory;
 import eu.mihosoft.vrl.reflection.Pair;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import java.awt.Color;
@@ -35,6 +37,7 @@ import javax.vecmath.Vector3f;
  */
 @ComponentInfo(name = "DensityVisualization", category = "Neuro/SWC-Density-Vis")
 public class DensityVisualization implements java.io.Serializable {
+	private DensityVisualizable xmlDensityVisualizer;
 	/// sVUID
 	private static final long serialVersionUID = 1L;
 
@@ -176,6 +179,7 @@ public class DensityVisualization implements java.io.Serializable {
 		 */
 		xmlDensityVisualizer.parseStack();
 		xmlDensityVisualizer.computeDensity();
+		this.xmlDensityVisualizer = xmlDensityVisualizer;
 		if (bVisibleGeometry) {
 			System.err.println("Calculating the geometries as Java3d objects.");
 			result.addAll(xmlDensityVisualizer.calculateGeometry());
@@ -245,5 +249,17 @@ public class DensityVisualization implements java.io.Serializable {
 		System.err.println("Now adding " + result.size() + "number of Shape3D elements. This may take a while!");
 		System.err.println("Memory used now: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()));
 		return result;
+	}
+	
+	/**
+	 * @brief get the projected trajectory
+	 * @param axis
+	 * @return 
+	 */
+	public Trajectory getTrajectory(
+		@ParamInfo(name = "Project to axis") 
+		String axis
+	) {
+		return new ProjectToAxisDensityDecorator(xmlDensityVisualizer).getAxis(axis);
 	}
 }
