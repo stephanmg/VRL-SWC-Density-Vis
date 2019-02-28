@@ -480,6 +480,7 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 					ArrayList<Vector4d> points = con.getPoints();
 					MemoryUtil.printHeapMemoryUsage();
 					for (int i = 0; i < points.size() - 1; i++) {
+						/// Note: Building many cylinders and converting to them to VGeometry3D is consuming heavily memory... this is not recommended. One could just switch to the schematic representation here, e.g. lines not cylinders?
 						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i + 1).x, points.get(i + 1).y, points.get(i + 1).z), points.get(i).w, points.get(i + 1).w, 1);
 						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()), null, 1F, false, false, false).generateShape3DArray());
 
