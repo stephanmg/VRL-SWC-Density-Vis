@@ -115,7 +115,7 @@ public class ComputeDensity implements Serializable {
 			xmlDensityVisualizer.prepare(Color.yellow, 1, compartment);
 			log.info("We have the following files for density calculation: " + files);
 			
-			/// Parse the geometry fiels, then calculat the density and measure elapsed time 
+			/// Parse the geometry files, then calculate the density and measure elapsed time 
 			xmlDensityVisualizer.parseStack(); 
 			Density density = xmlDensityVisualizer.computeDensity(); 
 			long estimatedTime = System.currentTimeMillis() - startTime;

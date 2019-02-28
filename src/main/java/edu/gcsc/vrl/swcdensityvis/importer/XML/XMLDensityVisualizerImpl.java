@@ -281,12 +281,14 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 	 * @param rootNode
 	 */
 	private HashMap<String, Contour<Vector3d>> process_contours(Element rootNode) {
-		HashMap<String, Contour<Vector3d>> contours = new HashMap<String, Contour<Vector3d>>();
+		HashMap<String, Contour<Vector3d>> contours_ = new HashMap<String, Contour<Vector3d>>();
 		for (Element node : rootNode.getChildren("contour")) {
 			Contour<Vector3d> c = new Contour<Vector3d>();
 			String contourName = node.getAttributeValue("name");
 			c.setName(node.getAttributeValue("name"));
 			ArrayList<Vector3d> points = new ArrayList<Vector3d>();
+			String color = node.getAttributeValue("color");
+			c.setColor(Color.decode(color));
 			for (Element point : node.getChildren("point")) {
 				points.add(new Vector3d(SF * Double.parseDouble(point.getAttributeValue("x")),
 					SF * Double.parseDouble(point.getAttributeValue("y")),
@@ -294,12 +296,12 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 
 			}
 			c.setPoints(points);
-			contours.put(contourName, c);
+			contours_.put(contourName, c);
 			for (Vector3d vec : points) {
 				System.out.println(vec);
 			}
 		}
-		return contours;
+		return contours_;
 	}
 
 	/**
@@ -373,9 +375,7 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 	}
 
 	/**
-	 * TODO: Process the contours
 	 * Note: If not color was set, then the color is taken from the files
-	 * @brief in the schematic implementation we dont process contours
 	 * @return
 	 */
 	@Override
@@ -407,27 +407,35 @@ public class XMLDensityVisualizerImpl implements XMLDensityVisualizerImplementab
 					this.lineGraphGeometry.add(new Shape3D(la));
 					}
 				}
+			System.err.println("trees done!");
 			
-			/// Process contours
+			/// Process contours (Note: Could use edges instead of points for contours as in trees)
 			for (Pair<String, HashMap<String, Contour<Vector3d>>> cell : contours) {
 				System.err.println("Processing contours of cell: " + cell.getFirst());
 				HashMap<String, Contour<Vector3d>> cell_contours = cell.getSecond();
 				for (Contour<Vector3d> con : cell_contours.values()) {	
-					/// TODO: Refactor to use edges instead of points
 					LineArray la = new LineArray(con.getPoints().size()*2, COORDINATES | COLOR_3);
 					ArrayList<Vector3d> points = con.getPoints();
 					ArrayList<Point3f> points_final = new ArrayList<Point3f>();
-					for (int i = 0; i < points.size(); i++) {
+					for (int i = 0; i < points.size()-1; i++) {
 						if (gColor != null) {
+							System.err.println("Contour color (gColor != null): " + gColor);
 							la.setColor(2*i, ColorUtil.color2Color3f(gColor));
 							la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(gColor));
+							///la.setColor(2*i, ColorUtil.color2Color3f(gColor));
+							///la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(gColor));
 						} else {
+							System.err.println("Contour color: " + con.getColor());
 							/// no color set, use color from file
 							la.setColor(2*i, ColorUtil.color2Color3f(con.getColor()));
 							la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(con.getColor()));
+							///la.setColor(2*i, ColorUtil.color2Color3f(con.getColor()));
+							///la.setColor(2*(i+1)-1, ColorUtil.color2Color3f(con.getColor()));
 						}
-						points_final.add(new Point3f(points.get(2*i)));
-						points_final.add(new Point3f(points.get(2*(i+1)-1)));
+						points_final.add(new Point3f(points.get(i)));
+						points_final.add(new Point3f(points.get(i+1)));
+						///points_final.add(new Point3f(points.get(2*i)));
+						///points_final.add(new Point3f(points.get(2*(i+1)-1)));
 					}
 					la.setCoordinates(0, points_final.toArray(new Point3f[points.size()]));
 					this.lineGraphGeometry.add(new Shape3D(la));

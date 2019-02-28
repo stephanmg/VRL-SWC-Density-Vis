@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.media.j3d.Shape3D;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4d;
 import org.jdom2.Document;
@@ -470,17 +471,16 @@ public class XMLDensityVisualizerDiameterImpl implements XMLDensityVisualizerImp
 
 			System.err.println("trees done!");
 
-			/// Process contours
+			/// Process contours (Note: Could use edges instead of points)
 			for (Pair<String, HashMap<String, Contour<Vector4d>>> cell : contours) {
 				System.err.println("Processing contours of cell: " + cell.getFirst());
 				HashMap<String, Contour<Vector4d>> cell_contours = cell.getSecond();
 				for (Contour<Vector4d> con : cell_contours.values()) {
 					gColor = con.getColor();
 					ArrayList<Vector4d> points = con.getPoints();
-					/// TODO: Refactor to use edges instead of points
 					MemoryUtil.printHeapMemoryUsage();
 					for (int i = 0; i < points.size() - 1; i++) {
-						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i + 1).x, points.get(i + 1).y, points.get(i + 1).z), points.get(i).w, points.get(i + 1).w, 3);
+						Cylinder cyl = new Cylinder(new Vector3d(points.get(i).x, points.get(i).y, points.get(i).z), new Vector3d(points.get(i + 1).x, points.get(i + 1).y, points.get(i + 1).z), points.get(i).w, points.get(i + 1).w, 1);
 						this.lineGraphGeometry.addAll(new VGeometry3D(cyl.toCSG().toVTriangleArray(), new Color(gColor.getRed(), gColor.getGreen(), gColor.getBlue()), null, 1F, false, false, false).generateShape3DArray());
 
 					}

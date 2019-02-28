@@ -170,6 +170,8 @@ public class DensityVisualization implements java.io.Serializable {
 		xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(100, 100, 100)));
 		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(files)));
 		xmlDensityVisualizer.prepare(null, 0.01, compartment);
+		
+		/// TODO: This usage of xmlDensityVisualizer is different to the usage in ComputeDensity and will result in wrong number of non-zero cuboids, e.g. 1 cuboid! -> This will result in one cuboid in the trajectory!
 
 		/**
 		 * TODO: Normalization of Density: Check Tree/Edge implementation: 
