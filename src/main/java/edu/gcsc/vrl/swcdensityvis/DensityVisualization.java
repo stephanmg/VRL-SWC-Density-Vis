@@ -24,7 +24,9 @@ import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
@@ -37,15 +39,18 @@ import javax.vecmath.Vector3f;
  */
 @ComponentInfo(name = "DensityVisualization", category = "Neuro/SWC-Density-Vis")
 public class DensityVisualization implements java.io.Serializable {
+
 	/// TODO: When the ComputeDensity and DensityVisualization component have been refactored we can drop DensityResult
+
 	private DensityVisualizable xmlDensityVisualizer;
 	private DensityResult result;
-	
+
 	/// sVUID
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @brief computes the geometry as cylinders/line and scales density and geometry
+	 * @brief computes the geometry as cylinders/line and scales density and
+	 * geometry
 	 * @param density
 	 * @param percentage
 	 * @param dColorZero
@@ -69,7 +74,7 @@ public class DensityVisualization implements java.io.Serializable {
 	 * @param rotY
 	 * @param rotZ
 	 * @param increment
-	 * @return 
+	 * @return
 	 */
 	@OutputInfo(style = "shaped3darraycustomtype", name = " ", typeName = " ")
 	public Shape3DArrayCustom visualizeDensity(
@@ -85,59 +90,49 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "Density Transparency", style = "default", options = "value=true") boolean dTransparency,
 		@ParamGroupInfo(group = "Visualization")
 		@ParamInfo(name = "Density Visible?", style = "default", options = "value=true") boolean bVisibleDensity,
-		
 		@ParamGroupInfo(group = "Isosurfaces|false|no description")
-		@ParamInfo(name = "Visible?", style="default", options="value=true") 
-		boolean bIsoSurfaces,
+		@ParamInfo(name = "Visible?", style = "default", options = "value=true") boolean bIsoSurfaces,
 		@ParamGroupInfo(group = "Isosurfaces")
-		@ParamInfo(name = "Average [%]", style = "slider", options = "min=0;max=100;value=50") 
-		int mAverage,
+		@ParamInfo(name = "Average [%]", style = "slider", options = "min=0;max=100;value=50") int mAverage,
 		@ParamGroupInfo(group = "Isosurfaces")
-		@ParamInfo(name = "Deviation [%]", style = "slider", options = "min=0;max=100;value=1") 
-		int mDeviation,
-
+		@ParamInfo(name = "Deviation [%]", style = "slider", options = "min=0;max=100;value=1") int mDeviation,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Neuron geometry") File[] files,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Representation", style = "selection", options = "value=[\"cylinder\", \"schematic\"]") String representation,
 		@ParamGroupInfo(group = "Geometry")
 		@ParamInfo(name = "Geometry Visible?", style = "default", options = "value=true") boolean bVisibleGeometry,
-		
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Visible?", style = "default", options = "value=true") boolean bVisibleBoundingBox,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Color", style = "color-chooser", options = "value=java.awt.Color.green") Color mColor,
 		@ParamGroupInfo(group = "Geometry|false|no description")
 		@ParamInfo(name = "Bounding Box Transparency", style = "slider", options = "min=0;max=100;value=80") int mTransparency,
-		
-		@ParamInfo(name = "Compartment Types", typeName = "Compartment Type", style="default", options = "file_tag=\"geometry\"")
-		Compartment compartment,
-		
+		@ParamInfo(name = "Compartment Types", typeName = "Compartment Type", style = "default", options = "file_tag=\"geometry\"") Compartment compartment,
 		@ParamGroupInfo(group = "Canvas|false|no description")
 		@ParamInfo(name = "Scalebar Visible?", style = "default", options = "value=false") boolean bScalebarVisible,
 		@ParamGroupInfo(group = "Canvas|false|no description")
 		@ParamInfo(name = "Coordinate System Visible?", style = "default", options = "value=false") boolean bCoordinateSystemVisible,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Blur|false|Rotation")
-		
 		@ParamInfo(name = "Blurring Kernel", typeName = "Blurring Kernel", style = "default", options = "cols=3; rows=3; "
 			+ "values=\"0.0625, 0.125, 0.0625, 0.125, 0.250, 0.125, 0.0625, 0.125, 0.0625\"") DenseMatrix blurKernel,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
-		@ParamInfo(name = "FPS", style="slider", options = "min=0;max=100;value=30") int fps,
+		@ParamInfo(name = "FPS", style = "slider", options = "min=0;max=100;value=30") int fps,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
-		@ParamInfo(name = "SPF", style="slider", options = "min=0;max=100;value=1") int spf,
+		@ParamInfo(name = "SPF", style = "slider", options = "min=0;max=100;value=1") int spf,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Animation|false|Animation")
 		@ParamInfo(name = "File type", typeName = "Filetype", style = "selection", options = "value=[\"AVI\","
 			+ " \"MPG\", \"MOV\"]") String videoFormat,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "rotX", style="slider", options = "min=0;max=255;value=1") double rotX,
+		@ParamInfo(name = "rotX", style = "slider", options = "min=0;max=255;value=1") double rotX,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "rotY", style="slider", options = "min=0;max=255;value=1") double rotY,
+		@ParamInfo(name = "rotY", style = "slider", options = "min=0;max=255;value=1") double rotY,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "rotZ", style="slider", options = "min=0;max=255;value=1") double rotZ,
+		@ParamInfo(name = "rotZ", style = "slider", options = "min=0;max=255;value=1") double rotZ,
 		@ParamGroupInfo(group = "Output|false|animation and rotational view; Rotation|false|Rotation")
-		@ParamInfo(name = "increment", style="slider", options = "min=0;max=255;value=1") double increment
+		@ParamInfo(name = "increment", style = "slider", options = "min=0;max=255;value=1") double increment
 	) {
-		
+
 		long startTime = System.currentTimeMillis();
 		/// the Shape3DArray to visualize on the Canvas
 		Shape3DArrayCustom result = new Shape3DArrayCustom();
@@ -172,13 +167,16 @@ public class DensityVisualization implements java.io.Serializable {
 		xmlDensityVisualizer.setContext(new DensityComputationContext(new TreeDensityComputationStrategyXML(100, 100, 100)));
 		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(files)));
 		xmlDensityVisualizer.prepare(null, 0.01, compartment);
-		
+
 		/**
-		 * Note: Normalization of Density: Check XMLTreeDensity/XMLEdgeDensityImpl implementation.
-		 * Scaling now with total length of neurons not with average length!
-		 * TODO: Need to scale to physiological length perhaps: Check Tree/Edge implementation.
-		 * Note: computeDensity is necessary, since bounding box gets calculated via this too. 
-		 * This will have to be changed since this increases runtime by a factor two.
+		 * Note: Normalization of Density: Check
+		 * XMLTreeDensity/XMLEdgeDensityImpl implementation. Scaling now
+		 * with total length of neurons not with average length! TODO:
+		 * Need to scale to physiological length perhaps: Check
+		 * Tree/Edge implementation. Note: computeDensity is necessary,
+		 * since bounding box gets calculated via this too. This will
+		 * have to be changed since this increases runtime by a factor
+		 * two.
 		 */
 		xmlDensityVisualizer.parseStack();
 		xmlDensityVisualizer.computeDensity();
@@ -189,7 +187,6 @@ public class DensityVisualization implements java.io.Serializable {
 			/// TODO: This slows down for the Cylinder strategy: See XMLDensityVisualizerDiameterImpl.
 		}
 
-		
 		/// TODO: Factor the following out into the IsoSurfaceDensityVisualizerDecorator!
 		/// xmlDensityVisualizer = new IsosurfaceDensityVisualizerDecorator();
 		if (bIsoSurfaces) {
@@ -208,7 +205,7 @@ public class DensityVisualization implements java.io.Serializable {
 			result.add(isosurface);
 		}
 
-	 	/// TODO: This scales the density as mentioned before in ComputeDensity, make this an option, e.g. 1% = 0.01.
+		/// TODO: This scales the density as mentioned before in ComputeDensity, make this an option, e.g. 1% = 0.01.
 		if (bVisibleDensity) {
 			result.addAll(VisUtil.scaleDensity2Java3D(
 				density.getDensity(), density.getGeometry(), percentage, dColorZero_real, dColorOne_real, true, 0.01));
@@ -228,44 +225,83 @@ public class DensityVisualization implements java.io.Serializable {
 		if (bCoordinateSystemVisible) {
 			result.setCoordinateSystemVisible(bCoordinateSystemVisible);
 		}
-		
+
 		/// measure time
 		long startTime2 = System.currentTimeMillis();
 		long estimatedTime = System.currentTimeMillis() - startTime2;
 		System.err.println("Time has passed: " + estimatedTime);
-		
+
 		/// set bounding box for result shape3darray
 		@SuppressWarnings("unchecked")
-		Pair<Vector3f, Vector3f> bb = (Pair<Vector3f, Vector3f>)xmlDensityVisualizer.getBoundingBox();
+		Pair<Vector3f, Vector3f> bb = (Pair<Vector3f, Vector3f>) xmlDensityVisualizer.getBoundingBox();
 		result.setBoundingBox(bb);
 
 		/// Center and dimension of geometries
 		System.err.println("Center: " + xmlDensityVisualizer.getCenter());
 		System.err.println("Dimension: " + xmlDensityVisualizer.getDimension());
-		
+
 		/// Bounding min and max of geometries
 		System.err.println("Bounding box: " + bb.getFirst());
 		System.err.println("Bounding box: " + bb.getSecond());
-		
+
 		/// measure time and memory
 		long estimatedTime2 = System.currentTimeMillis() - startTime;
 		System.err.println("Time has passed: " + estimatedTime2);
 		System.err.println("Now adding " + result.size() + "number of Shape3D elements. This may take a while!");
-		System.err.println("Memory used now: " + (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()));
+		System.err.println("Memory used now: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
 		return result;
 	}
-	
+
 	/**
 	 * @brief get the projected trajectory
 	 * @param axis
-	 * @return 
+	 * @return
 	 */
 	public Trajectory getTrajectory(
-		@ParamInfo(name = "Project to axis") 
-		String axis
+		@ParamInfo(name = "Project to axis") String axis
 	) {
 		/// TODO: getTrajectory should really use the decorator pattern, but before we have to refactor
 		///       the ComputeDensity and especially DensityVisualization class as mentioned on the top
-		return new ProjectToAxisDensityDecorator(xmlDensityVisualizer).getAxis(axis);
+		/// return new ProjectToAxisDensityDecorator(xmlDensityVisualizer).getAxis(axis);
+		final HashMap<Integer, Double> values = new HashMap<Integer, Double>(); 
+		List<? extends VoxelSet> voxels = result.getDensity().getVoxels();
+
+		System.err.println("Number of voxels: " + voxels.size());
+
+		for (int i = 0; i < voxels.size(); i++) {
+			/// x axis
+			if (axis.equalsIgnoreCase("x")) {
+				if (values.get(voxels.get(i).getX()) == null) {
+					values.put(voxels.get(i).getX(), voxels.get(i).getValue());
+				} else {
+					values.put(voxels.get(i).getX(), values.get(voxels.get(i).getX()) + voxels.get(i).getValue());
+				}
+			}
+
+			/// y axis
+			if (axis.equalsIgnoreCase("y")) {
+				if (values.get(voxels.get(i).getY()) == null) {
+					values.put(voxels.get(i).getY(), voxels.get(i).getValue());
+				} else {
+					values.put(voxels.get(i).getY(), values.get(voxels.get(i).getY()) + voxels.get(i).getValue());
+				}
+			}
+
+			/// z axis
+			if (axis.equalsIgnoreCase("z")) {
+				if (values.get(voxels.get(i).getZ()) == null) {
+					values.put(voxels.get(i).getZ(), voxels.get(i).getValue());
+				} else {
+					values.put(voxels.get(i).getZ(), values.get(voxels.get(i).getZ()) + voxels.get(i).getValue());
+				}
+			}
+		}
+
+		Trajectory trajectory = new Trajectory(axis);
+		for (Map.Entry<Integer, Double> entry : values.entrySet()) {
+			trajectory.add(entry.getKey(), entry.getValue());
+			System.err.println("x: " + entry.getKey() + ", y:" + entry.getValue());
+		}
+		return trajectory;
 	}
 }
