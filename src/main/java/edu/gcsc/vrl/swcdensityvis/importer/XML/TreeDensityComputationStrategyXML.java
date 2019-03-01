@@ -150,7 +150,8 @@ public final class TreeDensityComputationStrategyXML implements TreeDensityCompu
 			private volatile HashMap<Integer, Float> lengths = new HashMap<Integer, Float>();
 			private volatile ArrayList<Edge<Vector3f>> cell;
 
-			/// note: characteristic edge length (arithmetic mean for now, could use min, max instead too)
+			/// Note: Characteristic edge length (arithmetic mean for now, could use min, max instead too).
+			/// 	  If we use the arithmetic mean then we might miss some edges at the boundary in some case
 			private volatile float lambda_x = 0.f;
 			private volatile float lambda_y = 0.f;
 			private volatile float lambda_z = 0.f;

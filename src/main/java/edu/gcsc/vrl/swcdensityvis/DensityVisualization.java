@@ -37,7 +37,10 @@ import javax.vecmath.Vector3f;
  */
 @ComponentInfo(name = "DensityVisualization", category = "Neuro/SWC-Density-Vis")
 public class DensityVisualization implements java.io.Serializable {
+	/// TODO: When the ComputeDensity and DensityVisualization component have been refactored we can drop DensityResult
 	private DensityVisualizable xmlDensityVisualizer;
+	private DensityResult result;
+	
 	/// sVUID
 	private static final long serialVersionUID = 1L;
 
@@ -156,8 +159,7 @@ public class DensityVisualization implements java.io.Serializable {
 		Color dColorZero_real = new Color(dColorZero.getRed(), dColorZero.getGreen(), dColorZero.getBlue(), transparencyVal);
 		Color dColorOne_real = new Color(dColorOne.getRed(), dColorOne.getGreen(), dColorOne.getBlue(), 254);
 
-		/// Note: EdgeStrategy is slow... shouldn't be the default anymore
-		/// Note: This can be solved with a factory pattern again.
+		/// Note: EdgeStrategy is slow... deprecated now. TODO: Refactor to use a factory to make a choice here.
 		DensityVisualizable xmlDensityVisualizer;
 		if (representation.equalsIgnoreCase("CYLINDER")) {
 			xmlDensityVisualizer = new XMLDensityVisualizer(XMLDensityUtil.getDefaultDiameterImpl());
@@ -171,11 +173,10 @@ public class DensityVisualization implements java.io.Serializable {
 		xmlDensityVisualizer.setFiles(new ArrayList<File>(Arrays.asList(files)));
 		xmlDensityVisualizer.prepare(null, 0.01, compartment);
 		
-		/// TODO: This usage of xmlDensityVisualizer is different to the usage in ComputeDensity and will result in wrong number of non-zero cuboids, e.g. 1 cuboid! -> This will result in one cuboid in the trajectory!
-
 		/**
-		 * TODO: Normalization of Density: Check Tree/Edge implementation: 
-		 * Need to scale with total length of neurons not with average length!
+		 * Note: Normalization of Density: Check XMLTreeDensity/XMLEdgeDensityImpl implementation.
+		 * Scaling now with total length of neurons not with average length!
+		 * TODO: Need to scale to physiological length perhaps: Check Tree/Edge implementation.
 		 * Note: computeDensity is necessary, since bounding box gets calculated via this too. 
 		 * This will have to be changed since this increases runtime by a factor two.
 		 */
@@ -185,17 +186,18 @@ public class DensityVisualization implements java.io.Serializable {
 		if (bVisibleGeometry) {
 			System.err.println("Calculating the geometries as Java3d objects.");
 			result.addAll(xmlDensityVisualizer.calculateGeometry());
-			/// TODO: This slows down for the Cylinder strategy: 
-			/// Need to create one large array as in Schematic strategy
-			/// And also, we need to add contours to the schematic strategy
+			/// TODO: This slows down for the Cylinder strategy: See XMLDensityVisualizerDiameterImpl.
 		}
 
 		
-		/// TODO: Factor this out into the IsoSurfaceDensityVisualizerDecorator!
+		/// TODO: Factor the following out into the IsoSurfaceDensityVisualizerDecorator!
 		/// xmlDensityVisualizer = new IsosurfaceDensityVisualizerDecorator();
 		if (bIsoSurfaces) {
 			List<? extends VoxelSet> voxels = density.getDensity().getVoxels();
 			Shape3D isosurface;
+			/// Note: We scale the voxels back with 0.01f because in ComputeDensity we downscaled them 
+			///       TODO: The DensityVisualization class has to be cleaned up to a good amount... 
+			///       Scaling parameters and dimension parameters all have to be made an option not hardcoded...
 			isosurface = new MarchingCubes().MC(voxels, xmlDensityVisualizer, 0.01f, percentage);
 			Color3f black = new Color3f(0.0f, 0.0f, 0.0f);
 			Material mat = new Material(black, black, black, black, 70.0f);
@@ -262,6 +264,8 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "Project to axis") 
 		String axis
 	) {
+		/// TODO: getTrajectory should really use the decorator pattern, but before we have to refactor
+		///       the ComputeDensity and especially DensityVisualization class as mentioned on the top
 		return new ProjectToAxisDensityDecorator(xmlDensityVisualizer).getAxis(axis);
 	}
 }
