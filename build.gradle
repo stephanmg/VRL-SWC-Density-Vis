@@ -4,7 +4,7 @@ apply plugin: 'java'
 // loads the property file
 loadProperties('build.properties')
 
-if (oldJava) {
+if (oldJava.toBoolean()) {
 	sourceCompatibility = '1.6'
 }
 
@@ -21,7 +21,7 @@ if (!hasProperty('mainClass')) {
 repositories {
     mavenCentral()
   
-    if (oldJava) {
+    if (oldJava.toBoolean()) {
  	   maven {
         	url "https://oss.sonatype.org/content/repositories/snapshots"
     	}
@@ -49,7 +49,7 @@ dependencies {
     /// local compile dependencies 
     compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
     compile files(vrldir+'/plugins/Density-Vis.jar');
-    if (oldJava) {
+    if (oldJava.toBoolean()) {
  	   compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
     } else {
     	compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.0.2')
