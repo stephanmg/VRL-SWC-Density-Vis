@@ -11,7 +11,11 @@ if (oldJava.toBoolean()) {
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 	
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '2.1'
+	if (oldJava.toBoolean()) {
+    		gradleVersion = '2.1'
+	} else {
+		gradleVersion = '5.1'
+	}
 }
 
 if (!hasProperty('mainClass')) {
