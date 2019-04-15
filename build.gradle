@@ -1,9 +1,13 @@
 apply plugin: 'base'
-
 apply plugin: 'java'
-// warning: [options] bootstrap class path not set in conjunction with -source 1.6 can be ignored
-// meaning: we use not the 1.6 JDK but the 1.7 JDK, thus in effect we are cross compiling to Java 1.6
-sourceCompatibility = '1.7'
+
+// loads the property file
+loadProperties('build.properties')
+
+if (oldJava) {
+	sourceCompatibility = '1.6'
+}
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 	
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
@@ -16,32 +20,18 @@ if (!hasProperty('mainClass')) {
 
 repositories {
     mavenCentral()
-    
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-    
-   /// maven  {
-     ///   url "http://repo1.maven.org/maven2"
-   /// }
-    
-
-}
-
-def loadProperties(String sourceFileName) {
-    def config = new Properties()
-    def propFile = new File(projectDir,sourceFileName)
-    
-    if (propFile.isFile()) {
-        config.load(new FileInputStream(propFile))
-        for (Map.Entry property in config) {
-            ext.set(property.key, property.value)
-        }
+  
+    if (oldJava) {
+ 	   maven {
+        	url "https://oss.sonatype.org/content/repositories/snapshots"
+    	}
+    } else {
+ 	   maven  {
+        	url "http://repo1.maven.org/maven2"
+    	}
     }
 }
 
-// loads the property file
-loadProperties('build.properties')
 
 // add dependencies
 dependencies {
@@ -59,13 +49,17 @@ dependencies {
     /// local compile dependencies 
     compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
     compile files(vrldir+'/plugins/Density-Vis.jar');
-    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
-    ///compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.0.2')
+    if (oldJava) {
+ 	   compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
+    } else {
+    	compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.0.2')
+    }
     
     // project lombok and levy's kd tree implementation (local dependencies)
     compile fileTree(dir: "jars/", includes:['*.jar']);
     
 }
+
 // create a fat-jar (class files plus dependencies
 // excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
 jar {
@@ -225,3 +219,15 @@ dependencies {
 
 }
 */
+
+def loadProperties(String sourceFileName) {
+    def config = new Properties()
+    def propFile = new File(projectDir,sourceFileName)
+    
+    if (propFile.isFile()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            ext.set(property.key, property.value)
+        }
+    }
+}
