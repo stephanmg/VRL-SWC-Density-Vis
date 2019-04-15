@@ -40,7 +40,7 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 	 */
 	public DensityVisualizationPluginConfigurator() {
 		// identification of plugin, description and copyright
-		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.7"));
+		setIdentifier(new PluginIdentifier("SWC-Density-Vis-Plugin", "0.4.8"));
 
 		setDescription("Visualizes the density of a bunch of neuroanatomically-traced SWC/XML or ASC files");
 
@@ -50,7 +50,7 @@ public class DensityVisualizationPluginConfigurator extends VPluginConfigurator 
 		// allow export package to use by other projects
 		exportPackage("edu.gcsc.vrl.swcdensityvis");
 
-		// specify dependencies
+		// specify dependencies (These dependencies might be not satisfied?!)
 		addDependency(new PluginDependency("VRL", "0.4.2.7", VersionInfo.UNDEFINED));
 		addDependency(new PluginDependency("VRL-JFreeChart", "0.2.4", VersionInfo.UNDEFINED));
 		addDependency(new PluginDependency("Density-Vis-Plugin", "0.2", VersionInfo.UNDEFINED));

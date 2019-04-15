@@ -10,7 +10,6 @@ import edu.gcsc.vrl.swcdensityvis.importer.XML.XMLDensityVisualizer;
 import edu.gcsc.vrl.swcdensityvis.types.LA.DenseMatrix;
 import edu.gcsc.vrl.swcdensityvis.data.Shape3DArrayCustom;
 import edu.gcsc.vrl.swcdensityvis.data.Compartment;
-import edu.gcsc.vrl.swcdensityvis.importer.ProjectToAxisDensityDecorator;
 import edu.gcsc.vrl.swcdensityvis.importer.XML.TreeDensityComputationStrategyXML;
 import edu.gcsc.vrl.swcdensityvis.marching_cubes.MarchingCubes;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
@@ -24,9 +23,9 @@ import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
@@ -40,10 +39,8 @@ import javax.vecmath.Vector3f;
 @ComponentInfo(name = "DensityVisualization", category = "Neuro/SWC-Density-Vis")
 public class DensityVisualization implements java.io.Serializable {
 
-	/// TODO: When the ComputeDensity and DensityVisualization component have been refactored we can drop DensityResult
-
-	private DensityVisualizable xmlDensityVisualizer;
-	private DensityResult result;
+	/// Note: Can drop this member after ComputeDensity/DensityVisualization components refactoring
+	private transient DensityResult result;
 
 	/// sVUID
 	private static final long serialVersionUID = 1L;
@@ -133,6 +130,7 @@ public class DensityVisualization implements java.io.Serializable {
 		@ParamInfo(name = "increment", style = "slider", options = "min=0;max=255;value=1") double increment
 	) {
 
+		this.result = density;
 		long startTime = System.currentTimeMillis();
 		/// the Shape3DArray to visualize on the Canvas
 		Shape3DArrayCustom result = new Shape3DArrayCustom();
@@ -180,7 +178,6 @@ public class DensityVisualization implements java.io.Serializable {
 		 */
 		xmlDensityVisualizer.parseStack();
 		xmlDensityVisualizer.computeDensity();
-		this.xmlDensityVisualizer = xmlDensityVisualizer;
 		if (bVisibleGeometry) {
 			System.err.println("Calculating the geometries as Java3d objects.");
 			result.addAll(xmlDensityVisualizer.calculateGeometry());
@@ -258,12 +255,13 @@ public class DensityVisualization implements java.io.Serializable {
 	 * @return
 	 */
 	public Trajectory getTrajectory(
-		@ParamInfo(name = "Project to axis") String axis
+		@ParamInfo(name = "Project to axis", typeName = "Axis", style="selection", 
+			options="value=[\"x\", \"y\", \"z\"]") String axis
 	) {
 		/// TODO: getTrajectory should really use the decorator pattern, but before we have to refactor
 		///       the ComputeDensity and especially DensityVisualization class as mentioned on the top
-		/// return new ProjectToAxisDensityDecorator(xmlDensityVisualizer).getAxis(axis);
-		final HashMap<Integer, Double> values = new HashMap<Integer, Double>(); 
+		/// 	  return new ProjectToAxisDensityDecorator(xmlDensityVisualizer).getAxis(axis);
+		final TreeMap<Integer, Double> values = new TreeMap<Integer, Double>(); 
 		List<? extends VoxelSet> voxels = result.getDensity().getVoxels();
 
 		System.err.println("Number of voxels: " + voxels.size());
@@ -302,6 +300,37 @@ public class DensityVisualization implements java.io.Serializable {
 			trajectory.add(entry.getKey(), entry.getValue());
 			System.err.println("x: " + entry.getKey() + ", y:" + entry.getValue());
 		}
+		trajectory.setTitle("Projection to " + axis + " axis");
+		trajectory.setxAxisLabel("Position [µm]");
+		trajectory.setyAxisLabel("Non-normalized density");
+		trajectory.setLabel("");
+		/// trajectory.setColor(Color.MAGENTA);
 		return trajectory;
+	}
+	
+	/**
+	 * @brief projects to X axis
+	 * @see DensityVisualization#getTrajectory(java.lang.String) 
+	 * @return 
+	 */
+	public Trajectory getAxisX() {
+		return getTrajectory("x");
+	}
+
+	/*
+	 * @brief projects to Y axis
+	 * @see DensityVisualization#getTrajectory(java.lang.String) 
+	 */
+	public Trajectory getAxisY() {
+		return getTrajectory("y");
+	}
+
+	/**
+	 * @brief projects to Z axis
+	 * @see DensityVisualization#getTrajectory(java.lang.String) 
+	 * @return 
+	 */
+	public Trajectory getAxisZ() {
+		return getTrajectory("z");
 	}
 }

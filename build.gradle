@@ -3,7 +3,7 @@ apply plugin: 'base'
 apply plugin: 'java'
 // warning: [options] bootstrap class path not set in conjunction with -source 1.6 can be ignored
 // meaning: we use not the 1.6 JDK but the 1.7 JDK, thus in effect we are cross compiling to Java 1.6
-sourceCompatibility = '1.6'
+sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 	
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
@@ -16,9 +16,16 @@ if (!hasProperty('mainClass')) {
 
 repositories {
     mavenCentral()
+    
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
+    
+   /// maven  {
+     ///   url "http://repo1.maven.org/maven2"
+   /// }
+    
+
 }
 
 def loadProperties(String sourceFileName) {
@@ -53,6 +60,7 @@ dependencies {
     compile files(vrldir+'/plugins/VRL-JFreeChart.jar');
     compile files(vrldir+'/plugins/Density-Vis.jar');
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.5-SNAPSHOT')
+    ///compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.0.2')
     
     // project lombok and levy's kd tree implementation (local dependencies)
     compile fileTree(dir: "jars/", includes:['*.jar']);

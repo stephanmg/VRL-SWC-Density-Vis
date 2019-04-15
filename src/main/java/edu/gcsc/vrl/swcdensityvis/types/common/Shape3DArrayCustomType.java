@@ -701,9 +701,11 @@ public final class Shape3DArrayCustomType extends TypeRepresentationBase {
 				Shape3D scaleBar = new Shape3D(scaleBarLine);
 				shapes.add(scaleBar);
 				Text3D scaleLabel = new Text3D(new Font3D(new Font("Garamond", 
-					java.awt.Font.PLAIN, 1), 0.01, new FontExtrusion()), "1µm",
+					java.awt.Font.PLAIN, 1), 0.01, new FontExtrusion()), "100µm",
 					new Point3f(boundingBox.getFirst().x, boundingBox.getFirst().y+1, 
 						boundingBox.getFirst().z));
+
+				/// TODO: need to get 100µm as input from ComputeDensity component
 
 				Shape3D text3dShape3d4 = new Shape3D(scaleLabel);
 				Appearance appearance4 = new Appearance();
