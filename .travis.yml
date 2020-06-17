@@ -3,6 +3,9 @@ language: java
 jdk:
 - oraclejdk9
 
+dist:
+- trusty
+
 env:
 - TERM=dumb
 
