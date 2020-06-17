@@ -1,10 +1,10 @@
 language: java
 
 jdk:
-- oraclejdk9
+- openjdk9
 
 dist:
-- trusty
+- xenial
 
 env:
 - TERM=dumb
