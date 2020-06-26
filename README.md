@@ -8,4 +8,4 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 [![Coverage Status](https://coveralls.io/repos/stephanmg/VRL-SWC-Density-Vis/badge.png)](https://coveralls.io/r/stephanmg/VRL-SWC-Density-Vis)
 
 # Literature
-Grein Stephan, Qi Guanxiao, Queisser Gillian (2020): Density Visualization Pipeline: A Tool for Cellular and Network Density Visualization and Analysis in Frontiers in Computational Neuroscience
+Grein Stephan, Qi Guanxiao, Queisser Gillian (2020): Density Visualization Pipeline: A Tool for Cellular and Network Density Visualization and Analysis in Frontiers in Computational Neuroscience for From Neuronal Network to Artificial Neural Network: Structure, Function and Intelligence
