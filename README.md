@@ -4,8 +4,8 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 
 # CI and license
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1363909ef6d445e7aa758f3b56fa6da5)](https://app.codacy.com/manual/stephan_5/VRL-SWC-Density-Vis?utm_source=github.com&utm_medium=referral&utm_content=stephanmg/VRL-SWC-Density-Vis&utm_campaign=Badge_Grade_Dashboard)
-[![Build Status (master)](https://api.travis-ci.org/stephanmg/VRL-SWC-Density-Vis.svg?branch=new_features)](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis)
-[![Build Status (devel)](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis.svg?branch=devel)](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis)
+[![Build status (Linux/OSX)](https://api.travis-ci.org/stephanmg/VRL-SWC-Density-Vis.svg?branch=new_features)](https://travis-ci.org/stephanmg/VRL-SWC-Density-Vis)
+[![Build status (Windows)](https://ci.appveyor.com/api/projects/status/mbp14vk1k591p5jk?svg=true)](https://ci.appveyor.com/project/stephanmg/vrl-swc-density-vis)
 [![Coverage Status](https://coveralls.io/repos/stephanmg/VRL-SWC-Density-Vis/badge.png)](https://coveralls.io/r/stephanmg/VRL-SWC-Density-Vis)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
