@@ -8,7 +8,6 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 [![Build status (Windows)](https://ci.appveyor.com/api/projects/status/mbp14vk1k591p5jk?svg=true)](https://ci.appveyor.com/project/stephanmg/vrl-swc-density-vis)
 [![Coverage Status](https://coveralls.io/repos/stephanmg/VRL-SWC-Density-Vis/badge.png)](https://coveralls.io/r/stephanmg/VRL-SWC-Density-Vis)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
-[![CodeQL](https://github.com/stephanmg/VRL-SWC-Density-Vis/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/stephanmg/VRL-SWC-Density-Vis/actions/workflows/codeql-analysis.yml)
 
 # Literature
 You are obliged to cite the following reference (See in Bibtex format [here](https://github.com/stephanmg/VRL-SWC-Density-Vis/dvp.bib)) if you use the software to analyze and publish results: *Grein Stephan, Qi Guanxiao, Queisser Gillian (2020): Density Visualization Pipeline: A Tool for Cellular and Network Density Visualization and Analysis in Frontiers in Computational Neuroscience for From Neuronal Network to Artificial Neural Network: Structure, Function and Intelligence*
