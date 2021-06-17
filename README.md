@@ -24,7 +24,7 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 - a working internet connection
 
 ### Build
-Open project in your favorite IDE with Gradle support, or use the Gradle commadn line tools and build.
+Open project in your favorite IDE with Gradle support, or use the Gradle command line tools and build.
 
 ## Example
 ![](/resources/img/sample.png)
