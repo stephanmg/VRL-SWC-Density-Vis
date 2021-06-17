@@ -13,12 +13,6 @@ A [VRL Studio](https://github.com/VRL-Studio/VRL-Studio) plugin for the density 
 ### Code metrics
 * [![Codacy Badge](https://api.codacy.com/project/badge/grade/1363909ef6d445e7aa758f3b56fa6da5)](https://www.codacy.com/app/stephan_5/VRL-SWC-Density-Vis)
 
-### Issues
-* [![Stories in Backlog](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=backlog&title=Backlog)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in Ready](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=ready&title=Ready)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in In Progress](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=in%20progress&title=In%20Progress)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-[![Stories in Done](https://badge.waffle.io/stephanmg/vrl-swc-density-vis.png?label=done&title=Done)](http://waffle.io/stephanmg/vrl-swc-density-vis)
-
 ### License
 * [![LGPLv3](https://img.shields.io/badge/license-LGPLv3-blue.svg)](./README.md)
 
