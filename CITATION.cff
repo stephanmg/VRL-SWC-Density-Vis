@@ -1,0 +1,7 @@
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Grein
+    given-names: Stephan
+title: " Density Visualization Pipeline: A Tool for Cellular and Network Density Visualization and Analysis"
+version: 1.0
+doi: 10.3389/fncom.2020.00042
